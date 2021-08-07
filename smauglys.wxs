@@ -13,6 +13,9 @@
             SourceFile="PythonInstaller.exe"
             InstallCommand="/passive InstallAllUsers=1 PrependPath=1" />
         <ExePackage
+            SourceFile="VSCodeSetup.exe"
+            InstallCommand="/SILENT" />
+        <ExePackage
             SourceFile="installer.exe" />
     </Chain>
   </Bundle>
