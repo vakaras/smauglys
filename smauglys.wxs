@@ -3,9 +3,9 @@
      xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
   <Bundle Version="0.1" UpgradeCode="{DC05B910-D58A-4F66-8135-C554BFFBE270}">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
-      <bal:WixStandardBootstrapperApplication
-        LicenseFile="instructions.rtf"
-        ShowVersion="yes"
+        <bal:WixStandardBootstrapperApplication
+            LicenseUrl="https://github.com/vakaras/smauglys2/blob/main/LICENSE"
+            ShowVersion="yes"
         />
     </BootstrapperApplicationRef>
     <Chain>
