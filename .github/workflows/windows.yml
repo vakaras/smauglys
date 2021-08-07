@@ -18,7 +18,7 @@ jobs:
         shell: bash
 
       - name: Download dependencies
-        run: download.sh
+        run: ./download.sh
         shell: bash
 
       - name: Package bundle
