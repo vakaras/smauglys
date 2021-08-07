@@ -21,6 +21,10 @@ jobs:
         run: ./download.sh
         shell: bash
 
+      - name: Build the Rust installer
+        run: cd installer && cargo build --release && cp target/release/installer.exe ..
+        shell: bash
+
       - name: Package bundle
         run: |
           wix/candle.exe bundle.wxs -ext WixBalExtension

@@ -12,6 +12,9 @@
         <ExePackage
             SourceFile="PythonInstaller.exe"
             InstallCommand="/passive InstallAllUsers=1 PrependPath=1" />
+        <ExePackage
+            SourceFile="installer.exe"
+            InstallCommand="" />
     </Chain>
   </Bundle>
 </Wix>
