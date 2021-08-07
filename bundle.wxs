@@ -4,11 +4,14 @@
   <Bundle>
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
       <bal:WixStandardBootstrapperApplication
-        LicenseFile="path\to\license.rtf"
+        LicenseFile="LICENSE"
         ShowVersion="yes"
         />
     </BootstrapperApplicationRef>
     <Chain>
+        <ExePackage
+            SourceFile="PythonInstaller.exe"
+            InstallCommand="/passive InstallAllUsers=1 PrependPath=1" />
     </Chain>
   </Bundle>
 </Wix>
