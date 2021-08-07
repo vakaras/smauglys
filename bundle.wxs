@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
      xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
-  <Bundle>
+  <Bundle Version="0.1" UpgradeCode="{DC05B910-D58A-4F66-8135-C554BFFBE270}">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
       <bal:WixStandardBootstrapperApplication
         LicenseFile="LICENSE"
