@@ -27,9 +27,8 @@ jobs:
 
       - name: Package bundle
         run: |
-          wix/candle.exe bundle.wxs -ext WixBalExtension
-          wix/light.exe bundle.wixobj -ext WixBalExtension
-          ls
+          wix/candle.exe smauglys.wxs -ext WixBalExtension
+          wix/light.exe smauglys.wixobj -ext WixBalExtension
         shell: bash
 
       - name: Create release tag
