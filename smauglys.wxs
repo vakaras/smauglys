@@ -4,9 +4,8 @@
   <Bundle Version="0.1" UpgradeCode="{DC05B910-D58A-4F66-8135-C554BFFBE270}">
     <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
         <bal:WixStandardBootstrapperApplication
-            LicenseUrl="https://github.com/vakaras/smauglys2/blob/main/LICENSE"
-            ShowVersion="yes"
-        />
+            LicenseFile="instructions.rtf"
+            ShowVersion="yes" />
     </BootstrapperApplicationRef>
     <Chain>
         <ExePackage
