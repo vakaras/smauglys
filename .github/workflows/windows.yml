@@ -1,0 +1,25 @@
+name: windows_build
+
+on:
+  push:
+    branches: 'main'
+
+jobs:
+  windows:
+    runs-on: windows-2016
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install WixToolset
+        run: |
+          curl https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip -Lo wix.zip
+          mkdir -p wix
+          unzip wix.zip -d wix
+        shell: bash
+
+      - name: Package bundle
+        run: |
+          wix/candle.exe bundle.wxs -ext WixBalExtension
+          wix/light.exe bundle.wixobj -ext WixBalExtension
+          ls
+        shell: bash

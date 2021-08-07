@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+  <Bundle>
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
+      <bal:WixStandardBootstrapperApplication
+        LicenseFile="path\to\license.rtf"
+        ShowVersion="yes"
+        />
+    </BootstrapperApplicationRef>
+    <Chain>
+    </Chain>
+  </Bundle>
+</Wix>
