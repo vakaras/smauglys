@@ -37,7 +37,7 @@ jobs:
 
       - name: Move/rename build artifacts
         run: |
-          mv bundle.exe Smauglys-${TAG_NAME}.exe
+          mv smauglys.exe Smauglys-${TAG_NAME}.exe
         shell: bash
 
       - name: Release
