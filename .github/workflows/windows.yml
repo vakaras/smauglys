@@ -31,3 +31,21 @@ jobs:
           wix/light.exe bundle.wixobj -ext WixBalExtension
           ls
         shell: bash
+
+      - name: Create release tag
+        shell: bash
+        run: echo "TAG_NAME=$(date +v-%Y-%m-%d-%H%M)" >> $GITHUB_ENV
+
+      - name: Move/rename build artifacts
+        run: |
+          mv bundle.exe Smauglys-${TAG_NAME}.exe
+        shell: bash
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          files: |
+            ./Smauglys-*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
