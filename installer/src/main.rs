@@ -21,7 +21,7 @@ fn find_vs_code() -> which::Result<PathBuf> {
 }
 
 fn main() -> std::io::Result<()> {
-    let mut log = File::create("smauglys.log")?;
+    let mut log = File::create("C:\\smauglys.log")?;
     writeln!(log, "Installer started.").unwrap();
     let python_path = find_python().unwrap_or_else(|err| {
         writeln!(log, "Failed to locate Python: {}", err).unwrap();
