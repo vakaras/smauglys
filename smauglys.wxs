@@ -14,7 +14,7 @@
             InstallCommand="/passive InstallAllUsers=1 PrependPath=1" />
         <ExePackage
             SourceFile="VSCodeSetup.exe"
-            InstallCommand="/SILENT" />
+            InstallCommand="/SILENT /mergetasks=!runcode" />
         <ExePackage
             SourceFile="installer.exe" />
     </Chain>
