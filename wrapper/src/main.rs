@@ -16,11 +16,40 @@ macro_rules! log {
     }
 }
 
+fn log_raw(logger: &mut Logger, bytes: &[u8]) {
+    if let Some(file) = logger {
+        file.write_all(bytes).unwrap();
+    }
+}
+
 fn get_vscode_original_exe() -> PathBuf {
     let current_exe = std::env::current_exe().expect("Failed to detect current exe.");
     let mut code_original_exe = current_exe;
     code_original_exe.set_file_name("code_original.exe");
     code_original_exe
+}
+
+fn create_vs_code_command(logger: &mut Logger, vscode_exe: &Path, args: &[&str]) -> Command {
+    log!(
+        logger,
+        "[enter] create_vs_code_command(vscode_exe={:?}, args={:?})",
+        vscode_exe,
+        args
+    );
+    let mut cli_path = vscode_exe.to_path_buf();
+    cli_path.pop();
+    cli_path.push("resources");
+    cli_path.push("app");
+    cli_path.push("out");
+    cli_path.push("cli.js");
+
+    let mut command = Command::new(vscode_exe);
+    command
+        .env("ELECTRON_RUN_AS_NODE", "1")
+        .arg(cli_path)
+        .args(args);
+    log!(logger, "[exit] create_vs_code_command");
+    command
 }
 
 fn install_extension(
@@ -34,10 +63,13 @@ fn install_extension(
         vscode_exe,
         extension
     );
-    let exit_status = Command::new(vscode_exe)
-        .args(&["--install-extension", extension])
-        .status()?;
-    log!(logger, "exit status: {}", exit_status);
+    let output =
+        create_vs_code_command(logger, vscode_exe, &["", "--install-extension", extension])
+            .output()?;
+    log!(logger, "stdout:");
+    log_raw(logger, &output.stdout);
+    log!(logger, "stderr:");
+    log_raw(logger, &output.stderr);
     log!(logger, "[exit] install_extension");
     Ok(())
 }
