@@ -4,7 +4,11 @@ use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-const EXTENSIONS: &'static [&'static str] = &["ms-python.python"];
+const EXTENSIONS: &'static [&'static str] = &[
+    "ms-python.python",
+    "vakaras.vscode-language-pack-lt",
+    "hediet.debug-visualizer",
+];
 
 type Logger = Option<File>;
 
