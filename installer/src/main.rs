@@ -5,7 +5,7 @@ use std::process::Command;
 use which::which;
 
 const WRAPPER_BIN: &'static [u8] = include_bytes!("../../wrapper.exe");
-const PYTHON_PACKAGES: &'static [&'static str] = &["pylint"];
+const PYTHON_PACKAGES: &'static [&'static str] = &["pylint", "mypy"];
 
 #[derive(Default)]
 struct ErrorHandler {
