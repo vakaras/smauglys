@@ -24,7 +24,7 @@ jobs:
         shell: bash
 
       - name: Build the Rust installer
-        run: cd installer && cargo build --release && cp target/release/installer.exe ..
+        run: ./build_installer.sh
         shell: bash
 
       - name: Package bundle
@@ -48,5 +48,6 @@ jobs:
           tag_name: ${{ env.TAG_NAME }}
           files: |
             ./Smauglys-*.exe
+            ./wrapper*.exe
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
