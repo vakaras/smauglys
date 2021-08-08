@@ -30,7 +30,7 @@ jobs:
       - name: Package bundle
         run: |
           wix/candle.exe smauglys.wxs -ext WixBalExtension
-          wix/light.exe smauglys.wixobj -ext WixBalExtension
+          wix/light.exe -ext WixUIExtension -cultures:lt-LT smauglys.wixobj -ext WixBalExtension
         shell: bash
 
       - name: Create release tag
