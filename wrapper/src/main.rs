@@ -1,27 +1,20 @@
 use std::collections::HashSet;
+use std::fs::File;
+use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
 const EXTENSIONS: &'static [&'static str] = &["ms-python.python"];
 
-enum Error {
-    IoError(std::io::Error),
-    GlobPatternError(glob::PatternError),
-}
+type Logger = Option<File>;
 
-impl From<std::io::Error> for Error {
-    fn from(error: std::io::Error) -> Self {
-        Self::IoError(error)
+macro_rules! log {
+    ( $self:ident, $( $x:expr ),* ) => {
+        if let Some(logger) = $self {
+            writeln!(logger, $( $x ),*).unwrap();
+        }
     }
 }
-
-impl From<glob::PatternError> for Error {
-    fn from(error: glob::PatternError) -> Self {
-        Self::GlobPatternError(error)
-    }
-}
-
-type TResult<T> = Result<T, Error>;
 
 fn get_vscode_original_exe() -> PathBuf {
     let current_exe = std::env::current_exe().expect("Failed to detect current exe.");
@@ -30,65 +23,100 @@ fn get_vscode_original_exe() -> PathBuf {
     code_original_exe
 }
 
-fn install_extension(vscode_exe: &Path, extension: &str) -> std::io::Result<()> {
-    let _ = Command::new(vscode_exe)
+fn install_extension(
+    logger: &mut Logger,
+    vscode_exe: &Path,
+    extension: &str,
+) -> std::io::Result<()> {
+    log!(
+        logger,
+        "[enter] install_extension({:?}, {:?})",
+        vscode_exe,
+        extension
+    );
+    let exit_status = Command::new(vscode_exe)
         .args(&["--install-extension", extension])
         .status()?;
+    log!(logger, "exit status: {}", exit_status);
+    log!(logger, "[exit] install_extension");
     Ok(())
 }
 
-fn do_ensure_extensions(vscode_exe: &Path) -> TResult<()> {
+fn ensure_extensions(logger: &mut Logger, vscode_exe: &Path) {
+    log!(
+        logger,
+        "[enter] ensure_extensions(vscode_exe={:?})",
+        vscode_exe
+    );
     let home_dir = dirs::home_dir().unwrap();
+    log!(logger, "home_dir = {:?}", home_dir);
     let mut vs_code_extensions_dir = home_dir;
     vs_code_extensions_dir.push(".vscode");
     vs_code_extensions_dir.push("extensions");
+    log!(
+        logger,
+        "vs_code_extensions_dir = {:?}",
+        vs_code_extensions_dir
+    );
     let extensions_pattern = vs_code_extensions_dir.join("*");
+    log!(logger, "extensions_pattern = {:?}", extensions_pattern);
     let mut installed_extensions = HashSet::new();
     if let Some(pattern_as_str) = extensions_pattern.to_str() {
+        log!(logger, "pattern_as_str = {:?}", pattern_as_str);
         if let Ok(paths) = glob::glob(pattern_as_str) {
             for entry in paths {
                 match entry {
                     Ok(path) => {
+                        log!(logger, "entry.path = {:?}", path);
                         if let Some(file_name) = path.file_name() {
+                            log!(logger, "  file_name = {:?}", file_name);
                             if let Some(file_name) = file_name.to_str() {
                                 let parts: Vec<_> = file_name.splitn(3, "-").collect();
-                                installed_extensions.insert(format!("{}-{}", parts[0], parts[1]));
+                                let extension = format!("{}-{}", parts[0], parts[1]);
+                                log!(logger, "  found extension: {:?}", extension);
+                                installed_extensions.insert(extension);
                             }
                         }
                     }
-                    Err(e) => eprintln!("{:?}", e),
+                    Err(error) => log!(logger, "error for glob entry: {}", error),
                 }
             }
         }
     }
     for extension in EXTENSIONS {
+        log!(logger, "checking extension: {:?}", extension);
         if !installed_extensions.contains(*extension) {
-            if let Err(error) = install_extension(vscode_exe, extension) {
-                eprintln!("Error installing extension {}: {}", extension, error);
+            log!(logger, "  not installed");
+            if let Err(error) = install_extension(logger, vscode_exe, extension) {
+                log!(
+                    logger,
+                    "Error installing extension {}: {}",
+                    extension,
+                    error
+                );
             }
         }
     }
-    Ok(())
+    log!(logger, "[exit] ensure_extensions");
 }
 
-fn ensure_extensions(vscode_exe: &Path) {
-    if let Err(error) = do_ensure_extensions(vscode_exe) {
-        match error {
-            Error::GlobPatternError(error) => eprintln!("Error: {}", error),
-            Error::IoError(error) => eprintln!("Error: {}", error),
-        }
-    }
-}
-
-fn start_vs_code(vscode_exe: &Path) -> std::io::Result<()> {
+fn start_vs_code(logger: &mut Logger, vscode_exe: &Path) -> std::io::Result<()> {
+    log!(logger, "[enter] start_vs_code(vscode_exe={:?})", vscode_exe);
     let mut args = std::env::args();
-    args.next();
-    let _ = Command::new(vscode_exe).args(args).status()?;
+    log!(logger, "first arg: {:?}", args.next());
+    let exit_status = Command::new(vscode_exe).args(args).status()?;
+    log!(logger, "exit status: {}", exit_status);
+    log!(logger, "[exit] start_vs_code");
     Ok(())
 }
 
 fn main() -> std::io::Result<()> {
+    let mut logger = if let Ok(path) = std::env::var("CODE_WRAPPER_LOG_PATH") {
+        Some(File::create(path).unwrap())
+    } else {
+        None
+    };
     let vscode_exe = get_vscode_original_exe();
-    ensure_extensions(&vscode_exe);
-    start_vs_code(&vscode_exe)
+    ensure_extensions(&mut logger, &vscode_exe);
+    start_vs_code(&mut logger, &vscode_exe)
 }
