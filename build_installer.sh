@@ -10,4 +10,5 @@ cp wrapper/target/release/wrapper.exe .
 
 cd installer
 cargo build --release
+cp target/release/installer.exe ..
 cd ..
