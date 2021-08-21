@@ -1,4 +1,4 @@
-use std::{fmt::Debug, path::{Path, PathBuf}, sync::{Mutex, atomic::{AtomicBool, Ordering::SeqCst}}};
+use std::{fmt::{Debug, Display}, path::{Path, PathBuf}, sync::{Mutex, atomic::{AtomicBool, Ordering::SeqCst}}};
 
 use log::debug;
 
@@ -28,6 +28,25 @@ enum ExtensionState {
     InstallationError(String),
 }
 
+impl Display for ExtensionState {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            ExtensionState::Unknown => {
+                write!(f, "tikrinama")
+            }
+            ExtensionState::ToBeInstalled => {
+                write!(f, "diegiama")
+            }
+            ExtensionState::Installed => {
+                write!(f, "sėkmingai įdiegta")
+            }
+            ExtensionState::InstallationError(message) => {
+                write!(f, "diegimas nepavyko\r\n  {}", message)
+            }
+        }
+    }
+}
+
 #[derive(Clone)]
 struct ExtensionInstaller {
     /// An unique identifier of the extension.
@@ -51,7 +70,7 @@ impl From<&Extension> for ExtensionInstaller {
 
 impl ExtensionInstaller {
     fn state_as_line(&self) -> String {
-        format!("Papildinys {}: TODO\r\n", self.identifier)
+        format!("Papildinys {}: {}\r\n", self.identifier, self.state)
     }
     fn is_finished(&self) -> bool {
         match self.state {
@@ -126,7 +145,8 @@ impl ExtensionInstallerList {
                     extension.state = ExtensionState::ToBeInstalled;
                 }
             }
-        })
+        });
+        self.initialized.store(true, SeqCst);
     }
     fn install_next_extension(&self) {
         self.with(|extensions| {
@@ -134,7 +154,18 @@ impl ExtensionInstallerList {
             if let Some(extension) = next_extension {
                 match code::install_extension(&self.vscode_exe, extension.identifier) {
                     Ok(()) => {
-                        extension.state = ExtensionState::Installed;
+                        if let Some(post_install) = extension.post_install {
+                            match post_install(&self.vscode_exe) {
+                                Ok(()) => {
+                                    extension.state = ExtensionState::Installed;
+                                },
+                                Err(message) => {
+                                    extension.state = ExtensionState::InstallationError(message);
+                                }
+                            }
+                        } else {
+                            extension.state = ExtensionState::Installed;
+                        }
                     }
                     Err(InstallExtError::IoError(error)) => {
                         extension.state = ExtensionState::InstallationError(format!("Klaida: {}", error));

@@ -11,7 +11,7 @@ pub struct ExtInstallApp {
     extensions: Arc<ExtensionInstallerList>,
 
     #[nwg_control(size: (590, 430), position: (300, 300), title: "Smauglys: diegiami papildiniai", flags: "WINDOW|VISIBLE")]
-    #[nwg_events(OnInit: [ExtInstallApp::init_text], OnMinMaxInfo: [ExtInstallApp::set_resize(SELF, EVT_DATA)] )]
+    #[nwg_events(OnWindowClose: [ExtInstallApp::exit], OnInit: [ExtInstallApp::init_text], OnMinMaxInfo: [ExtInstallApp::set_resize(SELF, EVT_DATA)] )]
     window: nwg::Window,
 
     #[nwg_layout(parent: window, spacing: 1)]
@@ -53,6 +53,11 @@ impl ExtInstallApp {
     fn set_resize(&self, data: &nwg::EventData) {
         let data = data.on_min_max();
         data.set_min_size(200, 200);
+    }
+
+    fn exit(&self) {
+        nwg::stop_thread_dispatch();
+        unimplemented!("TODO: Stop the spinning thread.")
     }
 
 }
