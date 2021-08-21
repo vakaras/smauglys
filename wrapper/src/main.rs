@@ -15,7 +15,10 @@ pub struct BasicApp {
     #[nwg_layout(parent: window, spacing: 1)]
     grid: nwg::GridLayout,
 
-    #[nwg_control(text: "Lietuviškų raidžių testas.")]
+    #[nwg_resource(family: "Segoe UI", size: 18)]
+    text_font: nwg::Font,
+
+    #[nwg_control(text: "Lietuviškų raidžių testas.", font: Some(&data.text_font), flags: "VISIBLE|MULTI_LINE")]
     #[nwg_layout_item(layout: grid, row: 3, col: 0)]
     explanation: nwg::RichLabel,
 
