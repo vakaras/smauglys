@@ -1,57 +1,78 @@
 #![windows_subsystem = "windows"]
 
+use log::debug;
+
+use extensions::Extension;
+
 extern crate native_windows_gui as nwg;
 extern crate native_windows_derive as nwd;
 
-use nwd::NwgUi;
-use nwg::NativeUi;
+const EXTENSIONS: [Extension; 3] = [
+    extensions::PYTHON_EXTENSION,
+    extensions::VSCODE_LANGUAGE_PACK_LT_EXTENSION,
+    extensions::DEBUG_VISUALIZER_EXTENSION,
+];
 
-#[derive(Default, NwgUi)]
-pub struct ExtApp {
-    #[nwg_control(size: (590, 430), position: (300, 300), title: "Basic example", flags: "WINDOW|VISIBLE")]
-    #[nwg_events( OnWindowClose: [ExtApp::say_goodbye], OnInit: [ExtApp::init_text], OnMinMaxInfo: [ExtApp::set_resize(SELF, EVT_DATA)] )]
-    window: nwg::Window,
+mod code;
+mod extensions;
 
-    #[nwg_layout(parent: window, spacing: 1)]
-    grid: nwg::GridLayout,
-
-    #[nwg_resource(family: "Segoe UI", size: 18)]
-    text_font: nwg::Font,
-
-    #[nwg_control(font: Some(&data.text_font), flags: "VISIBLE|MULTI_LINE")]
-    #[nwg_layout_item(layout: grid, row: 0, col: 0)]
-    explanation: nwg::RichLabel,
+fn main() -> std::io::Result<()> {
+    env_logger::init();
+    let vscode_exe = code::get_vscode_original_exe();
+    debug!("vscode_exe: {:?}", vscode_exe);
+    extensions::ensure_installed(&vscode_exe, &EXTENSIONS);
+    code::start_vs_code(&vscode_exe)
 }
 
-impl ExtApp {
 
-    fn init_text(&self) {
-        let text = concat!(
-            "Lietuviškų raidžių testas.\r\n",
-            "ąčęėšųū„“\r\n",
-            "ĄČĘĖĮŠŲŪ“”\r\n",
-        );
-        self.explanation.set_text(text);
-    }
+// use nwd::NwgUi;
+// use nwg::NativeUi;
+// #[derive(Default, NwgUi)]
+// pub struct ExtApp {
+//     #[nwg_control(size: (590, 430), position: (300, 300), title: "Basic example", flags: "WINDOW|VISIBLE")]
+//     #[nwg_events( OnWindowClose: [ExtApp::say_goodbye], OnInit: [ExtApp::init_text], OnMinMaxInfo: [ExtApp::set_resize(SELF, EVT_DATA)] )]
+//     window: nwg::Window,
 
-    fn set_resize(&self, data: &nwg::EventData) {
-        let data = data.on_min_max();
-        data.set_min_size(200, 200);
-    }
+//     #[nwg_layout(parent: window, spacing: 1)]
+//     grid: nwg::GridLayout,
 
-    fn say_goodbye(&self) {
-        nwg::modal_info_message(&self.window, "Goodbye", &format!("Goodbye someone"));
-        nwg::stop_thread_dispatch();
-    }
+//     #[nwg_resource(family: "Segoe UI", size: 18)]
+//     text_font: nwg::Font,
 
-}
+//     #[nwg_control(font: Some(&data.text_font), flags: "VISIBLE|MULTI_LINE")]
+//     #[nwg_layout_item(layout: grid, row: 0, col: 0)]
+//     explanation: nwg::RichLabel,
+// }
 
-fn main() {
-    nwg::init().expect("Failed to init Native Windows GUI");
-    nwg::Font::set_global_family("Segoe UI").expect("Failed to set default font");
-    let _app = ExtApp::build_ui(Default::default()).expect("Failed to build UI");
-    nwg::dispatch_thread_events();
-}
+// impl ExtApp {
+
+//     fn init_text(&self) {
+//         let text = concat!(
+//             "Lietuviškų raidžių testas.\r\n",
+//             "ąčęėšųū„“\r\n",
+//             "ĄČĘĖĮŠŲŪ“”\r\n",
+//         );
+//         self.explanation.set_text(text);
+//     }
+
+//     fn set_resize(&self, data: &nwg::EventData) {
+//         let data = data.on_min_max();
+//         data.set_min_size(200, 200);
+//     }
+
+//     fn say_goodbye(&self) {
+//         nwg::modal_info_message(&self.window, "Goodbye", &format!("Goodbye someone"));
+//         nwg::stop_thread_dispatch();
+//     }
+
+// }
+
+// fn main() {
+//     nwg::init().expect("Failed to init Native Windows GUI");
+//     nwg::Font::set_global_family("Segoe UI").expect("Failed to set default font");
+//     let _app = ExtApp::build_ui(Default::default()).expect("Failed to build UI");
+//     nwg::dispatch_thread_events();
+// }
 
 // use std::collections::HashSet;
 // use std::fs::File;
