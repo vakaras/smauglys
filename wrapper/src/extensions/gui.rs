@@ -39,6 +39,7 @@ impl ExtInstallApp {
             buf.push_str(&extension.state_as_line());
         }
         buf.push_str(&format!("current counter: {}", self.counter.load(std::sync::atomic::Ordering::SeqCst)));
+        eprintln!("in render state");
         self.explanation.set_text(&*buf);
     }
 
@@ -76,12 +77,14 @@ fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
     let counter = initial_state.counter.clone();
     let _thread = std::thread::spawn(move || {
         loop {
+            eprintln!("in spin loop");
             counter.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
             sender.notice();
             std::thread::sleep(std::time::Duration::new(5, 0));
         }
     });
     let _app = ExtInstallApp::build_ui(initial_state)?;
+    eprintln!("before dispatch loop");
     nwg::dispatch_thread_events();
     trace!("[exit] gui::run");
     Ok(())
@@ -89,6 +92,7 @@ fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
 
 pub(super) fn run(vscode_exe: &Path, extensions: &[Extension]) {
     trace!("[enter] gui::run");
+    eprintln!("[enter] gui::run");
     match do_run(vscode_exe, extensions) {
         Ok(()) => (),
         Err(error) => {

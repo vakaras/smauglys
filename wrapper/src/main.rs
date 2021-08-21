@@ -27,6 +27,7 @@ fn main() -> std::io::Result<()> {
     let vscode_exe = code::get_vscode_original_exe();
     debug!("vscode_exe: {:?}", vscode_exe);
     extensions::ensure_installed(&vscode_exe, &EXTENSIONS);
+    eprintln!("after ensure_installed");
     code::start_vs_code(&vscode_exe)
 }
 
