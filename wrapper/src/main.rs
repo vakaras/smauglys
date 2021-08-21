@@ -7,9 +7,9 @@ use nwd::NwgUi;
 use nwg::NativeUi;
 
 #[derive(Default, NwgUi)]
-pub struct BasicApp {
-    #[nwg_control(size: (300, 115), position: (300, 300), title: "Basic example", flags: "WINDOW|VISIBLE")]
-    #[nwg_events( OnWindowClose: [BasicApp::say_goodbye] )]
+pub struct ExtApp {
+    #[nwg_control(size: (590, 430), position: (300, 300), title: "Basic example", flags: "WINDOW|VISIBLE")]
+    #[nwg_events( OnWindowClose: [ExtApp::say_goodbye], OnInit: [ExtApp::init_text], OnMinMaxInfo: [ExtApp::set_resize(SELF, EVT_DATA)] )]
     window: nwg::Window,
 
     #[nwg_layout(parent: window, spacing: 1)]
@@ -18,28 +18,29 @@ pub struct BasicApp {
     #[nwg_resource(family: "Segoe UI", size: 18)]
     text_font: nwg::Font,
 
-    #[nwg_control(text: "Lietuviškų raidžių testas.\r\nąčęėšųū„“\r\nĄČĘĖĮŠŲŪ“”", font: Some(&data.text_font), flags: "VISIBLE|MULTI_LINE")]
-    #[nwg_layout_item(layout: grid, row: 3, col: 0)]
-    explanation: nwg::RichLabel,
-
-    #[nwg_control(text: "Heisenberg", focus: true)]
+    #[nwg_control(font: Some(&data.text_font), flags: "VISIBLE|MULTI_LINE")]
     #[nwg_layout_item(layout: grid, row: 0, col: 0)]
-    name_edit: nwg::TextInput,
-
-    #[nwg_control(text: "Say my name")]
-    #[nwg_layout_item(layout: grid, col: 0, row: 1, row_span: 2)]
-    #[nwg_events( OnButtonClick: [BasicApp::say_hello] )]
-    hello_button: nwg::Button
+    explanation: nwg::RichLabel,
 }
 
-impl BasicApp {
+impl ExtApp {
 
-    fn say_hello(&self) {
-        nwg::modal_info_message(&self.window, "Hello", &format!("Hello {}", self.name_edit.text()));
+    fn init_text(&self) {
+        let text = concat!(
+            "Lietuviškų raidžių testas.\r\n",
+            "ąčęėšųū„“\r\n",
+            "ĄČĘĖĮŠŲŪ“”\r\n",
+        );
+        self.explanation.set_text(text);
+    }
+
+    fn set_resize(&self, data: &nwg::EventData) {
+        let data = data.on_min_max();
+        data.set_min_size(200, 200);
     }
 
     fn say_goodbye(&self) {
-        nwg::modal_info_message(&self.window, "Goodbye", &format!("Goodbye {}", self.name_edit.text()));
+        nwg::modal_info_message(&self.window, "Goodbye", &format!("Goodbye someone"));
         nwg::stop_thread_dispatch();
     }
 
@@ -48,7 +49,7 @@ impl BasicApp {
 fn main() {
     nwg::init().expect("Failed to init Native Windows GUI");
     nwg::Font::set_global_family("Segoe UI").expect("Failed to set default font");
-    let _app = BasicApp::build_ui(Default::default()).expect("Failed to build UI");
+    let _app = ExtApp::build_ui(Default::default()).expect("Failed to build UI");
     nwg::dispatch_thread_events();
 }
 
