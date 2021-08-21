@@ -1,19 +1,17 @@
-use std::{path::{Path, PathBuf}, };
+use std::{path::{Path, }, sync::{Arc}};
 
 use log::{trace, error};
 use nwd::NwgUi;
 use nwg::{NativeUi, NwgError};
 
-use super::{Extension, extension::ExtensionInstaller};
+use super::{Extension, extension::{ExtensionInstallerList}};
 
 #[derive(NwgUi)]
 pub struct ExtInstallApp {
-    vscode_exe: PathBuf,
-    extensions: Vec<ExtensionInstaller>,
-    counter: std::sync::Arc<std::sync::atomic::AtomicU64>,
+    extensions: Arc<ExtensionInstallerList>,
 
     #[nwg_control(size: (590, 430), position: (300, 300), title: "Smauglys: diegiami papildiniai", flags: "WINDOW|VISIBLE")]
-    #[nwg_events( OnWindowClose: [ExtInstallApp::say_goodbye], OnInit: [ExtInstallApp::init_text], OnMinMaxInfo: [ExtInstallApp::set_resize(SELF, EVT_DATA)] )]
+    #[nwg_events(OnInit: [ExtInstallApp::init_text], OnMinMaxInfo: [ExtInstallApp::set_resize(SELF, EVT_DATA)] )]
     window: nwg::Window,
 
     #[nwg_layout(parent: window, spacing: 1)]
@@ -34,12 +32,18 @@ pub struct ExtInstallApp {
 impl ExtInstallApp {
 
     fn render_state(&self) {
-        let mut buf = String::from("Diegiami papildiniai:\r\n");
-        for extension in &self.extensions {
-            buf.push_str(&extension.state_as_line());
+        if let Some(abort_message) = self.extensions.get_abort_message() {
+            nwg::modal_error_message(&self.window, "Kritinė klaida", &abort_message);
+            nwg::stop_thread_dispatch();
+        } else {
+        if self.extensions.is_finished() {
+            nwg::stop_thread_dispatch();
+        } else {
+            let mut buf = String::from("Diegiami papildiniai:\r\n");
+            self.extensions.get_state(&mut buf);
+            self.explanation.set_text(&*buf);
         }
-        buf.push_str(&format!("current counter: {}", self.counter.load(std::sync::atomic::Ordering::SeqCst)));
-        self.explanation.set_text(&*buf);
+        }
     }
 
     fn init_text(&self) {
@@ -51,11 +55,6 @@ impl ExtInstallApp {
         data.set_min_size(200, 200);
     }
 
-    fn say_goodbye(&self) {
-        nwg::modal_info_message(&self.window, "Goodbye", &format!("Goodbye someone"));
-        nwg::stop_thread_dispatch();
-    }
-
 }
 
 fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
@@ -63,9 +62,7 @@ fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
     nwg::init()?;
     nwg::Font::set_global_family("Segoe UI")?;
     let initial_state = ExtInstallApp {
-        vscode_exe: vscode_exe.to_owned(),
-        extensions: extensions.iter().map(|extension| extension.into()).collect(),
-        counter: Default::default(),
+        extensions: Arc::new(ExtensionInstallerList::new(vscode_exe, extensions)),
         window: Default::default(),
         grid: Default::default(),
         text_font: Default::default(),
@@ -73,13 +70,13 @@ fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
         notice: Default::default(),
     };
     let app = ExtInstallApp::build_ui(initial_state)?;
-    let counter = app.counter.clone();
     let sender = app.notice.sender();
+    let extensions_installer = app.extensions.clone();
     let _thread = std::thread::spawn(move || {
-        loop {
-            counter.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        while !extensions_installer.is_finished() {
             sender.notice();
-            std::thread::sleep(std::time::Duration::new(5, 0));
+            extensions_installer.process_next_action();
+            sender.notice();
         }
     });
     nwg::dispatch_thread_events();
