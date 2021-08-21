@@ -28,7 +28,7 @@ fn create_vs_code_command(
     //     .args(args);
     let mut command = tokio::process::Command::new("ls");
     eprintln!("Sleeping");
-    std::thread::sleep(std::time::Duration::from_secs(5));
+    // std::thread::sleep(std::time::Duration::from_secs(5));
     log!(logger, "[exit] create_vs_code_command");
     command
 }
