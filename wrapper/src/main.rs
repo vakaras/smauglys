@@ -18,6 +18,12 @@ mod extensions;
 
 fn main() -> std::io::Result<()> {
     env_logger::init();
+    eprintln!("RUST_LOG={:?}", std::env::var("RUST_LOG"));
+    eprintln!("RUST_LOG_STYLE={:?}", std::env::var("RUST_LOG_STYLE"));
+    log::error!("Logging is initialized");
+    log::info!("Logging is initialized");
+    log::debug!("Logging is initialized");
+    log::trace!("Logging is initialized");
     let vscode_exe = code::get_vscode_original_exe();
     debug!("vscode_exe: {:?}", vscode_exe);
     extensions::ensure_installed(&vscode_exe, &EXTENSIONS);
