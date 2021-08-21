@@ -17,10 +17,6 @@ mod code;
 mod extensions;
 
 fn main() -> std::io::Result<()> {
-    println!("Check whether stdout works");
-    eprintln!("Starting program!!!");
-    eprintln!("RUST_LOG={:?}", std::env::var("RUST_LOG"));
-    eprintln!("RUST_LOG_STYLE={:?}", std::env::var("RUST_LOG_STYLE"));
     env_logger::init();
     log::error!("Logging is initialized");
     log::info!("Logging is initialized");
@@ -29,7 +25,6 @@ fn main() -> std::io::Result<()> {
     let vscode_exe = code::get_vscode_original_exe();
     debug!("vscode_exe: {:?}", vscode_exe);
     extensions::ensure_installed(&vscode_exe, &EXTENSIONS);
-    eprintln!("after ensure_installed");
     code::start_vs_code(&vscode_exe)
 }
 

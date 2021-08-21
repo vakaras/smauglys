@@ -66,7 +66,6 @@ fn quick_check(extensions: &[Extension]) -> Result<bool, QuickCheckError> {
 
 pub(crate) fn ensure_installed(vscode_exe: &Path, extensions: &[Extension]) {
     trace!("[enter] ensure_installed");
-    eprintln!("[enter] ensure_installed");
     if !quick_check(extensions).unwrap_or(false) {
         debug!("Quick check: not all extensions installed");
         // Not all extensions installed. Launch GUI.

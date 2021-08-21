@@ -27,7 +27,6 @@ fn create_vs_code_command(
     //     .arg(cli_path)
     //     .args(args);
     let mut command = tokio::process::Command::new("ls");
-    eprintln!("Sleeping");
     // std::thread::sleep(std::time::Duration::from_secs(5));
     log!(logger, "[exit] create_vs_code_command");
     command
@@ -71,7 +70,6 @@ pub struct Flags {
 
 impl ExtensionInstaller {
     fn next_command(&self) -> Command<Message> {
-        eprintln!("Next command");
         Command::perform(
             create_install_extension_command(
                 &mut None,
@@ -90,7 +88,6 @@ impl Application for ExtensionInstaller {
 
     fn new(flags: Self::Flags) -> (ExtensionInstaller, Command<Message>) {
         let extensions_to_install = flags.extensions_to_install;
-        eprintln!("extensions_to_install: {:?}", extensions_to_install);
         let installer = ExtensionInstaller {
             extensions_to_install,
             currently_installing: 0,
@@ -105,7 +102,6 @@ impl Application for ExtensionInstaller {
     }
 
     fn update(&mut self, message: Message, _clipboard: &mut Clipboard) -> Command<Message> {
-        eprintln!("update: {}", self.currently_installing);
         match message {
             Message::ExtensionInstalled => {
                 // self.currently_installing += 1; FIXME
