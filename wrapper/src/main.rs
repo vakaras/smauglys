@@ -4,14 +4,6 @@ use std::io::prelude::*;
 use std::path::{Path, PathBuf};
 use std::process::Command;
 
-const EXTENSIONS: &'static [&'static str] = &[
-    "ms-python.python",
-    "vakaras.vscode-language-pack-lt",
-    "hediet.debug-visualizer",
-];
-
-type Logger = Option<File>;
-
 macro_rules! log {
     ( $self:ident, $( $x:expr ),* ) => {
         if let Some(logger) = $self {
@@ -19,6 +11,16 @@ macro_rules! log {
         }
     }
 }
+
+mod extension_installer;
+
+const EXTENSIONS: &'static [&'static str] = &[
+    "ms-python.python",
+    "vakaras.vscode-language-pack-lt",
+    "hediet.debug-visualizer",
+];
+
+type Logger = Option<File>;
 
 fn log_raw(logger: &mut Logger, bytes: &[u8]) {
     if let Some(file) = logger {
@@ -78,6 +80,34 @@ fn install_extension(
     Ok(())
 }
 
+fn install_extensions(logger: &mut Logger, vscode_exe: PathBuf, extensions_to_install: Vec<&'static str>) {
+    log!(
+        logger,
+        "[enter] install_extensions({:?}, {:?})",
+        vscode_exe,
+        extensions_to_install
+    );
+    // TODO: Should launch VS Code in the end.
+    let flags = extension_installer::Flags {
+        extensions_to_install,
+        vscode_exe,
+    };
+    eprintln!("Starting GUI");
+    // TODO: After installing the extensions, spawn the VS Code processes and process::exit.
+    <extension_installer::ExtensionInstaller as iced::Application>::run(iced::Settings::with_flags(flags)).unwrap();
+    // for extension in extensions_to_install {
+    //     if let Err(error) = install_extension(logger, vscode_exe, extension) {
+    //         log!(
+    //             logger,
+    //             "Error installing extension {}: {}",
+    //             extension,
+    //             error
+    //         );
+    //     }
+    // }
+    log!(logger, "[exit] install_extensions");
+}
+
 fn ensure_extensions(logger: &mut Logger, vscode_exe: &Path) {
     log!(
         logger,
@@ -108,9 +138,12 @@ fn ensure_extensions(logger: &mut Logger, vscode_exe: &Path) {
                             log!(logger, "  file_name = {:?}", file_name);
                             if let Some(file_name) = file_name.to_str() {
                                 let parts: Vec<_> = file_name.splitn(3, "-").collect();
-                                let extension = format!("{}-{}", parts[0], parts[1]);
-                                log!(logger, "  found extension: {:?}", extension);
-                                installed_extensions.insert(extension);
+                                if let (Some(publisher), Some(name)) = (parts.get(0), parts.get(1))
+                                {
+                                    let extension = format!("{}-{}", publisher, name);
+                                    log!(logger, "  found extension: {:?}", extension);
+                                    installed_extensions.insert(extension);
+                                }
                             }
                         }
                     }
@@ -119,19 +152,25 @@ fn ensure_extensions(logger: &mut Logger, vscode_exe: &Path) {
             }
         }
     }
+    let mut extensions_to_install = Vec::new();
     for extension in EXTENSIONS {
         log!(logger, "checking extension: {:?}", extension);
-        if !installed_extensions.contains(*extension) {
+        if installed_extensions.contains(*extension) {
+            log!(logger, "  already installed");
+        } else {
             log!(logger, "  not installed");
-            if let Err(error) = install_extension(logger, vscode_exe, extension) {
-                log!(
-                    logger,
-                    "Error installing extension {}: {}",
-                    extension,
-                    error
-                );
-            }
+            extensions_to_install.push(*extension);
         }
+    }
+    if extensions_to_install.is_empty() {
+        log!(logger, "No extensions to install");
+    } else {
+        log!(
+            logger,
+            "Installing {} extensions",
+            extensions_to_install.len()
+        );
+        install_extensions(logger, vscode_exe.to_path_buf(), extensions_to_install);
     }
     log!(logger, "[exit] ensure_extensions");
 }

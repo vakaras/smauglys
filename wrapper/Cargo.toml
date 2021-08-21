@@ -6,3 +6,5 @@ edition = "2018"
 [dependencies]
 dirs = "3.0"
 glob = "0.3.0"
+iced = { version = "0.3", features = ["tokio"] }
+tokio = { version = "1.10.0", features = ["process", "sync"] }
