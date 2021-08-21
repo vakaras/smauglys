@@ -17,6 +17,7 @@ mod code;
 mod extensions;
 
 fn main() -> std::io::Result<()> {
+    println!("Check whether stdout works");
     eprintln!("Starting program!!!");
     eprintln!("RUST_LOG={:?}", std::env::var("RUST_LOG"));
     eprintln!("RUST_LOG_STYLE={:?}", std::env::var("RUST_LOG_STYLE"));
