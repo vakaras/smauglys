@@ -17,9 +17,10 @@ mod code;
 mod extensions;
 
 fn main() -> std::io::Result<()> {
-    env_logger::init();
+    eprintln!("Starting program!!!");
     eprintln!("RUST_LOG={:?}", std::env::var("RUST_LOG"));
     eprintln!("RUST_LOG_STYLE={:?}", std::env::var("RUST_LOG_STYLE"));
+    env_logger::init();
     log::error!("Logging is initialized");
     log::info!("Logging is initialized");
     log::debug!("Logging is initialized");
