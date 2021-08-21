@@ -94,7 +94,14 @@ fn install_extensions(logger: &mut Logger, vscode_exe: PathBuf, extensions_to_in
     };
     eprintln!("Starting GUI");
     // TODO: After installing the extensions, spawn the VS Code processes and process::exit.
-    <extension_installer::ExtensionInstaller as iced::Application>::run(iced::Settings::with_flags(flags)).unwrap();
+    if cfg!(windows) {
+        if std::env::var("WGPU_BACKEND").is_err() {
+            // WGPU_BACKEND is not set. Set to DX11.
+            std::env::set_var("WGPU_BACKEND", "dx11");
+        }
+    }
+    let settings = iced::Settings::with_flags(flags);
+    <extension_installer::ExtensionInstaller as iced::Application>::run(settings).unwrap();
     // for extension in extensions_to_install {
     //     if let Err(error) = install_extension(logger, vscode_exe, extension) {
     //         log!(
