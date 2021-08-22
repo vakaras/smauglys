@@ -20,17 +20,7 @@ mod code;
 mod extensions;
 
 fn main() -> std::io::Result<()> {
-    if let Ok(path) = std::env::var("CODE_WRAPPER_LOG_PATH") {
-        let env = Env::default()
-            .filter_or("CODE_WRAPPER_LOG_LEVEL", "trace")
-            .write_style_or("CODE_WRAPPER_LOG_STYLE", "never");
-        Builder::from_env(env)
-            .target(
-                Target::Pipe(Box::new(File::create(path).unwrap()))
-            );
-    } else {
-        env_logger::init();
-    }
+    winlog::init("Smauglys").unwrap();
     log::info!("Logging is initialized");
     let vscode_exe = code::get_vscode_original_exe();
     debug!("vscode_exe: {:?}", vscode_exe);

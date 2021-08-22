@@ -5,3 +5,4 @@ edition = "2018"
 
 [dependencies]
 which = "4.2.2"
+winlog = "0.2"

@@ -21,6 +21,7 @@ macro_rules! log {
 enum Error {
     WhichError(which::Error),
     IoError(std::io::Error),
+    WinlogError(winlog::Error),
 }
 
 impl From<which::Error> for Error {
@@ -32,6 +33,12 @@ impl From<which::Error> for Error {
 impl From<std::io::Error> for Error {
     fn from(error: std::io::Error) -> Self {
         Self::IoError(error)
+    }
+}
+
+impl From<winlog::Error> for Error {
+    fn from(error: winlog::Error) -> Self {
+        Self::WinlogError(error)
     }
 }
 
@@ -132,6 +139,7 @@ fn find_vs_code() -> which::Result<PathBuf> {
 }
 
 fn install(ehandler: &mut ErrorHandler) -> IResult<()> {
+    winlog::try_register("Smauglys")?;
     prepare_python(ehandler)?;
     prepare_vs_code(ehandler)?;
     Ok(())
@@ -150,6 +158,9 @@ fn main() {
                 write!(log, "Error: {}", error).unwrap();
             }
             Error::IoError(error) => {
+                write!(log, "Error: {}", error).unwrap();
+            }
+            Error::WinlogError(error) => {
                 write!(log, "Error: {}", error).unwrap();
             }
         }
