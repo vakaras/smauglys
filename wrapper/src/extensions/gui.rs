@@ -1,14 +1,20 @@
-use std::{path::{Path, }, sync::{Arc}};
+use std::{path::{Path, }, sync::{mpsc::{Receiver, TryRecvError, channel}}};
 
-use log::{trace, error};
+use log::{debug, error, trace};
 use nwd::NwgUi;
 use nwg::{NativeUi, NwgError};
 
 use super::{Extension, extension::{ExtensionInstallerList}};
 
+enum Message {
+    UiUpdate(String),
+    Finished,
+    Abort(String),
+}
+
 #[derive(NwgUi)]
 pub struct ExtInstallApp {
-    extensions: Arc<ExtensionInstallerList>,
+    receiver: Receiver<Message>,
 
     #[nwg_control(size: (590, 430), position: (300, 300), title: "Smauglys: diegiami papildiniai", flags: "WINDOW|VISIBLE")]
     #[nwg_events(OnWindowClose: [ExtInstallApp::exit], OnInit: [ExtInstallApp::init_text], OnMinMaxInfo: [ExtInstallApp::set_resize(SELF, EVT_DATA)] )]
@@ -33,19 +39,24 @@ impl ExtInstallApp {
 
     fn render_state(&self) {
         trace!("[enter] render_state");
-        if let Some(abort_message) = self.extensions.get_abort_message() {
-            error!("critical error: {}", abort_message);
-            nwg::modal_error_message(&self.window, "Kritinė klaida", &abort_message);
-            nwg::stop_thread_dispatch();
-        } else {
-            trace!("checking if finished");
-            if self.extensions.is_finished() {
+        match self.receiver.try_recv() {
+            Ok(Message::UiUpdate(message)) => {
+                self.explanation.set_text(&message);
+            }
+            Ok(Message::Finished) => {
                 nwg::stop_thread_dispatch();
-            } else {
-                trace!("Not finished: update GUI");
-                let mut buf = String::from("Diegiami papildiniai:\r\n");
-                self.extensions.get_state(&mut buf);
-                self.explanation.set_text(&*buf);
+            }
+            Ok(Message::Abort(abort_message)) => {
+                error!("critical error: {}", abort_message);
+                nwg::modal_error_message(&self.window, "Kritinė klaida", &abort_message);
+                nwg::stop_thread_dispatch();
+            }
+            Err(TryRecvError::Disconnected) => {
+                error!("Disconnected channel.");
+                nwg::stop_thread_dispatch();
+            }
+            Err(TryRecvError::Empty) => {
+                debug!("empty channel");
             }
         }
         trace!("[exit] render_state");
@@ -71,8 +82,9 @@ fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
     trace!("[enter] gui::run");
     nwg::init()?;
     nwg::Font::set_global_family("Segoe UI")?;
+    let (sender, receiver) = channel();
     let initial_state = ExtInstallApp {
-        extensions: Arc::new(ExtensionInstallerList::new(vscode_exe, extensions)),
+        receiver,
         window: Default::default(),
         grid: Default::default(),
         text_font: Default::default(),
@@ -80,15 +92,27 @@ fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
         notice: Default::default(),
     };
     let app = ExtInstallApp::build_ui(initial_state)?;
-    let sender = app.notice.sender();
-    let extensions_installer = app.extensions.clone();
+    let notice_sender = app.notice.sender();
+    let extensions_installer = ExtensionInstallerList::new(vscode_exe, extensions);
     let _thread = std::thread::spawn(move || {
         while !extensions_installer.is_finished() {
-            sender.notice();
+            notice_sender.notice();
             trace!("Sent GUI notification.");
             extensions_installer.process_next_action();
-            sender.notice();
+            if let Some(abort_message) = extensions_installer.get_abort_message() {
+                sender.send(Message::Abort(abort_message)).unwrap();
+                notice_sender.notice();
+                break;
+            } else {
+                let mut buf = String::from("Diegiami papildiniai:\r\n");
+                extensions_installer.get_state(&mut buf);
+                sender.send(Message::UiUpdate(buf)).unwrap();
+                notice_sender.notice();
+            }
             trace!("Sent GUI notification.");
+        }
+        if let Ok(()) = sender.send(Message::Finished) {
+            notice_sender.notice();
         }
     });
     nwg::dispatch_thread_events();
