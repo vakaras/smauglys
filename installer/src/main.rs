@@ -8,8 +8,8 @@ const VSCODE_INSTALLER: &'static [u8] = include_bytes!("../../VSCodeSetup.exe");
 const WRAPPER_BIN: &'static [u8] = include_bytes!("../../wrapper.exe");
 const PYTHON_PACKAGES: &'static [&'static str] = &["pylint", "mypy"];
 
-mod error;
 mod command;
+mod error;
 mod gui;
 mod installation;
 mod python;
@@ -23,7 +23,7 @@ fn main() {
     winlog::init("Smauglys").unwrap();
     debug!("Starting Smauglys installer");
     match gui::run() {
-        Ok(()) => {},
+        Ok(()) => {}
         Err(error) => {
             error!("An error occurred: {}", error);
         }

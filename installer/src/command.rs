@@ -1,9 +1,9 @@
-use std::{path::Path, process::Command};
+use log::{debug, trace};
 use std::fs::File;
 use std::io::prelude::*;
-use log::{debug, trace};
+use std::{path::Path, process::Command};
 
-use crate::{error::{Error, IResult}};
+use crate::error::{Error, IResult};
 
 pub(crate) fn run_command(command: &Path, args: &[&str]) -> IResult {
     let mut final_command = format!("Running: {:?}", command);
@@ -14,7 +14,10 @@ pub(crate) fn run_command(command: &Path, args: &[&str]) -> IResult {
     let output = Command::new(command).args(args).output()?;
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
-    debug!("Running command: {}\r\nstdout: {}\r\nstderr: {}\r\n{:?}", final_command, stdout, stderr, output.status);
+    debug!(
+        "Running command: {}\r\nstdout: {}\r\nstderr: {}\r\n{:?}",
+        final_command, stdout, stderr, output.status
+    );
     if output.status.success() {
         Ok(())
     } else {
@@ -33,4 +36,3 @@ pub(crate) fn extract_file(bytes: &[u8], path: &Path) -> std::io::Result<()> {
     trace!("[exit] extract_file");
     Ok(())
 }
-

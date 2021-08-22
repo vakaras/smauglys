@@ -1,23 +1,22 @@
-use std::{cell::RefCell, sync::mpsc::{Receiver, TryRecvError, channel}};
+use std::{
+    cell::RefCell,
+    sync::mpsc::{channel, Receiver, TryRecvError},
+};
 
 use log::{debug, error, trace};
 use nwd::NwgUi;
-use nwg::{NativeUi};
+use nwg::NativeUi;
 
 use crate::error::IResult;
 
 pub(crate) enum Message {
-    ProgressUpdate {
-        progress: u32,
-        details: String,
-    },
+    ProgressUpdate { progress: u32, details: String },
     Finished,
     Abort(String),
 }
 
 #[derive(NwgUi)]
 pub struct InstallerApp {
-
     #[nwg_control(size: (530, 300), position: (300, 300), title: "Smauglys: diegimo programa", flags: "WINDOW|VISIBLE")]
     #[nwg_events(OnWindowClose: [InstallerApp::exit], OnInit: [InstallerApp::show_initial_wiew], OnMinMaxInfo: [InstallerApp::set_resize(SELF, EVT_DATA)] )]
     window: nwg::Window,
@@ -79,10 +78,7 @@ impl InstallerApp {
         trace!("[enter] update_progress_bar");
         if let Some(receiver) = &*self.progress_bar_receiver.borrow() {
             match receiver.try_recv() {
-                Ok(Message::ProgressUpdate {
-                    progress,
-                    details,
-                }) => {
+                Ok(Message::ProgressUpdate { progress, details }) => {
                     self.progress_bar.set_pos(progress);
                     self.progress_bar_details.set_text(&details);
                 }
@@ -167,7 +163,7 @@ impl InstallerApp {
     fn python_license_checkbox_click(&self) {
         let state = (
             self.python_license_checkbox.check_state(),
-            self.vscode_license_checkbox.check_state()
+            self.vscode_license_checkbox.check_state(),
         );
         match state {
             (nwg::CheckBoxState::Checked, nwg::CheckBoxState::Checked) => {
@@ -181,7 +177,7 @@ impl InstallerApp {
     fn vscode_license_checkbox_click(&self) {
         let state = (
             self.python_license_checkbox.check_state(),
-            self.vscode_license_checkbox.check_state()
+            self.vscode_license_checkbox.check_state(),
         );
         match state {
             (nwg::CheckBoxState::Checked, nwg::CheckBoxState::Checked) => {
@@ -198,7 +194,10 @@ pub(crate) fn run() -> IResult {
     trace!("[enter] gui::run");
     nwg::init()?;
     let mut font = nwg::Font::default();
-    nwg::Font::builder().size(18).family("Segoe UI").build(&mut font)?;
+    nwg::Font::builder()
+        .size(18)
+        .family("Segoe UI")
+        .build(&mut font)?;
     nwg::Font::set_global_default(Some(font));
     let initial_state = InstallerApp {
         progress_bar_receiver: RefCell::new(None),

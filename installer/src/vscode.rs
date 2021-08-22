@@ -1,7 +1,10 @@
-use std::path::Path;
 use log::trace;
+use std::path::Path;
 
-use crate::{command::{extract_file, run_command}, error::IResult};
+use crate::{
+    command::{extract_file, run_command},
+    error::IResult,
+};
 
 pub(crate) fn ensure_vscode(installer: &Path) -> IResult {
     trace!("[enter] ensure_vscode({:?})", installer);

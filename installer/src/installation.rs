@@ -1,10 +1,10 @@
+use log::{error, trace};
 use std::path::PathBuf;
-use std::{sync::mpsc::Sender};
-use log::{trace, error};
+use std::sync::mpsc::Sender;
 use tempfile::TempDir;
 
+use crate::{error::IResult, gui::Message};
 use crate::{python, vscode, wrapper};
-use crate::{error::{ IResult}, gui::Message};
 
 struct State {
     _extract_dir: TempDir,
@@ -46,11 +46,15 @@ pub(crate) fn do_install(notice: nwg::NoticeSender, sender: Sender<Message>) -> 
 pub(crate) fn install(notice: nwg::NoticeSender, sender: Sender<Message>) {
     trace!("[enter] install");
     match do_install(notice, sender.clone()) {
-        Ok(()) => {},
+        Ok(()) => {}
         Err(error) => {
             error!("An error occurred while installing: {}", error);
-            if let Err(send_error) = sender.send(Message::Abort(format!("Įvyko klaida: {}", error))) {
-                error!("An error occurred while trying to report an error: {}", send_error);
+            if let Err(send_error) = sender.send(Message::Abort(format!("Įvyko klaida: {}", error)))
+            {
+                error!(
+                    "An error occurred while trying to report an error: {}",
+                    send_error
+                );
             }
             notice.notice();
         }

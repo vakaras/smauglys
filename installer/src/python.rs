@@ -1,8 +1,11 @@
-use std::path::{Path, PathBuf};
 use log::{debug, trace};
+use std::path::{Path, PathBuf};
 use which::which;
 
-use crate::{command::{extract_file, run_command}, error::IResult};
+use crate::{
+    command::{extract_file, run_command},
+    error::IResult,
+};
 
 pub(crate) fn ensure_python(installer: &Path) -> IResult {
     trace!("[enter] ensure_python({:?})", installer);
@@ -49,15 +52,9 @@ fn find_python() -> IResult<PathBuf> {
 }
 
 fn pip_upgrade(python_path: &Path) -> IResult {
-    run_command(
-        python_path,
-        &["-m", "pip", "install", "--upgrade", "pip"],
-    )
+    run_command(python_path, &["-m", "pip", "install", "--upgrade", "pip"])
 }
 
-fn pip_install(
-    python_path: &Path,
-    package: &str,
-) -> IResult {
+fn pip_install(python_path: &Path, package: &str) -> IResult {
     run_command(python_path, &["-m", "pip", "install", package])
 }

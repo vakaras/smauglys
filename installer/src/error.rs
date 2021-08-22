@@ -50,9 +50,9 @@ impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Error::IoError(error) => Display::fmt(error, f),
-            Error::CommandFailed { command, ..} => {
+            Error::CommandFailed { command, .. } => {
                 write!(f, "Nepavyko įvykdyti komandos: {:?}", command)
-            },
+            }
             Error::NwgError(error) => Display::fmt(error, f),
             Error::SendError(error) => Display::fmt(error, f),
             Error::WhichError(error) => Display::fmt(error, f),
@@ -61,4 +61,4 @@ impl Display for Error {
     }
 }
 
-pub(crate) type IResult<T=()> = Result<T, Error>;
+pub(crate) type IResult<T = ()> = Result<T, Error>;
