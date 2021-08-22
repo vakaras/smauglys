@@ -18,13 +18,10 @@ pub(crate) const VSCODE_LANGUAGE_PACK_LT_EXTENSION: Extension = Extension {
 };
 
 fn vscode_language_pack_lt(_vscode_exe: &Path) -> Result<(), String> {
-    crate::code::set_locale("lt");
-    Ok(())
+    crate::code::set_locale("lt").map_err(|error| format!("Klaida: {}", error))
 }
 
 pub(crate) const DEBUG_VISUALIZER_EXTENSION: Extension = Extension {
     identifier: "hediet.debug-visualizer",
     post_install: None,
 };
-
-

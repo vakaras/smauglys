@@ -1,6 +1,6 @@
 use std::{fmt::{Debug, Display}, path::{Path, PathBuf}, sync::{Mutex, atomic::{AtomicBool, Ordering::SeqCst}}};
 
-use log::debug;
+use log::{debug, error};
 
 use crate::code::{self, InstallExtError};
 
@@ -165,6 +165,7 @@ impl ExtensionInstallerList {
                                     extension.state = ExtensionState::Installed;
                                 },
                                 Err(message) => {
+                                    error!("post_install({}) error: {}", extension.identifier, message);
                                     extension.state = ExtensionState::InstallationError(message);
                                 }
                             }
@@ -173,9 +174,11 @@ impl ExtensionInstallerList {
                         }
                     }
                     Err(InstallExtError::IoError(error)) => {
+                        error!("InstallExtError::IoError({}) error: {}", extension.identifier, error);
                         extension.state = ExtensionState::InstallationError(format!("Klaida: {}", error));
                     }
                     Err(InstallExtError::ExecutionFailed { stdout, stderr }) => {
+                        error!("InstallExtError::ExecutionFailed({}) \r\nstdout: {}\r\nstderr: {}", extension.identifier, stdout, stderr);
                         extension.state = ExtensionState::InstallationError(format!("VS Code derinimo informacija:\r\n{}\r\n{}\r\n", stdout, stderr));
                     }
                 }
