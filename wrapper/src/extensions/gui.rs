@@ -93,6 +93,7 @@ impl ExtInstallApp {
 
     fn exit(&self) {
         nwg::stop_thread_dispatch();
+        error!("TODO: stop the spinning thread.");
         unimplemented!("TODO: Stop the spinning thread.")
     }
 }

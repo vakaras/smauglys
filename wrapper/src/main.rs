@@ -1,11 +1,10 @@
 #![windows_subsystem = "windows"]
 
-use log::debug;
-
-use extensions::Extension;
-
 extern crate native_windows_derive as nwd;
 extern crate native_windows_gui as nwg;
+
+use log::debug;
+use crate::extensions::Extension;
 
 const EXTENSIONS: [Extension; 3] = [
     extensions::PYTHON_EXTENSION,
