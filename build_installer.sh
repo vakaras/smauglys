@@ -12,3 +12,6 @@ cd installer
 cargo build --release
 cp target/release/installer.exe ../smauglys.exe
 cd ..
+
+# Tell Windows that we need administrator priviliges.
+mt.exe  -manifest "smauglys.exe.manifest" -outputresource:"smauglys.exe";1
