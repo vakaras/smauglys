@@ -35,7 +35,7 @@ pub struct ExtInstallApp {
     text_font: nwg::Font,
 
     #[nwg_control(font: Some(&data.text_font), flags: "VISIBLE|MULTI_LINE")]
-    #[nwg_layout_item(layout: grid, row: 1, col: 0)]
+    #[nwg_layout_item(layout: grid, row: 1, col: 0, row_span: 4)]
     explanation: nwg::RichLabel,
 
     #[nwg_control(parent: window)]
