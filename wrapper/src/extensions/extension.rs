@@ -1,10 +1,6 @@
 use std::{
     fmt::{Debug, Display},
     path::{Path, PathBuf},
-    sync::{
-        atomic::{AtomicBool, Ordering::SeqCst},
-        Mutex,
-    },
 };
 
 use log::{debug, error};
@@ -89,62 +85,53 @@ impl ExtensionInstaller {
 
 pub(crate) struct ExtensionInstallerList {
     vscode_exe: PathBuf,
-    installers: Mutex<Vec<ExtensionInstaller>>,
-    initialized: AtomicBool,
-    abort_message: Mutex<Option<String>>,
+    extensions: Vec<ExtensionInstaller>,
+    abort_message: Option<String>,
+    initialized: bool,
 }
 
 impl ExtensionInstallerList {
     pub(crate) fn new(vscode_exe: &Path, extensions: &[Extension]) -> Self {
         Self {
             vscode_exe: vscode_exe.to_owned(),
-            installers: Mutex::new(
-                extensions
-                    .iter()
-                    .map(|extension| extension.into())
-                    .collect(),
-            ),
-            initialized: AtomicBool::new(false),
-            abort_message: Mutex::new(None),
+            extensions: extensions
+                .iter()
+                .map(|extension| extension.into())
+                .collect(),
+            abort_message: None,
+            initialized: false,
         }
     }
-    fn with<T>(&self, closure: impl FnOnce(&mut Vec<ExtensionInstaller>) -> T) -> T {
-        let mut guard = self.installers.lock().unwrap();
-        closure(&mut *guard)
-    }
     pub(crate) fn get_state(&self, buf: &mut String) {
-        self.with(|extensions| {
-            for extension in extensions {
-                buf.push_str(&extension.state_as_line());
-            }
-        })
+        for extension in &self.extensions {
+            buf.push_str(&extension.state_as_line());
+        }
     }
     pub(crate) fn get_current_progress(&self) -> u32 {
-        self.with(|extensions| {
-            extensions
-                .iter()
-                .filter(|extension| extension.is_finished())
-                .count() as u32
-        })
+        self.extensions
+            .iter()
+            .filter(|extension| extension.is_finished())
+            .count() as u32
     }
     pub(crate) fn is_finished(&self) -> bool {
-        self.with(|extensions| extensions.iter().all(|extension| extension.is_finished()))
+        self.extensions
+            .iter()
+            .all(|extension| extension.is_finished())
     }
-    pub(crate) fn process_next_action(&self) {
-        if !self.initialized.load(SeqCst) {
+    pub(crate) fn process_next_action(&mut self) {
+        if !self.initialized {
             self.initialize();
         } else {
             self.install_next_extension();
         }
     }
-    fn abort(&self, message: String) {
-        let mut guard = self.abort_message.lock().unwrap();
-        *guard = Some(message);
+    fn abort(&mut self, message: String) {
+        self.abort_message = Some(message);
     }
     pub(crate) fn get_abort_message(&self) -> Option<String> {
-        self.abort_message.lock().unwrap().clone()
+        self.abort_message.clone()
     }
-    fn initialize(&self) {
+    fn initialize(&mut self) {
         let installed_extensions = match code::get_installed_extensions(&self.vscode_exe) {
             Ok(extensions) => extensions,
             Err(error) => {
@@ -152,64 +139,58 @@ impl ExtensionInstallerList {
                 return;
             }
         };
-        self.with(|extensions| {
-            for extension in extensions {
-                debug!("extension state (should be Unknown): {:?}", extension.state);
-                if installed_extensions.contains(extension.identifier) {
-                    extension.state = ExtensionState::Installed;
-                } else {
-                    extension.state = ExtensionState::ToBeInstalled;
-                }
+        for extension in &mut self.extensions {
+            debug!("extension state (should be Unknown): {:?}", extension.state);
+            if installed_extensions.contains(extension.identifier) {
+                extension.state = ExtensionState::Installed;
+            } else {
+                extension.state = ExtensionState::ToBeInstalled;
             }
-        });
-        self.initialized.store(true, SeqCst);
+        }
+        self.initialized = true;
     }
-    fn install_next_extension(&self) {
-        self.with(|extensions| {
-            let next_extension = extensions
-                .iter_mut()
-                .filter(|extension| !extension.is_finished())
-                .next();
-            if let Some(extension) = next_extension {
-                match code::install_extension(&self.vscode_exe, extension.identifier) {
-                    Ok(()) => {
-                        if let Some(post_install) = extension.post_install {
-                            match post_install(&self.vscode_exe) {
-                                Ok(()) => {
-                                    extension.state = ExtensionState::Installed;
-                                }
-                                Err(message) => {
-                                    error!(
-                                        "post_install({}) error: {}",
-                                        extension.identifier, message
-                                    );
-                                    extension.state = ExtensionState::InstallationError(message);
-                                }
+    fn install_next_extension(&mut self) {
+        let next_extension = self
+            .extensions
+            .iter_mut()
+            .filter(|extension| !extension.is_finished())
+            .next();
+        if let Some(extension) = next_extension {
+            match code::install_extension(&self.vscode_exe, extension.identifier) {
+                Ok(()) => {
+                    if let Some(post_install) = extension.post_install {
+                        match post_install(&self.vscode_exe) {
+                            Ok(()) => {
+                                extension.state = ExtensionState::Installed;
                             }
-                        } else {
-                            extension.state = ExtensionState::Installed;
+                            Err(message) => {
+                                error!("post_install({}) error: {}", extension.identifier, message);
+                                extension.state = ExtensionState::InstallationError(message);
+                            }
                         }
-                    }
-                    Err(InstallExtError::IoError(error)) => {
-                        error!(
-                            "InstallExtError::IoError({}) error: {}",
-                            extension.identifier, error
-                        );
-                        extension.state =
-                            ExtensionState::InstallationError(format!("Klaida: {}", error));
-                    }
-                    Err(InstallExtError::ExecutionFailed { stdout, stderr }) => {
-                        error!(
-                            "InstallExtError::ExecutionFailed({}) \r\nstdout: {}\r\nstderr: {}",
-                            extension.identifier, stdout, stderr
-                        );
-                        extension.state = ExtensionState::InstallationError(format!(
-                            "VS Code derinimo informacija:\r\n{}\r\n{}\r\n",
-                            stdout, stderr
-                        ));
+                    } else {
+                        extension.state = ExtensionState::Installed;
                     }
                 }
+                Err(InstallExtError::IoError(error)) => {
+                    error!(
+                        "InstallExtError::IoError({}) error: {}",
+                        extension.identifier, error
+                    );
+                    extension.state =
+                        ExtensionState::InstallationError(format!("Klaida: {}", error));
+                }
+                Err(InstallExtError::ExecutionFailed { stdout, stderr }) => {
+                    error!(
+                        "InstallExtError::ExecutionFailed({}) \r\nstdout: {}\r\nstderr: {}",
+                        extension.identifier, stdout, stderr
+                    );
+                    extension.state = ExtensionState::InstallationError(format!(
+                        "VS Code derinimo informacija:\r\n{}\r\n{}\r\n",
+                        stdout, stderr
+                    ));
+                }
             }
-        });
+        }
     }
 }

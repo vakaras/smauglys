@@ -115,7 +115,7 @@ fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
     let app = ExtInstallApp::build_ui(initial_state)?;
     let notice_sender = app.notice.sender();
     let extension_count = extensions.len();
-    let extensions_installer = ExtensionInstallerList::new(vscode_exe, extensions);
+    let mut extensions_installer = ExtensionInstallerList::new(vscode_exe, extensions);
     let _thread = std::thread::spawn(move || {
         while !extensions_installer.is_finished() {
             notice_sender.notice();
