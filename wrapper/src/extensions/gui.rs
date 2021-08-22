@@ -20,23 +20,27 @@ enum Message {
 pub struct ExtInstallApp {
     receiver: Receiver<Message>,
 
-    #[nwg_control(size: (590, 430), position: (300, 300), title: "Smauglys: diegiami papildiniai", flags: "WINDOW|VISIBLE")]
+    #[nwg_control(size: (300, 430), position: (300, 300), title: "Smauglys: diegiami papildiniai", flags: "WINDOW|VISIBLE")]
     #[nwg_events(OnWindowClose: [ExtInstallApp::exit], OnInit: [ExtInstallApp::init_text], OnMinMaxInfo: [ExtInstallApp::set_resize(SELF, EVT_DATA)] )]
     window: nwg::Window,
 
     #[nwg_layout(parent: window, spacing: 1)]
     grid: nwg::GridLayout,
 
-    #[nwg_control(step: 1, range: 0..1)]
+    #[nwg_control(text: "Diegiami VS Code papildiniai. Tai gali užtrukti kelias minutes. Trukmė priklauso nuo Jūsų interneto greičio.", font: Some(&data.text_font), flags: "VISIBLE|MULTI_LINE")]
     #[nwg_layout_item(layout: grid, row: 0, col: 0)]
+    explanation: nwg::RichLabel,
+
+    #[nwg_control(step: 1, range: 0..1)]
+    #[nwg_layout_item(layout: grid, row: 1, col: 0)]
     progress_bar: nwg::ProgressBar,
 
     #[nwg_resource(family: "Segoe UI", size: 18)]
     text_font: nwg::Font,
 
-    #[nwg_control(font: Some(&data.text_font), flags: "VISIBLE|MULTI_LINE")]
-    #[nwg_layout_item(layout: grid, row: 1, col: 0, row_span: 4)]
-    explanation: nwg::RichLabel,
+    #[nwg_control(text: "Ruošiama…", font: Some(&data.text_font), flags: "VISIBLE|MULTI_LINE")]
+    #[nwg_layout_item(layout: grid, row: 2, col: 0, row_span: 4)]
+    detailed_info: nwg::RichLabel,
 
     #[nwg_control(parent: window)]
     #[nwg_events(OnNotice: [ExtInstallApp::render_state])]
@@ -51,7 +55,7 @@ impl ExtInstallApp {
             Ok(Message::UiUpdate { progress, progress_total, details }) => {
                 self.progress_bar.set_range(0..progress_total);
                 self.progress_bar.set_pos(progress);
-                self.explanation.set_text(&details);
+                self.detailed_info.set_text(&details);
             }
             Ok(Message::Finished) => {
                 nwg::stop_thread_dispatch();
@@ -97,9 +101,10 @@ fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
         receiver,
         window: Default::default(),
         grid: Default::default(),
+        explanation: Default::default(),
         progress_bar: Default::default(),
         text_font: Default::default(),
-        explanation: Default::default(),
+        detailed_info: Default::default(),
         notice: Default::default(),
     };
     let app = ExtInstallApp::build_ui(initial_state)?;
