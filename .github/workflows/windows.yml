@@ -10,6 +10,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
+      - uses: fbactions/setup-winsdk@v1
+        with:
+          winsdk-build-version: 19041
+
       - name: Download dependencies
         run: |
           curl 'https://code.visualstudio.com/sha/download?build=stable&os=win32-x64' -Lo VSCodeSetup.exe
