@@ -1,6 +1,5 @@
 use log::{debug, trace};
 use std::path::{Path, PathBuf};
-use which::which;
 
 use crate::{
     command::{extract_file, run_command},
@@ -47,8 +46,10 @@ fn install_packages() -> IResult<()> {
 }
 
 fn find_python() -> IResult<PathBuf> {
-    let python_candidate = which("python")?;
-    Ok(python_candidate)
+    let mut python_path = PathBuf::from(std::env::var("PROGRAMFILES")?);
+    python_path.push("Python38");
+    python_path.push("python.exe");
+    Ok(python_path)
 }
 
 fn pip_upgrade(python_path: &Path) -> IResult {
