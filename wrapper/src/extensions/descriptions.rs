@@ -8,8 +8,7 @@ pub(crate) const PYTHON_EXTENSION: Extension = Extension {
 };
 
 fn python(_vscode_exe: &Path) -> Result<(), String> {
-    // TODO: A stub.
-    Ok(())
+    crate::code::enable_setting_if_unset("python.linting.mypyEnabled").map_err(|error| format!("Klaida: {}", error))
 }
 
 pub(crate) const VSCODE_LANGUAGE_PACK_LT_EXTENSION: Extension = Extension {

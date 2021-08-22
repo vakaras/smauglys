@@ -1,4 +1,4 @@
-use std::{collections::HashSet, path::Path};
+use std::{path::Path};
 use log::{debug, trace};
 
 mod descriptions;

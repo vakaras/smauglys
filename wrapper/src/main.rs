@@ -1,8 +1,5 @@
 // #![windows_subsystem = "windows"]
 
-use std::fs::File;
-
-use env_logger::{Builder, Env, Target};
 use log::debug;
 
 use extensions::Extension;

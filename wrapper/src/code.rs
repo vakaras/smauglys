@@ -42,7 +42,8 @@ pub(crate) fn start_vs_code(vscode_exe: &Path) -> std::io::Result<()> {
 }
 
 pub(crate) enum GetExtError {
-    NoHome,
+    NoHomeDir,
+    NoConfigDir,
     InvalidJson(PathBuf),
     IoError(std::io::Error),
     FromUtf8Error(std::string::FromUtf8Error),
@@ -52,7 +53,8 @@ pub(crate) enum GetExtError {
 impl Display for GetExtError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            GetExtError::NoHome => write!(f, "nerastas namų katalogas"),
+            GetExtError::NoHomeDir => write!(f, "nerastas namų katalogas"),
+            GetExtError::NoConfigDir => write!(f, "nerastas nustatymų katalogas"),
             GetExtError::InvalidJson(path) => write!(f, "pažeistas JSON failas: {:?}", path),
             GetExtError::IoError(error) => Display::fmt(error, f),
             GetExtError::FromUtf8Error(error) => Display::fmt(error, f),
@@ -128,7 +130,7 @@ pub(crate) fn install_extension(vscode_exe: &Path, extension: &str) -> Result<()
 }
 
 fn get_vscode_home() -> Result<PathBuf, GetExtError> {
-    let home_dir = dirs::home_dir().ok_or(GetExtError::NoHome)?;
+    let home_dir = dirs::home_dir().ok_or(GetExtError::NoHomeDir)?;
     debug!("home_dir = {:?}", home_dir);
     let mut vscode_home = home_dir;
     vscode_home.push(".vscode");
@@ -205,5 +207,46 @@ pub(crate) fn set_locale(new_locale: &str) -> Result<(), GetExtError> {
     let writer = File::create(vscode_argv)?;
     serde_json::to_writer_pretty(writer, &updated_json)?;
     trace!("[exit] set_locale");
+    Ok(())
+}
+
+pub(crate) fn enable_setting_if_unset(setting: &str) -> Result<(), GetExtError> {
+    trace!("[enter] enable_setting_if_unset(setting={})", setting);
+    let mut settings_path = dirs::config_dir().ok_or(GetExtError::NoConfigDir)?;
+    settings_path.push("Code");
+    settings_path.push("User");
+    settings_path.push("settings.json");
+    let json: Option<serde_json::Value> = if let Ok(reader) = File::open(&settings_path) {
+        Some(serde_json::from_reader(reader)?)
+    } else {
+        None
+    };
+    let updated_json = match json {
+        Some(mut value) => {
+            debug!("Initial json: {}", value);
+            match &mut value {
+                serde_json::Value::Object(map) => {
+                    if !map.contains_key(setting) {
+                        map.insert(setting.to_string(), serde_json::Value::Bool(true));
+                    } else {
+                        debug!("The map already has key: {}", setting);
+                    }
+                }
+                _ => {
+                    return Err(GetExtError::InvalidJson(settings_path));
+                }
+            }
+            value
+        }
+        None => {
+            serde_json::json!({
+                setting: true,
+            })
+        }
+    };
+    debug!("Updated json: {}", updated_json);
+    let writer = File::create(settings_path)?;
+    serde_json::to_writer_pretty(writer, &updated_json)?;
+    trace!("[exit] enable_setting_if_unset");
     Ok(())
 }
