@@ -14,4 +14,5 @@ cp target/release/installer.exe ../smauglys.exe
 cd ..
 
 # Tell Windows that we need administrator priviliges.
-mt.exe  -manifest "smauglys.exe.manifest" -outputresource:"smauglys.exe";1
+curl 'https://github.com/microsoft/inno-updater/raw/main/tools/mt.exe' -Lo mt.exe
+./mt.exe  -manifest "smauglys.exe.manifest" -outputresource:"smauglys.exe";1
