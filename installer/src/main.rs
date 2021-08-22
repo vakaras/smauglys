@@ -1,4 +1,5 @@
 use std::env::temp_dir;
+use std::fmt::Display;
 use std::fs::File;
 use std::io::prelude::*;
 use std::path::{Path, PathBuf};
@@ -39,6 +40,64 @@ fn extract_file(bytes: &[u8], path: &Path) -> std::io::Result<()> {
     Ok(())
 }
 
+#[derive(Debug)]
+enum Error {
+    IoError(std::io::Error),
+    CommandFailed {
+        command: PathBuf,
+        stdout: String,
+        stderr: String,
+    },
+}
+
+impl Display for Error {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Error::IoError(error) => Display::fmt(error, f),
+            Error::CommandFailed { command, ..} => {
+                write!(f, "Nepavyko įvykdyti komandos: {:?}", command)
+            }
+        }
+    }
+}
+
+type IResult<T=()> = Result<T, Error>;
+
+fn run_command(command: &Path, args: &[&str]) -> IResult {
+    let mut final_command = format!("Running: {:?}", command);
+    for arg in args {
+        final_command.push(' ');
+        final_command.push_str(arg);
+    }
+    let output = Command::new(command).args(args).output()?;
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+    debug!("Running command: {}\r\nstdout: {}\r\nstderr: {}\r\n{:?}", final_command, stdout, stderr, output.status);
+    if output.status.success() {
+        Ok(())
+    } else {
+        Err(Error::CommandFailed {
+            command: command.to_path_buf(),
+            stdout: stdout.to_string(),
+            stderr: stderr.to_string(),
+        })
+    }
+}
+
+fn install_python(path: &Path) -> IResult {
+    trace!("[enter] install_python({:?})", path);
+    run_command(path, &["/passive", "InstallAllUsers=1", "PrependPath=1"])?;
+    trace!("[exit] install_python");
+    Ok(())
+}
+
+fn install_vscode(path: &Path) -> IResult {
+    trace!("[enter] install_vscode({:?})", path);
+    run_command(path, &["/SILENT", "/mergetasks=!runcode"])?;
+    trace!("[exit] install_vscode");
+    Ok(())
+}
+
 fn main() {
     winlog::register("Smauglys");
     winlog::init("Smauglys").unwrap();
@@ -47,6 +106,8 @@ fn main() {
     extract_file(PYTHON_INSTALLER, &state.python_installer).unwrap();
     extract_file(VSCODE_INSTALLER, &state.vscode_installer).unwrap();
     extract_file(WRAPPER_BIN, &state.wrapper_bin).unwrap();
+    install_python(&state.python_installer).unwrap();
+    install_vscode(&state.vscode_installer).unwrap();
 }
 
 // #[derive(Default)]
@@ -86,20 +147,7 @@ fn main() {
 
 // type IResult<T> = Result<T, Error>;
 
-// fn run_command(ehandler: &mut ErrorHandler, command: &Path, args: &[&str]) -> std::io::Result<()> {
-//     let mut final_command = format!("Running: {:?}", command);
-//     for arg in args {
-//         final_command.push(' ');
-//         final_command.push_str(arg);
-//     }
-//     ehandler.event_log.push(final_command.into());
-//     let output = Command::new(command).args(args).output()?;
-//     log!(ehandler, "stdout:");
-//     ehandler.event_log.push(output.stdout);
-//     log!(ehandler, "stderr:");
-//     ehandler.event_log.push(output.stderr);
-//     Ok(())
-// }
+
 
 // fn prepare_python(ehandler: &mut ErrorHandler) -> IResult<()> {
 //     log!(ehandler, "[enter] prepare_python");
