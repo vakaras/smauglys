@@ -176,21 +176,34 @@ pub(crate) fn set_locale(new_locale: &str) -> Result<(), GetExtError> {
     trace!("[enter] set_locale(new_locale={})", new_locale);
     let mut vscode_argv = get_vscode_home()?;
     vscode_argv.push("argv.json");
-    let mut json: serde_json::Value = {
-        let reader = File::open(&vscode_argv)?;
-        serde_json::from_reader(reader)?
+    let json: Option<serde_json::Value> = if let Ok(reader) = File::open(&vscode_argv) {
+        Some(serde_json::from_reader(reader)?)
+    } else {
+        None
     };
-    match &mut json {
-        serde_json::Value::Object(map) => {
-            let old = map.insert("locale".to_string(), serde_json::Value::String(new_locale.to_string()));
-            debug!("old locale: {:?}", old);
+    let updated_json = match json {
+        Some(mut value) => {
+            debug!("Initial json: {}", value);
+            match &mut value {
+                serde_json::Value::Object(map) => {
+                    let old = map.insert("locale".to_string(), serde_json::Value::String(new_locale.to_string()));
+                    debug!("old locale: {:?}", old);
+                }
+                _ => {
+                    return Err(GetExtError::InvalidJson(vscode_argv));
+                }
+            }
+            value
         }
-        _ => {
-            return Err(GetExtError::InvalidJson(vscode_argv));
+        None => {
+            serde_json::json!({
+                "locale": new_locale,
+            })
         }
-    }
+    };
+    debug!("Updated json: {}", updated_json);
     let writer = File::create(vscode_argv)?;
-    serde_json::to_writer_pretty(writer, &json)?;
+    serde_json::to_writer_pretty(writer, &updated_json)?;
     trace!("[exit] set_locale");
     Ok(())
 }
