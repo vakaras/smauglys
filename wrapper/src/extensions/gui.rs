@@ -20,7 +20,7 @@ enum Message {
 pub struct ExtInstallApp {
     receiver: Receiver<Message>,
 
-    #[nwg_control(size: (300, 430), position: (300, 300), title: "Smauglys: diegiami papildiniai", flags: "WINDOW|VISIBLE")]
+    #[nwg_control(size: (530, 300), position: (300, 300), title: "Smauglys: diegiami papildiniai", flags: "WINDOW|VISIBLE")]
     #[nwg_events(OnWindowClose: [ExtInstallApp::exit], OnInit: [ExtInstallApp::init_text], OnMinMaxInfo: [ExtInstallApp::set_resize(SELF, EVT_DATA)] )]
     window: nwg::Window,
 
