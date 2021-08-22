@@ -72,6 +72,7 @@ pub(crate) fn get_installed_extensions(vscode_exe: &Path) -> Result<HashSet<Stri
     let mut command = create_vs_code_command(vscode_exe, &["--list-extensions"]);
     let output = command.output()?;
     let stdout = String::from_utf8(output.stdout)?;
+    debug!("stdout = {}", stdout);
     let extensions = stdout.trim().split_whitespace().map(ToOwned::to_owned).collect();
     trace!("[exit] get_installed_extensions");
     Ok(extensions)

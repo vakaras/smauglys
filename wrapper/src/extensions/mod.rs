@@ -37,12 +37,11 @@ fn quick_check(extensions: &[Extension]) -> Result<bool, QuickCheckError> {
                         if let Some(file_name) = path.file_name() {
                             debug!("  file_name = {:?}", file_name);
                             if let Some(file_name) = file_name.to_str() {
-                                let parts: Vec<_> = file_name.splitn(3, "-").collect();
-                                if let (Some(publisher), Some(name)) = (parts.get(0), parts.get(1))
-                                {
-                                    let extension = format!("{}-{}", publisher, name);
+                                let mut iter = file_name.rsplitn(2, "-");
+                                debug!("  dropped part: {:?}", iter.next());
+                                if let Some(extension) = iter.next() {
                                     debug!("  found extension: {:?}", extension);
-                                    installed_extensions.insert(extension);
+                                    installed_extensions.insert(extension.to_string());
                                 }
                             }
                         }
