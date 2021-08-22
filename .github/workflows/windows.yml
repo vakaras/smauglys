@@ -10,13 +10,6 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install WixToolset
-        run: |
-          curl https://github.com/wixtoolset/wix3/releases/download/wix3112rtm/wix311-binaries.zip -Lo wix.zip
-          mkdir -p wix
-          unzip wix.zip -d wix
-        shell: bash
-
       - name: Download dependencies
         run: |
           curl 'https://code.visualstudio.com/sha/download?build=stable&os=win32-x64' -Lo VSCodeSetup.exe
@@ -25,12 +18,6 @@ jobs:
 
       - name: Build the Rust installer
         run: ./build_installer.sh
-        shell: bash
-
-      - name: Package bundle
-        run: |
-          wix/candle.exe smauglys.wxs -ext WixBalExtension
-          wix/light.exe -ext WixUIExtension -cultures:lt-LT smauglys.wixobj -ext WixBalExtension
         shell: bash
 
       - name: Create release tag

@@ -10,5 +10,5 @@ cp wrapper/target/release/wrapper.exe .
 
 cd installer
 cargo build --release
-cp target/release/installer.exe ..
+cp target/release/installer.exe ../smauglys.exe
 cd ..
