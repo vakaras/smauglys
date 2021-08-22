@@ -109,6 +109,11 @@ impl ExtensionInstallerList {
             }
         })
     }
+    pub(crate) fn get_current_progress(&self) -> u32 {
+        self.with(|extensions| {
+            extensions.iter().filter(|extension| extension.is_finished()).count() as u32
+        })
+    }
     pub(crate) fn is_finished(&self) -> bool {
         self.with(|extensions| {
             extensions.iter().all(|extension| extension.is_finished())
