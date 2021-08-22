@@ -32,18 +32,23 @@ pub struct ExtInstallApp {
 impl ExtInstallApp {
 
     fn render_state(&self) {
+        trace!("[enter] render_state");
         if let Some(abort_message) = self.extensions.get_abort_message() {
+            error!("critical error: {}", abort_message);
             nwg::modal_error_message(&self.window, "Kritinė klaida", &abort_message);
             nwg::stop_thread_dispatch();
         } else {
-        if self.extensions.is_finished() {
-            nwg::stop_thread_dispatch();
-        } else {
-            let mut buf = String::from("Diegiami papildiniai:\r\n");
-            self.extensions.get_state(&mut buf);
-            self.explanation.set_text(&*buf);
+            trace!("checking if finished");
+            if self.extensions.is_finished() {
+                nwg::stop_thread_dispatch();
+            } else {
+                trace!("Not finished: update GUI");
+                let mut buf = String::from("Diegiami papildiniai:\r\n");
+                self.extensions.get_state(&mut buf);
+                self.explanation.set_text(&*buf);
+            }
         }
-        }
+        trace!("[exit] render_state");
     }
 
     fn init_text(&self) {
@@ -80,8 +85,10 @@ fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
     let _thread = std::thread::spawn(move || {
         while !extensions_installer.is_finished() {
             sender.notice();
+            trace!("Sent GUI notification.");
             extensions_installer.process_next_action();
             sender.notice();
+            trace!("Sent GUI notification.");
         }
     });
     nwg::dispatch_thread_events();
