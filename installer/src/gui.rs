@@ -1,4 +1,4 @@
-use std::{borrow::BorrowMut, cell::RefCell, sync::mpsc::{Receiver, TryRecvError, channel}};
+use std::{cell::RefCell, sync::mpsc::{Receiver, TryRecvError, channel}};
 
 use log::{debug, error, trace};
 use nwd::NwgUi;

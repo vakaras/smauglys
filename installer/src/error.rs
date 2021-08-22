@@ -1,4 +1,4 @@
-use std::{fmt::Display, path::PathBuf, sync::mpsc::SendError};
+use std::{env::VarError, fmt::Display, path::PathBuf, sync::mpsc::SendError};
 
 use crate::gui::Message;
 
@@ -12,6 +12,8 @@ pub(crate) enum Error {
     },
     NwgError(nwg::NwgError),
     SendError(SendError<Message>),
+    WhichError(which::Error),
+    VarError(VarError),
 }
 
 impl From<std::io::Error> for Error {
@@ -32,6 +34,18 @@ impl From<SendError<Message>> for Error {
     }
 }
 
+impl From<which::Error> for Error {
+    fn from(error: which::Error) -> Self {
+        Self::WhichError(error)
+    }
+}
+
+impl From<VarError> for Error {
+    fn from(error: VarError) -> Self {
+        Self::VarError(error)
+    }
+}
+
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -41,6 +55,8 @@ impl Display for Error {
             },
             Error::NwgError(error) => Display::fmt(error, f),
             Error::SendError(error) => Display::fmt(error, f),
+            Error::WhichError(error) => Display::fmt(error, f),
+            Error::VarError(error) => Display::fmt(error, f),
         }
     }
 }
