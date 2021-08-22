@@ -13,7 +13,7 @@ const WRAPPER_BIN: &'static [u8] = include_bytes!("../../wrapper.exe");
 const PYTHON_PACKAGES: &'static [&'static str] = &["pylint", "mypy"];
 
 struct State {
-    extract_dir: TempDir,
+    _extract_dir: TempDir,
     python_installer: PathBuf,
     vscode_installer: PathBuf,
     wrapper_bin: PathBuf,
@@ -23,10 +23,10 @@ impl Default for State {
     fn default() -> Self {
         let extract_dir = tempfile::tempdir().unwrap();
         Self {
-            extract_dir,
             python_installer: extract_dir.path().join("PythonInstaller.exe"),
             vscode_installer: extract_dir.path().join("VSCodeSetup.exe"),
             wrapper_bin: extract_dir.path().join("wrapper.exe"),
+            _extract_dir: extract_dir,
         }
     }
 }
@@ -44,9 +44,9 @@ fn main() {
     winlog::init("Smauglys").unwrap();
     debug!("Starting Smauglys installer");
     let state = State::default();
-    extract_file(PYTHON_INSTALLER, &state.python_installer);
-    extract_file(VSCODE_INSTALLER, &state.vscode_installer);
-    extract_file(WRAPPER_BIN, &state.wrapper_bin);
+    extract_file(PYTHON_INSTALLER, &state.python_installer).unwrap();
+    extract_file(VSCODE_INSTALLER, &state.vscode_installer).unwrap();
+    extract_file(WRAPPER_BIN, &state.wrapper_bin).unwrap();
 }
 
 // #[derive(Default)]
