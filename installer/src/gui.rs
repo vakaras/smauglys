@@ -1,4 +1,4 @@
-use std::sync::mpsc::{Receiver, TryRecvError};
+use std::{borrow::BorrowMut, cell::RefCell, sync::mpsc::{Receiver, TryRecvError, channel}};
 
 use log::{debug, error, trace};
 use nwd::NwgUi;
@@ -6,7 +6,7 @@ use nwg::{NativeUi};
 
 use crate::error::IResult;
 
-enum Message {
+pub(crate) enum Message {
     ProgressUpdate {
         progress: u32,
         details: String,
@@ -18,23 +18,25 @@ enum Message {
 #[derive(NwgUi)]
 pub struct InstallerApp {
 
-    #[nwg_control(size: (530, 300), position: (300, 300), title: "Smauglys: diegiami papildiniai", flags: "WINDOW|VISIBLE")]
+    #[nwg_control(size: (530, 300), position: (300, 300), title: "Smauglys: diegimo programa", flags: "WINDOW|VISIBLE")]
     #[nwg_events(OnWindowClose: [InstallerApp::exit], OnInit: [InstallerApp::show_initial_wiew], OnMinMaxInfo: [InstallerApp::set_resize(SELF, EVT_DATA)] )]
     window: nwg::Window,
 
     #[nwg_layout(parent: window, spacing: 1)]
     grid_initial: nwg::GridLayout,
 
-    #[nwg_control(text: "Inicializuojama.", flags: "VISIBLE|MULTI_LINE")]
+    #[nwg_control(text: "Diegimo programa.", flags: "VISIBLE|MULTI_LINE")]
     #[nwg_layout_item(layout: grid_initial, row: 0, col: 0, row_span: 4)]
     explanation: nwg::RichLabel,
 
-    #[nwg_control(text: "Inicializuojama.")]
+    #[nwg_control(text: "Sutinku su Python licencija.")]
     #[nwg_layout_item(layout: grid_initial, row: 5, col: 0)]
+    #[nwg_events( OnButtonClick: [InstallerApp::python_license_checkbox_click] )]
     python_license_checkbox: nwg::CheckBox,
 
-    #[nwg_control(text: "Inicializuojama.")]
+    #[nwg_control(text: "Sutinku su Microsoft VS Code licencija.")]
     #[nwg_layout_item(layout: grid_initial, row: 6, col: 0)]
+    #[nwg_events( OnButtonClick: [InstallerApp::vscode_license_checkbox_click] )]
     vscode_license_checkbox: nwg::CheckBox,
 
     #[nwg_control(text: "Įdiegti")]
@@ -57,16 +59,25 @@ pub struct InstallerApp {
     #[nwg_layout_item(layout: grid_installing, row: 0, col: 0)]
     progress_bar_details: nwg::RichLabel,
 
-    progress_bar_receiver: Option<Receiver<Message>>,
+    progress_bar_receiver: RefCell<Option<Receiver<Message>>>,
 
     #[nwg_layout(parent: window, spacing: 1)]
     grid_final: nwg::GridLayout,
+
+    #[nwg_control(text: "Diegimas sėkmingai baigtas", flags: "VISIBLE|MULTI_LINE")]
+    #[nwg_layout_item(layout: grid_initial, row: 0, col: 0, row_span: 4)]
+    success_message: nwg::RichLabel,
+
+    #[nwg_control(text: "Baigti")]
+    #[nwg_layout_item(layout: grid_initial, row: 5, col: 0)]
+    #[nwg_events( OnButtonClick: [InstallerApp::close] )]
+    finish_button: nwg::Button,
 }
 
 impl InstallerApp {
     fn update_progress_bar(&self) {
         trace!("[enter] update_progress_bar");
-        if let Some(receiver) = &self.progress_bar_receiver {
+        if let Some(receiver) = &*self.progress_bar_receiver.borrow() {
             match receiver.try_recv() {
                 Ok(Message::ProgressUpdate {
                     progress,
@@ -93,6 +104,8 @@ impl InstallerApp {
             }
         } else {
             error!("Internal error: progress_bar_receiver is None");
+            nwg::modal_error_message(&self.window, "Kritinė klaida", "Vidinė klaida");
+            nwg::stop_thread_dispatch();
         }
         trace!("[exit] update_progress_bar");
     }
@@ -105,6 +118,9 @@ impl InstallerApp {
         error!("TODO: stop the spinning thread.");
         unimplemented!("TODO: Stop the spinning thread.")
     }
+    fn close(&self) {
+        nwg::stop_thread_dispatch();
+    }
     fn set_visible_initial_view(&self, visible: bool) {
         self.explanation.set_visible(visible);
         self.python_license_checkbox.set_visible(visible);
@@ -116,12 +132,15 @@ impl InstallerApp {
         self.progress_bar_details.set_visible(visible);
     }
     fn set_visible_final_wiew(&self, visible: bool) {
+        self.success_message.set_visible(visible);
+        self.finish_button.set_visible(visible);
     }
     fn show_initial_wiew(&self) {
         trace!("[enter] show_initial_wiew");
         self.set_visible_initial_view(true);
         self.set_visible_progress_view(false);
         self.set_visible_final_wiew(false);
+        self.install_button.set_enabled(false);
         trace!("[exit] show_initial_wiew");
     }
     fn show_progress_view(&self) {
@@ -129,6 +148,13 @@ impl InstallerApp {
         self.set_visible_initial_view(false);
         self.set_visible_progress_view(true);
         self.set_visible_final_wiew(false);
+        let (sender, receiver) = channel();
+        let mut receiver_borrow = self.progress_bar_receiver.borrow_mut();
+        *receiver_borrow = Some(receiver);
+        let sender_notice = self.progress_bar_notice.sender();
+        std::thread::spawn(move || {
+            crate::installation::install(sender_notice, sender);
+        });
         trace!("[exit] show_progress_view");
     }
     fn show_final_wiew(&self) {
@@ -137,6 +163,34 @@ impl InstallerApp {
         self.set_visible_progress_view(false);
         self.set_visible_final_wiew(true);
         trace!("[exit] show_final_wiew");
+    }
+    fn python_license_checkbox_click(&self) {
+        let state = (
+            self.python_license_checkbox.check_state(),
+            self.vscode_license_checkbox.check_state()
+        );
+        match state {
+            (nwg::CheckBoxState::Checked, nwg::CheckBoxState::Checked) => {
+                self.install_button.set_enabled(true);
+            }
+            _ => {
+                self.install_button.set_enabled(false);
+            }
+        }
+    }
+    fn vscode_license_checkbox_click(&self) {
+        let state = (
+            self.python_license_checkbox.check_state(),
+            self.vscode_license_checkbox.check_state()
+        );
+        match state {
+            (nwg::CheckBoxState::Checked, nwg::CheckBoxState::Checked) => {
+                self.install_button.set_enabled(true);
+            }
+            _ => {
+                self.install_button.set_enabled(false);
+            }
+        }
     }
 }
 
@@ -147,7 +201,7 @@ pub(crate) fn run() -> IResult {
     nwg::Font::builder().size(18).family("Segoe UI").build(&mut font)?;
     nwg::Font::set_global_default(Some(font));
     let initial_state = InstallerApp {
-        progress_bar_receiver: None,
+        progress_bar_receiver: RefCell::new(None),
         window: Default::default(),
         grid_initial: Default::default(),
         python_license_checkbox: Default::default(),
@@ -159,15 +213,11 @@ pub(crate) fn run() -> IResult {
         progress_bar_details: Default::default(),
         grid_final: Default::default(),
         explanation: Default::default(),
+        success_message: Default::default(),
+        finish_button: Default::default(),
     };
     let _app = InstallerApp::build_ui(initial_state)?;
     nwg::dispatch_thread_events();
-    // let state = State::default();
-    // extract_file(PYTHON_INSTALLER, &state.python_installer).unwrap();
-    // extract_file(VSCODE_INSTALLER, &state.vscode_installer).unwrap();
-    // extract_file(WRAPPER_BIN, &state.wrapper_bin).unwrap();
-    // install_python(&state.python_installer).unwrap();
-    // install_vscode(&state.vscode_installer).unwrap();
     trace!("[exit] gui::run");
     Ok(())
 }

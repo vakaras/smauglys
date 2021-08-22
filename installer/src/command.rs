@@ -1,8 +1,11 @@
-use std::{path::Path, process::Command};
+use std::path::PathBuf;
+use std::{path::Path, process::Command, sync::mpsc::Sender};
+use std::fs::File;
+use std::io::prelude::*;
+use log::{debug, trace, error};
+use tempfile::TempDir;
 
-use log::{debug, trace};
-
-use crate::error::{Error, IResult};
+use crate::{error::{Error, IResult}, gui::Message};
 
 fn run_command(command: &Path, args: &[&str]) -> IResult {
     let mut final_command = format!("Running: {:?}", command);
@@ -38,3 +41,31 @@ fn install_vscode(path: &Path) -> IResult {
     trace!("[exit] install_vscode");
     Ok(())
 }
+
+struct State {
+    _extract_dir: TempDir,
+    python_installer: PathBuf,
+    vscode_installer: PathBuf,
+    wrapper_bin: PathBuf,
+}
+
+impl Default for State {
+    fn default() -> Self {
+        let extract_dir = tempfile::tempdir().unwrap();
+        Self {
+            python_installer: extract_dir.path().join("PythonInstaller.exe"),
+            vscode_installer: extract_dir.path().join("VSCodeSetup.exe"),
+            wrapper_bin: extract_dir.path().join("wrapper.exe"),
+            _extract_dir: extract_dir,
+        }
+    }
+}
+
+fn extract_file(bytes: &[u8], path: &Path) -> std::io::Result<()> {
+    trace!("[enter] extract_file({:?})", path);
+    let mut file = File::create(path)?;
+    file.write_all(bytes)?;
+    trace!("[exit] extract_file");
+    Ok(())
+}
+

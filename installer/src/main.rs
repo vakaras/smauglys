@@ -11,42 +11,12 @@ const PYTHON_PACKAGES: &'static [&'static str] = &["pylint", "mypy"];
 mod error;
 mod command;
 mod gui;
+mod installation;
+mod python;
+mod vscode;
+mod wrapper;
 
-use std::fs::File;
-use std::io::prelude::*;
-use std::path::{Path, PathBuf};
-use log::{debug, trace, error};
-use tempfile::TempDir;
-
-struct State {
-    _extract_dir: TempDir,
-    python_installer: PathBuf,
-    vscode_installer: PathBuf,
-    wrapper_bin: PathBuf,
-}
-
-impl Default for State {
-    fn default() -> Self {
-        let extract_dir = tempfile::tempdir().unwrap();
-        Self {
-            python_installer: extract_dir.path().join("PythonInstaller.exe"),
-            vscode_installer: extract_dir.path().join("VSCodeSetup.exe"),
-            wrapper_bin: extract_dir.path().join("wrapper.exe"),
-            _extract_dir: extract_dir,
-        }
-    }
-}
-
-fn extract_file(bytes: &[u8], path: &Path) -> std::io::Result<()> {
-    trace!("[enter] extract_file({:?})", path);
-    let mut file = File::create(path)?;
-    file.write_all(bytes)?;
-    trace!("[exit] extract_file");
-    Ok(())
-}
-
-
-
+use log::{debug, error};
 
 fn main() {
     winlog::register("Smauglys");

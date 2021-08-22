@@ -1,4 +1,6 @@
-use std::{fmt::Display, path::PathBuf};
+use std::{fmt::Display, path::PathBuf, sync::mpsc::SendError};
+
+use crate::gui::Message;
 
 #[derive(Debug)]
 pub(crate) enum Error {
@@ -9,6 +11,7 @@ pub(crate) enum Error {
         stderr: String,
     },
     NwgError(nwg::NwgError),
+    SendError(SendError<Message>),
 }
 
 impl From<std::io::Error> for Error {
@@ -23,6 +26,12 @@ impl From<nwg::NwgError> for Error {
     }
 }
 
+impl From<SendError<Message>> for Error {
+    fn from(error: SendError<Message>) -> Self {
+        Self::SendError(error)
+    }
+}
+
 impl Display for Error {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
@@ -31,6 +40,7 @@ impl Display for Error {
                 write!(f, "Nepavyko įvykdyti komandos: {:?}", command)
             },
             Error::NwgError(error) => Display::fmt(error, f),
+            Error::SendError(error) => Display::fmt(error, f),
         }
     }
 }
