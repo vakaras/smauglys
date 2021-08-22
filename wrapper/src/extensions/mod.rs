@@ -8,49 +8,12 @@ mod gui;
 pub(crate) use descriptions::*;
 pub(crate) use extension::Extension;
 
-enum QuickCheckError {
-    NoHome,
-}
+use crate::code::GetExtError;
 
 /// Quickly check whether all extensions are installed.
-fn quick_check(extensions: &[Extension]) -> Result<bool, QuickCheckError> {
+fn quick_check(extensions: &[Extension]) -> Result<bool, GetExtError> {
     trace!("[enter] quick_check");
-    let home_dir = dirs::home_dir().ok_or(QuickCheckError::NoHome)?;
-    debug!("home_dir = {:?}", home_dir);
-    let mut vs_code_extensions_dir = home_dir;
-    vs_code_extensions_dir.push(".vscode");
-    vs_code_extensions_dir.push("extensions");
-    debug!(
-        "vs_code_extensions_dir = {:?}",
-        vs_code_extensions_dir
-    );
-    let extensions_pattern = vs_code_extensions_dir.join("*");
-    debug!("extensions_pattern = {:?}", extensions_pattern);
-    let mut installed_extensions = HashSet::new();
-    if let Some(pattern_as_str) = extensions_pattern.to_str() {
-        debug!("pattern_as_str = {:?}", pattern_as_str);
-        if let Ok(paths) = glob::glob(pattern_as_str) {
-            for entry in paths {
-                match entry {
-                    Ok(path) => {
-                        debug!("entry.path = {:?}", path);
-                        if let Some(file_name) = path.file_name() {
-                            debug!("  file_name = {:?}", file_name);
-                            if let Some(file_name) = file_name.to_str() {
-                                let mut iter = file_name.rsplitn(2, "-");
-                                debug!("  dropped part: {:?}", iter.next());
-                                if let Some(extension) = iter.next() {
-                                    debug!("  found extension: {:?}", extension);
-                                    installed_extensions.insert(extension.to_string());
-                                }
-                            }
-                        }
-                    }
-                    Err(error) => debug!("error for glob entry: {}", error),
-                }
-            }
-        }
-    }
+    let installed_extensions = crate::code::get_installed_extensions_quick()?;
     for extension in extensions {
         debug!("checking extension: {:?}", extension);
         if installed_extensions.contains(extension.identifier) {

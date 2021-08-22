@@ -18,7 +18,7 @@ pub(crate) const VSCODE_LANGUAGE_PACK_LT_EXTENSION: Extension = Extension {
 };
 
 fn vscode_language_pack_lt(_vscode_exe: &Path) -> Result<(), String> {
-    // TODO: A stub.
+    crate::code::set_locale("lt");
     Ok(())
 }
 

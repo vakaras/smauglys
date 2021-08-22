@@ -1,4 +1,4 @@
-use std::{collections::HashSet, fmt::Display, path::{Path, PathBuf}, process::{Command}};
+use std::{collections::HashSet, fmt::Display, fs::File, path::{Path, PathBuf}, process::{Command}};
 
 use log::{debug, trace};
 
@@ -42,15 +42,21 @@ pub(crate) fn start_vs_code(vscode_exe: &Path) -> std::io::Result<()> {
 }
 
 pub(crate) enum GetExtError {
+    NoHome,
+    InvalidJson(PathBuf),
     IoError(std::io::Error),
     FromUtf8Error(std::string::FromUtf8Error),
+    JsonError(serde_json::Error),
 }
 
 impl Display for GetExtError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
+            GetExtError::NoHome => write!(f, "nerastas namų katalogas"),
+            GetExtError::InvalidJson(path) => write!(f, "pažeistas JSON failas: {:?}", path),
             GetExtError::IoError(error) => Display::fmt(error, f),
             GetExtError::FromUtf8Error(error) => Display::fmt(error, f),
+            GetExtError::JsonError(error) => Display::fmt(error, f),
         }
     }
 }
@@ -64,6 +70,12 @@ impl From<std::io::Error> for GetExtError {
 impl From<std::string::FromUtf8Error> for GetExtError {
     fn from(error: std::string::FromUtf8Error) -> Self {
         Self::FromUtf8Error(error)
+    }
+}
+
+impl From<serde_json::Error> for GetExtError {
+    fn from(error: serde_json::Error) -> Self {
+        Self::JsonError(error)
     }
 }
 
@@ -113,4 +125,72 @@ pub(crate) fn install_extension(vscode_exe: &Path, extension: &str) -> Result<()
             stdout: stdout.to_string(), stderr: stderr.to_string(),
         })
     }
+}
+
+fn get_vscode_home() -> Result<PathBuf, GetExtError> {
+    let home_dir = dirs::home_dir().ok_or(GetExtError::NoHome)?;
+    debug!("home_dir = {:?}", home_dir);
+    let mut vscode_home = home_dir;
+    vscode_home.push(".vscode");
+    Ok(vscode_home)
+}
+
+pub(crate) fn get_installed_extensions_quick() -> Result<HashSet<String>, GetExtError> {
+    let mut vs_code_extensions_dir = get_vscode_home()?;
+    vs_code_extensions_dir.push("extensions");
+    debug!(
+        "vs_code_extensions_dir = {:?}",
+        vs_code_extensions_dir
+    );
+    let extensions_pattern = vs_code_extensions_dir.join("*");
+    debug!("extensions_pattern = {:?}", extensions_pattern);
+    let mut installed_extensions = HashSet::new();
+    if let Some(pattern_as_str) = extensions_pattern.to_str() {
+        debug!("pattern_as_str = {:?}", pattern_as_str);
+        if let Ok(paths) = glob::glob(pattern_as_str) {
+            for entry in paths {
+                match entry {
+                    Ok(path) => {
+                        debug!("entry.path = {:?}", path);
+                        if let Some(file_name) = path.file_name() {
+                            debug!("  file_name = {:?}", file_name);
+                            if let Some(file_name) = file_name.to_str() {
+                                let mut iter = file_name.rsplitn(2, "-");
+                                debug!("  dropped part: {:?}", iter.next());
+                                if let Some(extension) = iter.next() {
+                                    debug!("  found extension: {:?}", extension);
+                                    installed_extensions.insert(extension.to_string());
+                                }
+                            }
+                        }
+                    }
+                    Err(error) => debug!("error for glob entry: {}", error),
+                }
+            }
+        }
+    }
+    Ok(installed_extensions)
+}
+
+pub(crate) fn set_locale(new_locale: &str) -> Result<(), GetExtError> {
+    trace!("[enter] set_locale(new_locale={})", new_locale);
+    let mut vscode_argv = get_vscode_home()?;
+    vscode_argv.push("argv.json");
+    let mut json: serde_json::Value = {
+        let reader = File::open(&vscode_argv)?;
+        serde_json::from_reader(reader)?
+    };
+    match &mut json {
+        serde_json::Value::Object(map) => {
+            let old = map.insert("locale".to_string(), serde_json::Value::String(new_locale.to_string()));
+            debug!("old locale: {:?}", old);
+        }
+        _ => {
+            return Err(GetExtError::InvalidJson(vscode_argv));
+        }
+    }
+    let writer = File::create(vscode_argv)?;
+    serde_json::to_writer_pretty(writer, &json)?;
+    trace!("[exit] set_locale");
+    Ok(())
 }
