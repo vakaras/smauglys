@@ -1,10 +1,13 @@
-use std::{path::{Path, }, sync::{mpsc::{Receiver, TryRecvError, channel}}};
+use std::{
+    path::Path,
+    sync::mpsc::{channel, Receiver, TryRecvError},
+};
 
 use log::{debug, error, trace};
 use nwd::NwgUi;
 use nwg::{NativeUi, NwgError};
 
-use super::{Extension, extension::{ExtensionInstallerList}};
+use super::{extension::ExtensionInstallerList, Extension};
 
 enum Message {
     UiUpdate {
@@ -48,11 +51,14 @@ pub struct ExtInstallApp {
 }
 
 impl ExtInstallApp {
-
     fn render_state(&self) {
         trace!("[enter] render_state");
         match self.receiver.try_recv() {
-            Ok(Message::UiUpdate { progress, progress_total, details }) => {
+            Ok(Message::UiUpdate {
+                progress,
+                progress_total,
+                details,
+            }) => {
                 self.progress_bar.set_range(0..progress_total);
                 self.progress_bar.set_pos(progress);
                 self.detailed_info.set_text(&details);
@@ -89,7 +95,6 @@ impl ExtInstallApp {
         nwg::stop_thread_dispatch();
         unimplemented!("TODO: Stop the spinning thread.")
     }
-
 }
 
 fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
@@ -123,11 +128,13 @@ fn do_run(vscode_exe: &Path, extensions: &[Extension]) -> Result<(), NwgError> {
             } else {
                 let mut buf = String::from("Diegiami papildiniai:\r\n");
                 extensions_installer.get_state(&mut buf);
-                sender.send(Message::UiUpdate {
-                    progress: extensions_installer.get_current_progress(),
-                    progress_total: extension_count as u32,
-                    details: buf
-                }).unwrap();
+                sender
+                    .send(Message::UiUpdate {
+                        progress: extensions_installer.get_current_progress(),
+                        progress_total: extension_count as u32,
+                        details: buf,
+                    })
+                    .unwrap();
                 notice_sender.notice();
             }
             trace!("Sent GUI notification.");

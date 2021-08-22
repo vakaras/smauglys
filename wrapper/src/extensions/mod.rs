@@ -1,5 +1,5 @@
-use std::{path::Path};
 use log::{debug, trace};
+use std::path::Path;
 
 mod descriptions;
 mod extension;

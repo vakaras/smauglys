@@ -4,8 +4,8 @@ use log::debug;
 
 use extensions::Extension;
 
-extern crate native_windows_gui as nwg;
 extern crate native_windows_derive as nwd;
+extern crate native_windows_gui as nwg;
 
 const EXTENSIONS: [Extension; 3] = [
     extensions::PYTHON_EXTENSION,
@@ -24,7 +24,6 @@ fn main() -> std::io::Result<()> {
     extensions::ensure_installed(&vscode_exe, &EXTENSIONS);
     code::start_vs_code(&vscode_exe)
 }
-
 
 // use nwd::NwgUi;
 // use nwg::NativeUi;

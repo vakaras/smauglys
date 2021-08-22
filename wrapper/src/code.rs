@@ -1,4 +1,10 @@
-use std::{collections::HashSet, fmt::Display, fs::File, path::{Path, PathBuf}, process::{Command}};
+use std::{
+    collections::HashSet,
+    fmt::Display,
+    fs::File,
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 use log::{debug, trace};
 
@@ -37,7 +43,11 @@ pub(crate) fn start_vs_code(vscode_exe: &Path) -> std::io::Result<()> {
     let mut args = std::env::args();
     let _command = args.next();
     let exit_status = Command::new(vscode_exe).args(args).status()?;
-    assert!(exit_status.success(), "VS Code exited with an error: {}", exit_status);
+    assert!(
+        exit_status.success(),
+        "VS Code exited with an error: {}",
+        exit_status
+    );
     Ok(())
 }
 
@@ -87,16 +97,18 @@ pub(crate) fn get_installed_extensions(vscode_exe: &Path) -> Result<HashSet<Stri
     let output = command.output()?;
     let stdout = String::from_utf8(output.stdout)?;
     debug!("stdout = {}", stdout);
-    let extensions = stdout.trim().split_whitespace().map(ToOwned::to_owned).collect();
+    let extensions = stdout
+        .trim()
+        .split_whitespace()
+        .map(ToOwned::to_owned)
+        .collect();
     trace!("[exit] get_installed_extensions");
     Ok(extensions)
 }
 
 pub(crate) enum InstallExtError {
     IoError(std::io::Error),
-    ExecutionFailed {
-        stdout: String, stderr: String,
-    }
+    ExecutionFailed { stdout: String, stderr: String },
 }
 
 impl From<std::io::Error> for InstallExtError {
@@ -106,13 +118,13 @@ impl From<std::io::Error> for InstallExtError {
 }
 
 pub(crate) fn install_extension(vscode_exe: &Path, extension: &str) -> Result<(), InstallExtError> {
-    trace!("[enter] install_extension({:?}, {:?})",
+    trace!(
+        "[enter] install_extension({:?}, {:?})",
         vscode_exe,
         extension
     );
     let output =
-        create_vs_code_command(vscode_exe, &["", "--install-extension", extension])
-            .output()?;
+        create_vs_code_command(vscode_exe, &["", "--install-extension", extension]).output()?;
     debug!("stdout raw: {:?}", &output.stdout);
     let stdout = String::from_utf8_lossy(&output.stdout);
     debug!("stdout:\n{:?}", stdout);
@@ -124,7 +136,8 @@ pub(crate) fn install_extension(vscode_exe: &Path, extension: &str) -> Result<()
         Ok(())
     } else {
         Err(InstallExtError::ExecutionFailed {
-            stdout: stdout.to_string(), stderr: stderr.to_string(),
+            stdout: stdout.to_string(),
+            stderr: stderr.to_string(),
         })
     }
 }
@@ -140,10 +153,7 @@ fn get_vscode_home() -> Result<PathBuf, GetExtError> {
 pub(crate) fn get_installed_extensions_quick() -> Result<HashSet<String>, GetExtError> {
     let mut vs_code_extensions_dir = get_vscode_home()?;
     vs_code_extensions_dir.push("extensions");
-    debug!(
-        "vs_code_extensions_dir = {:?}",
-        vs_code_extensions_dir
-    );
+    debug!("vs_code_extensions_dir = {:?}", vs_code_extensions_dir);
     let extensions_pattern = vs_code_extensions_dir.join("*");
     debug!("extensions_pattern = {:?}", extensions_pattern);
     let mut installed_extensions = HashSet::new();
@@ -188,7 +198,10 @@ pub(crate) fn set_locale(new_locale: &str) -> Result<(), GetExtError> {
             debug!("Initial json: {}", value);
             match &mut value {
                 serde_json::Value::Object(map) => {
-                    let old = map.insert("locale".to_string(), serde_json::Value::String(new_locale.to_string()));
+                    let old = map.insert(
+                        "locale".to_string(),
+                        serde_json::Value::String(new_locale.to_string()),
+                    );
                     debug!("old locale: {:?}", old);
                 }
                 _ => {
