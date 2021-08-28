@@ -47,7 +47,7 @@ fn install_packages() -> IResult<()> {
 
 fn find_python() -> IResult<PathBuf> {
     let mut python_path = PathBuf::from(std::env::var("PROGRAMFILES")?);
-    python_path.push("Python38");
+    python_path.push("Python39");
     python_path.push("python.exe");
     Ok(python_path)
 }
