@@ -18,4 +18,3 @@ curl 'https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe' -Lo Python
 mkdir python_packages
 cd python_packages
 pip download -r ../python-requirements.txt
-ls -lh
