@@ -1,17 +1,21 @@
 use log::{debug, trace};
+use std::ffi::OsStr;
 use std::fs::File;
 use std::io::prelude::*;
 use std::{path::Path, process::Command};
 
 use crate::error::{Error, IResult};
 
-pub(crate) fn run_command(command: &Path, args: &[&str]) -> IResult {
+pub(crate) fn run_command<S>(command: S, args: &[&str]) -> IResult
+where
+    S: AsRef<OsStr> + std::fmt::Debug,
+{
     let mut final_command = format!("Running: {:?}", command);
     for arg in args {
         final_command.push(' ');
         final_command.push_str(arg);
     }
-    let output = Command::new(command).args(args).output()?;
+    let output = Command::new(&command).args(args).output()?;
     let stdout = String::from_utf8_lossy(&output.stdout);
     let stderr = String::from_utf8_lossy(&output.stderr);
     debug!(
@@ -22,7 +26,7 @@ pub(crate) fn run_command(command: &Path, args: &[&str]) -> IResult {
         Ok(())
     } else {
         Err(Error::CommandFailed {
-            command: command.to_path_buf(),
+            command: command.as_ref().to_string_lossy().into_owned(),
             stdout: stdout.to_string(),
             stderr: stderr.to_string(),
         })

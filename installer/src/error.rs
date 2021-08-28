@@ -6,7 +6,7 @@ use crate::gui::Message;
 pub(crate) enum Error {
     IoError(std::io::Error),
     CommandFailed {
-        command: PathBuf,
+        command: String,
         stdout: String,
         stderr: String,
     },
