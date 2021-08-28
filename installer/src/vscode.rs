@@ -1,9 +1,12 @@
 use log::{debug, trace};
-use std::path::{Path, PathBuf};
+use std::{
+    path::{Path, PathBuf},
+    process::Command,
+};
 
 use crate::{
     command::{extract_file, extract_zip, run_command},
-    error::IResult,
+    error::{Error, IResult},
     VSCODE_EXTENSIONS, VSCODE_EXTENSIONS_ZIP,
 };
 
@@ -55,6 +58,48 @@ fn set_extensions_path() -> IResult {
     Ok(())
 }
 
+fn run_vscode_command(vscode_path: &Path, args: &[&str]) -> IResult {
+    trace!(
+        "[enter] run_vscode_command(vscode_exe={:?}, args={:?})",
+        vscode_path,
+        args
+    );
+    let mut cli_path = vscode_path.to_path_buf();
+    cli_path.pop();
+    cli_path.push("resources");
+    cli_path.push("app");
+    cli_path.push("out");
+    cli_path.push("cli.js");
+
+    let mut final_command = format!("Running: {:?} {:?}", vscode_path, cli_path);
+    for arg in args {
+        final_command.push(' ');
+        final_command.push_str(arg);
+    }
+
+    let output = Command::new(vscode_path)
+        .env("ELECTRON_RUN_AS_NODE", "1")
+        .arg(cli_path)
+        .args(args)
+        .output()?;
+    let stdout = String::from_utf8_lossy(&output.stdout);
+    let stderr = String::from_utf8_lossy(&output.stderr);
+
+    debug!(
+        "Running command: {}\r\nstdout: {}\r\nstderr: {}\r\n{:?}",
+        final_command, stdout, stderr, output.status
+    );
+    if output.status.success() {
+        Ok(())
+    } else {
+        Err(Error::CommandFailed {
+            command: vscode_path.to_string_lossy().into_owned(),
+            stdout: stdout.to_string(),
+            stderr: stderr.to_string(),
+        })
+    }
+}
+
 fn install_extensions(vscode_path: &Path, tmp_dir: &Path) -> IResult {
     trace!("[enter] install_extensions()");
     let zip = tmp_dir.join("vscode_extensions.zip");
@@ -62,7 +107,7 @@ fn install_extensions(vscode_path: &Path, tmp_dir: &Path) -> IResult {
     let extracted_path = tmp_dir.join("vscode_extensions");
     for &extension in VSCODE_EXTENSIONS {
         let extension_path = extracted_path.join(format!("{}.vsix", extension));
-        run_command(
+        run_vscode_command(
             vscode_path,
             &["--install-extension", extension_path.to_str().unwrap()],
         )?;
