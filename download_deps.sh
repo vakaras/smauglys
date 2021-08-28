@@ -16,6 +16,6 @@ curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hedie
 # Download Python
 curl 'https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe' -Lo PythonInstaller.exe
 mkdir python_packages
-python_packages
+cd python_packages
 pip download -r ../python-requirements.txt
 ls -lh
