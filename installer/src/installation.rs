@@ -42,6 +42,8 @@ pub(crate) fn do_install(notice: nwg::NoticeSender, sender: Sender<Message>) -> 
     // wrapper::ensure_wrapper()?;
     sender.send(Message::Finished)?;
     notice.notice();
+    // TODO: For debuggging purposes keep the extraction directory:
+    std::mem::forget(state);
     Ok(())
 }
 
