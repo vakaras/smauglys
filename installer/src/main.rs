@@ -6,6 +6,9 @@ extern crate native_windows_gui as nwg;
 const PYTHON_INSTALLER: &'static [u8] = include_bytes!("../../PythonInstaller.exe");
 const VSCODE_INSTALLER: &'static [u8] = include_bytes!("../../VSCodeSetup.exe");
 const WRAPPER_BIN: &'static [u8] = include_bytes!("../../wrapper.exe");
+const VSCODE_EXTENSIONS_ZIP: &'static [u8] = include_bytes!("../../vscode_extensions.zip");
+const PYTHON_PACKAGES_ZIP: &'static [u8] = include_bytes!("../../python_packages.zip");
+const PYTHON_REQUIREMENTS: &'static [u8] = include_bytes!("../../python-requirements.txt");
 const PYTHON_PACKAGES: &'static [&'static str] = &["pylint", "mypy"];
 
 mod command;
