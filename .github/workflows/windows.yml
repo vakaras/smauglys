@@ -70,7 +70,7 @@ jobs:
           asset_name: Smauglys-${{ env.TAG_NAME }}.exe
           asset_content_type: application/octet-stream
 
-      - name: Upload Extensions (TODO: Debugging)
+      - name: Upload Extensions TODO Debugging
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
