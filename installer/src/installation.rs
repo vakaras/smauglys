@@ -10,12 +10,14 @@ struct State {
     _extract_dir: TempDir,
     python_installer: PathBuf,
     vscode_installer: PathBuf,
+    root_dir: PathBuf,
 }
 
 impl Default for State {
     fn default() -> Self {
         let extract_dir = tempfile::tempdir().unwrap();
         Self {
+            root_dir: extract_dir.path().to_owned(),
             python_installer: extract_dir.path().join("PythonInstaller.exe"),
             vscode_installer: extract_dir.path().join("VSCodeSetup.exe"),
             _extract_dir: extract_dir,
@@ -31,13 +33,13 @@ pub(crate) fn do_install(notice: nwg::NoticeSender, sender: Sender<Message>) -> 
         details: "Python įdiegtas".to_string(),
     })?;
     notice.notice();
-    vscode::ensure_vscode(&state.vscode_installer)?;
+    vscode::ensure_vscode(&state.vscode_installer, &state.root_dir)?;
     sender.send(Message::ProgressUpdate {
         progress: 1,
         details: "VS Code įdiegtas".to_string(),
     })?;
     notice.notice();
-    wrapper::ensure_wrapper()?;
+    // wrapper::ensure_wrapper()?;
     sender.send(Message::Finished)?;
     notice.notice();
     Ok(())

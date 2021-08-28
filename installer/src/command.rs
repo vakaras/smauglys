@@ -2,6 +2,7 @@ use log::{debug, trace};
 use std::ffi::OsStr;
 use std::fs::File;
 use std::io::prelude::*;
+use std::path::PathBuf;
 use std::{path::Path, process::Command};
 
 use crate::error::{Error, IResult};
@@ -38,5 +39,15 @@ pub(crate) fn extract_file(bytes: &[u8], path: &Path) -> std::io::Result<()> {
     let mut file = File::create(path)?;
     file.write_all(bytes)?;
     trace!("[exit] extract_file");
+    Ok(())
+}
+
+pub(crate) fn extract_zip(bytes: &[u8], archive_file: &PathBuf) -> std::io::Result<()> {
+    trace!("[enter] extract_zip({:?})", archive_file);
+    extract_file(bytes, archive_file)?;
+    let mut target_dir = archive_file.to_path_buf();
+    target_dir.pop();
+    zip_extensions::zip_extract(archive_file, &target_dir)?;
+    trace!("[exit] extract_zip");
     Ok(())
 }
