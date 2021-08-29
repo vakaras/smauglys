@@ -82,7 +82,7 @@ pub struct InstallerApp {
     progress_bar: nwg::ProgressBar,
 
     #[nwg_control(text: "Inicializuojama.", flags: "VISIBLE|MULTI_LINE")]
-    #[nwg_layout_item(layout: grid_installing, row: 0, col: 0)]
+    #[nwg_layout_item(layout: grid_installing, row: 0, col: 0, row_span: 5)]
     progress_bar_details: nwg::RichLabel,
 
     progress_bar_receiver: RefCell<Option<Receiver<Message>>>,
