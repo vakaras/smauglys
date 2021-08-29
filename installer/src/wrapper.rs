@@ -6,7 +6,7 @@ use crate::{command::extract_file, error::IResult};
 pub(crate) fn ensure_wrapper() -> IResult {
     trace!("[enter] ensure_wrapper()");
     let mut vs_code_path = PathBuf::from(std::env::var("PROGRAMFILES")?);
-    vs_code_path.push("Microsoft VS Code");
+    vs_code_path.push("VSCodium");
     debug!("VS Code directory={:?}", vs_code_path);
     let vs_code_exe_path = vs_code_path.join("code.exe");
     debug!("vs_code_exe_path={:?}", vs_code_exe_path);

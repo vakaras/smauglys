@@ -8,8 +8,7 @@ const VSCODE_INSTALLER: &'static [u8] = include_bytes!("../../VSCodeSetup.exe");
 const WRAPPER_BIN: &'static [u8] = include_bytes!("../../wrapper.exe");
 const VSCODE_EXTENSIONS: &'static [&'static str] = &[
     "vakaras.vscode-language-pack-lt",
-    "ms-python.vscode-pylance",
-    "ms-toolsai.jupyter",
+    // "ms-toolsai.jupyter",
     "ms-python.python",
     "hediet.debug-visualizer",
 ];
@@ -18,7 +17,7 @@ const PYTHON_PACKAGES_ZIP: &'static [u8] = include_bytes!("../../python_packages
 const PYTHON_REQUIREMENTS: &'static [u8] = include_bytes!("../../python-requirements.txt");
 const PYTHON_PACKAGES: &'static [&'static str] = &["pylint", "mypy"];
 const PYTHON_LICENSE: &'static str = include_str!("../../PYTHON-LICENSE-3.8.10.txt");
-const VSCODE_LICENSE: &'static str = include_str!("../../VSCODE-LICENSE.rtf");
+const VSCODIUM_LICENSE: &'static str = include_str!("../../VSCODIUM-LICENSE.txt");
 
 mod command;
 mod error;

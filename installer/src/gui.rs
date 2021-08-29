@@ -44,7 +44,7 @@ pub struct InstallerApp {
     #[nwg_events( OnButtonClick: [InstallerApp::python_license_button_click] )]
     python_license_button: nwg::Button,
 
-    #[nwg_control(text: "Sutinku su Microsoft VS Code licencija.")]
+    #[nwg_control(text: "Sutinku su VS Codium licencija.")]
     #[nwg_layout_item(layout: grid_initial, row: 6, col: 0)]
     #[nwg_events( OnButtonClick: [InstallerApp::vscode_license_checkbox_click] )]
     vscode_license_checkbox: nwg::CheckBox,
@@ -98,7 +98,7 @@ pub struct InstallerApp {
     #[nwg_layout_item(layout: python_license_grid)]
     python_license_textbox: nwg::TextBox,
 
-    #[nwg_control(size: (530, 300), position: (300, 300), title: "VS Code licencija", flags: "WINDOW|POPUP|RESIZABLE")]
+    #[nwg_control(size: (530, 300), position: (300, 300), title: "VS Codium licencija", flags: "WINDOW|POPUP|RESIZABLE")]
     vscode_license_window: nwg::Window,
 
     #[nwg_layout(parent: vscode_license_window, spacing: 1)]
@@ -219,7 +219,7 @@ impl InstallerApp {
     fn vscode_license_button_click(&self) {
         trace!("[enter] vscode_license_button_click");
         self.vscode_license_window.set_visible(true);
-        self.vscode_license_textbox.set_text(crate::VSCODE_LICENSE);
+        self.vscode_license_textbox.set_text(crate::VSCODIUM_LICENSE);
         trace!("[exit] vscode_license_button_click");
     }
     fn vscode_license_checkbox_click(&self) {

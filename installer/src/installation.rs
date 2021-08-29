@@ -36,7 +36,7 @@ pub(crate) fn do_install(notice: nwg::NoticeSender, sender: Sender<Message>) -> 
     vscode::ensure_vscode(&state.vscode_installer, &state.root_dir)?;
     sender.send(Message::ProgressUpdate {
         progress: 1,
-        details: "VS Code įdiegtas".to_string(),
+        details: "VS Codium įdiegtas".to_string(),
     })?;
     notice.notice();
     // wrapper::ensure_wrapper()?;

@@ -31,7 +31,7 @@ fn install_vscode(path: &Path) -> IResult {
 fn get_vscode_path() -> IResult<PathBuf> {
     trace!("[enter] get_vscode_path()");
     let mut vscode_exe_path = PathBuf::from(std::env::var("PROGRAMFILES")?);
-    vscode_exe_path.push("Microsoft VS Code");
+    vscode_exe_path.push("VSCodium");
     debug!("VS Code directory={:?}", vscode_exe_path);
     vscode_exe_path.push("code.exe");
     trace!("[exit] get_vscode_path()={:?}", vscode_exe_path);
