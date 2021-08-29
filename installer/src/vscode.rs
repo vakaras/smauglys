@@ -16,7 +16,7 @@ pub(crate) fn ensure_vscode(installer: &Path, tmp_dir: &Path) -> IResult {
     let extensions_path = set_extensions_path()?;
     install_vscode(installer)?;
     let vscode_path = get_vscode_path()?;
-    install_extensions(&vscode_path, tmp_dir, extensions_path)?;
+    install_extensions(&vscode_path, tmp_dir, &extensions_path)?;
     trace!("[exit] ensure_vscode");
     Ok(())
 }
