@@ -13,10 +13,10 @@ use crate::{
 pub(crate) fn ensure_vscode(installer: &Path, tmp_dir: &Path) -> IResult {
     trace!("[enter] ensure_vscode({:?})", installer);
     extract_file(crate::VSCODE_INSTALLER, installer)?;
-    set_extensions_path()?;
+    let extensions_path = set_extensions_path()?;
     install_vscode(installer)?;
     let vscode_path = get_vscode_path()?;
-    install_extensions(&vscode_path, tmp_dir)?;
+    install_extensions(&vscode_path, tmp_dir, extensions_path)?;
     trace!("[exit] ensure_vscode");
     Ok(())
 }
@@ -38,30 +38,21 @@ fn get_vscode_path() -> IResult<PathBuf> {
     Ok(vscode_exe_path)
 }
 
-fn set_extensions_path() -> IResult {
+fn set_extensions_path() -> IResult<String> {
     trace!("[enter] set_extensions_path");
     let mut extensions_path = PathBuf::from(std::env::var("PROGRAMFILES")?);
     extensions_path.push("VS Code Extensions");
-    run_command(
-        "setx",
-        &[
-            "/M",
-            "VSCODE_EXTENSIONS",
-            extensions_path
-                .into_os_string()
-                .into_string()
-                .unwrap()
-                .as_str(),
-        ],
-    )?;
+    let extensions_path = extensions_path.into_os_string().into_string().unwrap();
+    run_command("setx", &["/M", "VSCODE_EXTENSIONS", &extensions_path])?;
     trace!("[exit] set_extensions_path");
-    Ok(())
+    Ok(extensions_path)
 }
 
-fn run_vscode_command(vscode_path: &Path, args: &[&str]) -> IResult {
+fn run_vscode_command(vscode_path: &Path, extensions_path: &str, args: &[&str]) -> IResult {
     trace!(
-        "[enter] run_vscode_command(vscode_exe={:?}, args={:?})",
+        "[enter] run_vscode_command(vscode_exe={:?}, extensions_path={:?}, args={:?})",
         vscode_path,
+        extensions_path,
         args
     );
     let mut cli_path = vscode_path.to_path_buf();
@@ -79,6 +70,9 @@ fn run_vscode_command(vscode_path: &Path, args: &[&str]) -> IResult {
 
     let output = Command::new(vscode_path)
         .env("ELECTRON_RUN_AS_NODE", "1")
+        // This is needed because the setx command will take into affect only
+        // after the application is restarted.
+        .env("VSCODE_EXTENSIONS", extensions_path)
         .arg(cli_path)
         .args(args)
         .output()?;
@@ -100,7 +94,7 @@ fn run_vscode_command(vscode_path: &Path, args: &[&str]) -> IResult {
     }
 }
 
-fn install_extensions(vscode_path: &Path, tmp_dir: &Path) -> IResult {
+fn install_extensions(vscode_path: &Path, tmp_dir: &Path, extensions_path: &str) -> IResult {
     trace!("[enter] install_extensions()");
     let zip = tmp_dir.join("vscode_extensions.zip");
     extract_zip(VSCODE_EXTENSIONS_ZIP, &zip)?;
@@ -109,6 +103,7 @@ fn install_extensions(vscode_path: &Path, tmp_dir: &Path) -> IResult {
         let extension_path = extracted_path.join(format!("{}.vsix", extension));
         run_vscode_command(
             vscode_path,
+            extensions_path,
             &["--install-extension", extension_path.to_str().unwrap()],
         )?;
     }
