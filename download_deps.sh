@@ -4,7 +4,8 @@ set -e
 
 echo 'Show runner tool cache:'
 
-ls $RUNNER_TOOL_CACHE/Python/*
+ls "$RUNNER_TOOL_CACHE"
+ls "$RUNNER_TOOL_CACHE/Python/"
 
 exit 1
 
