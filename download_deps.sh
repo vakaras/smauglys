@@ -2,26 +2,6 @@
 
 set -e
 
-echo 'Show runner tool cache:'
-
-ls "$RUNNER_TOOL_CACHE"
-
-echo 'Show Python versions:'
-
-ls "$RUNNER_TOOL_CACHE/Python/"
-
-echo 'Show Python 3.8.10 version:'
-
-ls "$RUNNER_TOOL_CACHE/Python/3.8.10/"
-
-echo 'Show Python 3.8.10 version regular:'
-
-ls "$RUNNER_TOOL_CACHE/Python/3.8.10/x64/"
-
-echo 'Show Python 3.8.10 version complete:'
-
-ls "$RUNNER_TOOL_CACHE/Python/3.8.10/x64.complete"
-
 # Download VS Code
 curl 'https://code.visualstudio.com/sha/download?build=stable&os=win32-x64' -Lo VSCodeSetup.exe
 
@@ -41,7 +21,6 @@ curl 'https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe' -Lo Pyth
 # For downloading dependencies we have to use exactly the same version
 # of Python.
 PYTHON_EXE="$RUNNER_TOOL_CACHE/Python/3.8.10/x64/python.exe"
-ls "$PYTHON_EXE"
 
 mkdir python_packages
 cd python_packages
