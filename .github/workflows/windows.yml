@@ -70,14 +70,24 @@ jobs:
           asset_name: Smauglys-${{ env.TAG_NAME }}.exe
           asset_content_type: application/octet-stream
 
-      - name: Upload Extensions TODO Debugging
+      - name: Upload Extensions TODO Debugging 1
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: python_packages.zip
+          asset_name: python_packages-${{ env.TAG_NAME }}.zip
+          asset_content_type: application/octet-stream
+
+      - name: Upload Extensions TODO Debugging 2
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
           asset_path: vscode_extensions.zip
-          asset_name: vscode_extensions-${{ env.TAG_NAME }}.exe
+          asset_name: vscode_extensions-${{ env.TAG_NAME }}.zip
           asset_content_type: application/octet-stream
 
       #- name: Release
