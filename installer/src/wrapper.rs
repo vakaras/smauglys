@@ -8,7 +8,7 @@ pub(crate) fn ensure_wrapper() -> IResult {
     let mut vs_code_path = PathBuf::from(std::env::var("PROGRAMFILES")?);
     vs_code_path.push("VSCodium");
     debug!("VS Code directory={:?}", vs_code_path);
-    let vs_code_exe_path = vs_code_path.join("code.exe");
+    let vs_code_exe_path = vs_code_path.join("VSCodium.exe");
     debug!("vs_code_exe_path={:?}", vs_code_exe_path);
     let vs_code_original_path = vs_code_path.join("code_original.exe");
     debug!("vs_code_original_path={:?}", vs_code_original_path);

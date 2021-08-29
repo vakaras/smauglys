@@ -33,7 +33,7 @@ fn get_vscode_path() -> IResult<PathBuf> {
     let mut vscode_exe_path = PathBuf::from(std::env::var("PROGRAMFILES")?);
     vscode_exe_path.push("VSCodium");
     debug!("VS Code directory={:?}", vscode_exe_path);
-    vscode_exe_path.push("code.exe");
+    vscode_exe_path.push("VSCodium.exe");
     trace!("[exit] get_vscode_path()={:?}", vscode_exe_path);
     Ok(vscode_exe_path)
 }
