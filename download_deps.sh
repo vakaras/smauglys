@@ -2,6 +2,12 @@
 
 set -e
 
+echo 'Show runner tool cache:'
+
+ls $RUNNER_TOOL_CACHE/Python/*
+
+exit 1
+
 # Download VS Code
 curl 'https://code.visualstudio.com/sha/download?build=stable&os=win32-x64' -Lo VSCodeSetup.exe
 
