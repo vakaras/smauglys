@@ -39,10 +39,10 @@ pub struct InstallerApp {
     #[nwg_events( OnButtonClick: [InstallerApp::python_license_checkbox_click] )]
     python_license_checkbox: nwg::CheckBox,
 
-    // #[nwg_control(text: "Rodyti...")]
-    // #[nwg_layout_item(layout: grid_initial, row: 5, col: 1)]
-    // #[nwg_events( OnButtonClick: [InstallerApp::python_license_button_click] )]
-    // python_license_button: nwg::Button,
+    #[nwg_control(text: "Rodyti...")]
+    #[nwg_layout_item(layout: grid_initial, row: 5, col: 1)]
+    #[nwg_events( OnButtonClick: [InstallerApp::python_license_button_click] )]
+    python_license_button: nwg::Button,
 
     // #[nwg_control(size: (530, 300), position: (300, 300), title: "Python licencija", flags: "WINDOW|POPUP|RESIZABLE")]
     // python_license_window: nwg::Window,
@@ -196,12 +196,12 @@ impl InstallerApp {
         self.set_visible_final_wiew(true);
         trace!("[exit] show_final_wiew");
     }
-    // fn python_license_button_click(&self) {
-    //     trace!("[enter] python_license_button_click");
-    //     self.python_license_window.set_visible(true);
-    //     self.python_license_textbox.set_text(crate::PYTHON_LICENSE);
-    //     trace!("[exit] python_license_button_click");
-    // }
+    fn python_license_button_click(&self) {
+        trace!("[enter] python_license_button_click");
+        // self.python_license_window.set_visible(true);
+        // self.python_license_textbox.set_text(crate::PYTHON_LICENSE);
+        trace!("[exit] python_license_button_click");
+    }
     fn python_license_checkbox_click(&self) {
         let state = (
             self.python_license_checkbox.check_state(),
@@ -252,7 +252,7 @@ pub(crate) fn run() -> IResult {
         window: Default::default(),
         grid_initial: Default::default(),
         python_license_checkbox: Default::default(),
-        // python_license_button: Default::default(),
+        python_license_button: Default::default(),
         // python_license_window: Default::default(),
         // python_license_grid: Default::default(),
         // python_license_textbox: Default::default(),
