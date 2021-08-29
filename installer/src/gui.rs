@@ -27,7 +27,7 @@ pub struct InstallerApp {
     )]
     window: nwg::Window,
 
-    #[nwg_layout(parent: window, spacing: 1, max_column: 2, max_row: 8)]
+    #[nwg_layout(parent: window, spacing: 1, max_column: Some(2), max_row: Some(8))]
     grid_initial: nwg::GridLayout,
 
     #[nwg_control(text: "Diegimo programa.", flags: "VISIBLE|MULTI_LINE")]
@@ -155,7 +155,7 @@ impl InstallerApp {
     }
     fn set_visible_initial_view(&self, visible: bool) {
         self.explanation.set_visible(visible);
-        self.python_license_checkbox.set_visible(visible);
+        // self.python_license_checkbox.set_visible(visible);
         self.vscode_license_checkbox.set_visible(visible);
         self.install_button.set_visible(visible);
     }
@@ -196,25 +196,25 @@ impl InstallerApp {
         self.set_visible_final_wiew(true);
         trace!("[exit] show_final_wiew");
     }
-    fn python_license_button_click(&self) {
-        trace!("[enter] python_license_button_click");
-        self.python_license_window.set_visible(true);
-        self.python_license_textbox.set_text(crate::PYTHON_LICENSE);
-        trace!("[exit] python_license_button_click");
-    }
+    // fn python_license_button_click(&self) {
+    //     trace!("[enter] python_license_button_click");
+    //     self.python_license_window.set_visible(true);
+    //     self.python_license_textbox.set_text(crate::PYTHON_LICENSE);
+    //     trace!("[exit] python_license_button_click");
+    // }
     fn python_license_checkbox_click(&self) {
-        let state = (
-            self.python_license_checkbox.check_state(),
-            self.vscode_license_checkbox.check_state(),
-        );
-        match state {
-            (nwg::CheckBoxState::Checked, nwg::CheckBoxState::Checked) => {
-                self.install_button.set_enabled(true);
-            }
-            _ => {
-                self.install_button.set_enabled(false);
-            }
-        }
+        // let state = (
+        //     self.python_license_checkbox.check_state(),
+        //     self.vscode_license_checkbox.check_state(),
+        // );
+        // match state {
+        //     (nwg::CheckBoxState::Checked, nwg::CheckBoxState::Checked) => {
+        //         self.install_button.set_enabled(true);
+        //     }
+        //     _ => {
+        //         self.install_button.set_enabled(false);
+        //     }
+        // }
     }
     fn vscode_license_button_click(&self) {
         trace!("[enter] vscode_license_button_click");
@@ -223,18 +223,18 @@ impl InstallerApp {
         trace!("[exit] vscode_license_button_click");
     }
     fn vscode_license_checkbox_click(&self) {
-        let state = (
-            self.python_license_checkbox.check_state(),
-            self.vscode_license_checkbox.check_state(),
-        );
-        match state {
-            (nwg::CheckBoxState::Checked, nwg::CheckBoxState::Checked) => {
-                self.install_button.set_enabled(true);
-            }
-            _ => {
-                self.install_button.set_enabled(false);
-            }
-        }
+        // let state = (
+        //     self.python_license_checkbox.check_state(),
+        //     self.vscode_license_checkbox.check_state(),
+        // );
+        // match state {
+        //     (nwg::CheckBoxState::Checked, nwg::CheckBoxState::Checked) => {
+        //         self.install_button.set_enabled(true);
+        //     }
+        //     _ => {
+        //         self.install_button.set_enabled(false);
+        //     }
+        // }
     }
 }
 
