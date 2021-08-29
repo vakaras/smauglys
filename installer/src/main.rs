@@ -17,6 +17,8 @@ const VSCODE_EXTENSIONS_ZIP: &'static [u8] = include_bytes!("../../vscode_extens
 const PYTHON_PACKAGES_ZIP: &'static [u8] = include_bytes!("../../python_packages.zip");
 const PYTHON_REQUIREMENTS: &'static [u8] = include_bytes!("../../python-requirements.txt");
 const PYTHON_PACKAGES: &'static [&'static str] = &["pylint", "mypy"];
+const PYTHON_LICENSE: &'static str = include_str!("../../PYTHON-LICENSE-3.8.10.txt");
+const VSCODE_LICENSE: &'static str = include_str!("../../VSCODE-LICENSE.rtf");
 
 mod command;
 mod error;

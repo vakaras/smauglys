@@ -1,7 +1,4 @@
-use std::{
-    cell::RefCell,
-    sync::mpsc::{channel, Receiver, TryRecvError},
-};
+use std::{cell::RefCell, fmt::Debug, sync::mpsc::{channel, Receiver, TryRecvError}};
 
 use log::{debug, error, trace};
 use nwd::NwgUi;
@@ -25,7 +22,7 @@ pub struct InstallerApp {
     grid_initial: nwg::GridLayout,
 
     #[nwg_control(text: "Diegimo programa.", flags: "VISIBLE|MULTI_LINE")]
-    #[nwg_layout_item(layout: grid_initial, row: 0, col: 0, row_span: 4)]
+    #[nwg_layout_item(layout: grid_initial, row: 0, col: 0, row_span: 4, col_span: 2)]
     explanation: nwg::RichLabel,
 
     #[nwg_control(text: "Sutinku su Python licencija.")]
@@ -33,13 +30,43 @@ pub struct InstallerApp {
     #[nwg_events( OnButtonClick: [InstallerApp::python_license_checkbox_click] )]
     python_license_checkbox: nwg::CheckBox,
 
+    #[nwg_control(text: "Rodyti...")]
+    #[nwg_layout_item(layout: grid_initial, row: 5, col: 1)]
+    #[nwg_events( OnButtonClick: [InstallerApp::python_license_button_click] )]
+    python_license_button: nwg::Button,
+
+    #[nwg_control(size: (530, 300), position: (300, 300), title: "Python licencija", flags: "WINDOW|POPUP")]
+    python_license_window: nwg::Window,
+
+    #[nwg_layout(parent: python_license_window, spacing: 1)]
+    python_license_grid: nwg::GridLayout,
+
+    #[nwg_control(text: "Inicializuojama...", readonly: true)]
+    #[nwg_layout_item(layout: python_license_grid)]
+    python_license_textbox: nwg::TextBox,
+
     #[nwg_control(text: "Sutinku su Microsoft VS Code licencija.")]
     #[nwg_layout_item(layout: grid_initial, row: 6, col: 0)]
     #[nwg_events( OnButtonClick: [InstallerApp::vscode_license_checkbox_click] )]
     vscode_license_checkbox: nwg::CheckBox,
 
+    #[nwg_control(text: "Rodyti...")]
+    #[nwg_layout_item(layout: grid_initial, row: 6, col: 1)]
+    #[nwg_events( OnButtonClick: [InstallerApp::vscode_license_button_click] )]
+    vscode_license_button: nwg::Button,
+
+    #[nwg_control(size: (530, 300), position: (300, 300), title: "VS Code licencija", flags: "WINDOW|POPUP")]
+    vscode_license_window: nwg::Window,
+
+    #[nwg_layout(parent: vscode_license_window, spacing: 1)]
+    vscode_license_grid: nwg::GridLayout,
+
+    #[nwg_control(text: "Inicializuojama...", readonly: true)]
+    #[nwg_layout_item(layout: vscode_license_grid)]
+    vscode_license_textbox: nwg::RichTextBox,
+
     #[nwg_control(text: "Įdiegti")]
-    #[nwg_layout_item(layout: grid_initial, row: 7, col: 0)]
+    #[nwg_layout_item(layout: grid_initial, row: 7, col: 0, col_span: 2)]
     #[nwg_events( OnButtonClick: [InstallerApp::show_progress_view] )]
     install_button: nwg::Button,
 
@@ -160,6 +187,12 @@ impl InstallerApp {
         self.set_visible_final_wiew(true);
         trace!("[exit] show_final_wiew");
     }
+    fn python_license_button_click(&self) {
+        trace!("[enter] python_license_button_click");
+        self.python_license_window.set_visible(true);
+        self.python_license_textbox.set_text(crate::PYTHON_LICENSE);
+        trace!("[exit] python_license_button_click");
+    }
     fn python_license_checkbox_click(&self) {
         let state = (
             self.python_license_checkbox.check_state(),
@@ -173,6 +206,12 @@ impl InstallerApp {
                 self.install_button.set_enabled(false);
             }
         }
+    }
+    fn vscode_license_button_click(&self) {
+        trace!("[enter] vscode_license_button_click");
+        self.vscode_license_window.set_visible(true);
+        self.vscode_license_textbox.set_text(crate::VSCODE_LICENSE);
+        trace!("[exit] vscode_license_button_click");
     }
     fn vscode_license_checkbox_click(&self) {
         let state = (
@@ -204,7 +243,15 @@ pub(crate) fn run() -> IResult {
         window: Default::default(),
         grid_initial: Default::default(),
         python_license_checkbox: Default::default(),
+        python_license_button: Default::default(),
+        python_license_window: Default::default(),
+        python_license_grid: Default::default(),
+        python_license_textbox: Default::default(),
         vscode_license_checkbox: Default::default(),
+        vscode_license_button: Default::default(),
+        vscode_license_window: Default::default(),
+        vscode_license_grid: Default::default(),
+        vscode_license_textbox: Default::default(),
         install_button: Default::default(),
         grid_installing: Default::default(),
         progress_bar_notice: Default::default(),
