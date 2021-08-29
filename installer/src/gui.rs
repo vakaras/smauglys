@@ -156,7 +156,9 @@ impl InstallerApp {
     fn set_visible_initial_view(&self, visible: bool) {
         self.explanation.set_visible(visible);
         self.python_license_checkbox.set_visible(visible);
+        self.python_license_button.set_visible(visible);
         self.vscode_license_checkbox.set_visible(visible);
+        self.vscode_license_button.set_visible(visible);
         self.install_button.set_visible(visible);
     }
     fn set_visible_progress_view(&self, visible: bool) {
