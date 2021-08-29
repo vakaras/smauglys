@@ -14,6 +14,14 @@ echo 'Show Python 3.8.10 version:'
 
 ls "$RUNNER_TOOL_CACHE/Python/3.8.10/"
 
+echo 'Show Python 3.8.10 version regular:'
+
+ls "$RUNNER_TOOL_CACHE/Python/3.8.10/x64"
+
+echo 'Show Python 3.8.10 version complete:'
+
+ls "$RUNNER_TOOL_CACHE/Python/3.8.10/x64.complete"
+
 exit 1
 
 # Download VS Code
