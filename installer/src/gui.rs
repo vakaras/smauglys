@@ -169,6 +169,11 @@ impl InstallerApp {
     }
     fn show_initial_wiew(&self) {
         trace!("[enter] show_initial_wiew");
+        self.explanation.set_text(concat!(
+            "Smauglys yra diegimo programa, kuri į Jūsų kompiuterį įdiegs: ",
+            "Python 3 su mypy bei pylint ir ",
+            "VS Codium su lietuvybės paketą bei Microsoft Python papildiniu.",
+        ));
         self.set_visible_initial_view(true);
         self.set_visible_progress_view(false);
         self.set_visible_final_wiew(false);
