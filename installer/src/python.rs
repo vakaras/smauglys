@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 use crate::{
     command::{extract_file, run_command},
     error::IResult,
+    PYTHON_PACKAGES_ZIP,
 };
 
 pub(crate) fn ensure_python(installer: &Path, tmp_dir: &Path) -> IResult {
@@ -27,6 +28,7 @@ fn install_packages(tmp_dir: &Path) -> IResult<()> {
     let python_path = find_python()?;
     debug!("python_candidate={:?}", python_path);
     let zip = tmp_dir.join("python_packages.zip");
+    extract_zip(PYTHON_PACKAGES_ZIP, &zip)?;
     let extracted_path = tmp_dir.join("python_packages");
     let requirements = extracted_path
         .join("requirements.txt")
