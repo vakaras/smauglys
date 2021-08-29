@@ -43,7 +43,7 @@ fn install_packages(tmp_dir: &Path) -> IResult<()> {
             "pip",
             "install",
             "--no-index",
-            "--find-liks",
+            "--find-links",
             &find_links,
             "-r",
             &requirements,
