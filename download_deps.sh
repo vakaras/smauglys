@@ -5,7 +5,14 @@ set -e
 echo 'Show runner tool cache:'
 
 ls "$RUNNER_TOOL_CACHE"
+
+echo 'Show Python versions:'
+
 ls "$RUNNER_TOOL_CACHE/Python/"
+
+echo 'Show Python 3.8.10 version:'
+
+ls "$RUNNER_TOOL_CACHE/Python/3.8.10/"
 
 exit 1
 
