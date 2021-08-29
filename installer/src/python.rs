@@ -2,7 +2,7 @@ use log::{debug, trace};
 use std::path::{Path, PathBuf};
 
 use crate::{
-    command::{extract_file, run_command},
+    command::{extract_file, extract_zip, run_command},
     error::IResult,
     PYTHON_PACKAGES_ZIP,
 };
