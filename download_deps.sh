@@ -22,8 +22,6 @@ echo 'Show Python 3.8.10 version complete:'
 
 ls "$RUNNER_TOOL_CACHE/Python/3.8.10/x64.complete"
 
-exit 1
-
 # Download VS Code
 curl 'https://code.visualstudio.com/sha/download?build=stable&os=win32-x64' -Lo VSCodeSetup.exe
 
