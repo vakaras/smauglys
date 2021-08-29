@@ -20,4 +20,5 @@ curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hedie
 curl 'https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe' -Lo PythonInstaller.exe
 mkdir python_packages
 cd python_packages
-pip download -r ../python-requirements.txt
+cp ../python-requirements.txt requirements.txt
+pip download -r requirements.txt

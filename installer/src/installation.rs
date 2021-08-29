@@ -27,7 +27,7 @@ impl Default for State {
 
 pub(crate) fn do_install(notice: nwg::NoticeSender, sender: Sender<Message>) -> IResult {
     let state = State::default();
-    python::ensure_python(&state.python_installer)?;
+    python::ensure_python(&state.python_installer, &state.root_dir)?;
     sender.send(Message::ProgressUpdate {
         progress: 1,
         details: "Python įdiegtas".to_string(),
