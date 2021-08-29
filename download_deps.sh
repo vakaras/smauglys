@@ -15,7 +15,9 @@ curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-py
 curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.2.4/vspackage' --compressed -Lo vscode_extensions/hediet.debug-visualizer.vsix
 
 # Download Python
-curl 'https://www.python.org/ftp/python/3.9.6/python-3.9.6-amd64.exe' -Lo PythonInstaller.exe
+# Note: We have to use 3.8 because it is the latest version that is
+# still supported on Windows 7.
+curl 'https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe' -Lo PythonInstaller.exe
 mkdir python_packages
 cd python_packages
 pip download -r ../python-requirements.txt
