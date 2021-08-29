@@ -44,8 +44,8 @@ pub struct InstallerApp {
     #[nwg_events( OnButtonClick: [InstallerApp::python_license_button_click] )]
     python_license_button: nwg::Button,
 
-    // #[nwg_control(size: (530, 300), position: (300, 300), title: "Python licencija", flags: "WINDOW|POPUP|RESIZABLE")]
-    // python_license_window: nwg::Window,
+    #[nwg_control(size: (530, 300), position: (300, 300), title: "Python licencija", flags: "WINDOW|POPUP|RESIZABLE")]
+    python_license_window: nwg::Window,
 
     // #[nwg_layout(parent: python_license_window, spacing: 1)]
     // python_license_grid: nwg::GridLayout,
@@ -253,7 +253,7 @@ pub(crate) fn run() -> IResult {
         grid_initial: Default::default(),
         python_license_checkbox: Default::default(),
         python_license_button: Default::default(),
-        // python_license_window: Default::default(),
+        python_license_window: Default::default(),
         // python_license_grid: Default::default(),
         // python_license_textbox: Default::default(),
         vscode_license_checkbox: Default::default(),
