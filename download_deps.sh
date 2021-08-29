@@ -16,7 +16,7 @@ ls "$RUNNER_TOOL_CACHE/Python/3.8.10/"
 
 echo 'Show Python 3.8.10 version regular:'
 
-ls "$RUNNER_TOOL_CACHE/Python/3.8.10/x64"
+ls "$RUNNER_TOOL_CACHE/Python/3.8.10/x64/"
 
 echo 'Show Python 3.8.10 version complete:'
 
@@ -40,11 +40,9 @@ curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hedie
 # Note: We have to use 3.8 because it is the latest version that is
 # still supported on Windows 7.
 curl 'https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe' -Lo PythonInstaller.exe
-# Since we need to use exactly the same Python and pip for downloading,
-# we install the downloaded Python on the builder.
-./PythonInstaller.exe /passive InstallAllUsers=1 PrependPath=1
-ls "$PROGRAMFILES"
-PYTHON_EXE="$PROGRAMFILES/Python38/python.exe"
+# For downloading dependencies we have to use exactly the same version
+# of Python.
+PYTHON_EXE="$RUNNER_TOOL_CACHE/Python/3.8.10/x64/python.exe"
 ls "$PYTHON_EXE"
 
 mkdir python_packages
