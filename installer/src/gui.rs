@@ -14,7 +14,7 @@ pub(crate) enum Message {
 
 #[derive(NwgUi)]
 pub struct InstallerApp {
-    #[nwg_control(size: (530, 300), position: (300, 300), title: "Smauglys: diegimo programa", flags: "WINDOW|VISIBLE")]
+    #[nwg_control(size: (1000, 600), position: (300, 300), title: "Smauglys: diegimo programa", flags: "WINDOW|VISIBLE|RESIZABLE")]
     #[nwg_events(OnWindowClose: [InstallerApp::exit], OnInit: [InstallerApp::show_initial_wiew], OnMinMaxInfo: [InstallerApp::set_resize(SELF, EVT_DATA)] )]
     window: nwg::Window,
 
@@ -35,7 +35,7 @@ pub struct InstallerApp {
     #[nwg_events( OnButtonClick: [InstallerApp::python_license_button_click] )]
     python_license_button: nwg::Button,
 
-    #[nwg_control(size: (530, 300), position: (300, 300), title: "Python licencija", flags: "WINDOW|POPUP")]
+    #[nwg_control(size: (530, 300), position: (300, 300), title: "Python licencija", flags: "WINDOW|POPUP|RESIZABLE")]
     python_license_window: nwg::Window,
 
     #[nwg_layout(parent: python_license_window, spacing: 1)]
@@ -55,7 +55,7 @@ pub struct InstallerApp {
     #[nwg_events( OnButtonClick: [InstallerApp::vscode_license_button_click] )]
     vscode_license_button: nwg::Button,
 
-    #[nwg_control(size: (530, 300), position: (300, 300), title: "VS Code licencija", flags: "WINDOW|POPUP")]
+    #[nwg_control(size: (530, 300), position: (300, 300), title: "VS Code licencija", flags: "WINDOW|POPUP|RESIZABLE")]
     vscode_license_window: nwg::Window,
 
     #[nwg_layout(parent: vscode_license_window, spacing: 1)]
