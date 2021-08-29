@@ -14,36 +14,45 @@ pub(crate) enum Message {
 
 #[derive(NwgUi)]
 pub struct InstallerApp {
-    #[nwg_control(size: (1000, 600), position: (300, 300), title: "Smauglys: diegimo programa", flags: "WINDOW|VISIBLE|RESIZABLE")]
-    #[nwg_events(OnWindowClose: [InstallerApp::exit], OnInit: [InstallerApp::show_initial_wiew], OnMinMaxInfo: [InstallerApp::set_resize(SELF, EVT_DATA)] )]
+    #[nwg_control(
+        size: (1000, 600),
+        position: (300, 300),
+        title: "Smauglys: diegimo programa",
+        flags: "WINDOW|VISIBLE|RESIZABLE"
+    )]
+    #[nwg_events(
+        OnWindowClose: [InstallerApp::exit],
+        OnInit: [InstallerApp::show_initial_wiew],
+        OnMinMaxInfo: [InstallerApp::set_resize(SELF, EVT_DATA)]
+    )]
     window: nwg::Window,
 
-    #[nwg_layout(parent: window, spacing: 1)]
+    #[nwg_layout(parent: window, spacing: 1, max_column: 2, max_row: 8)]
     grid_initial: nwg::GridLayout,
 
     #[nwg_control(text: "Diegimo programa.", flags: "VISIBLE|MULTI_LINE")]
     #[nwg_layout_item(layout: grid_initial, row: 0, col: 0, row_span: 4, col_span: 2)]
     explanation: nwg::RichLabel,
 
-    #[nwg_control(text: "Sutinku su Python licencija.")]
-    #[nwg_layout_item(layout: grid_initial, row: 5, col: 0)]
-    #[nwg_events( OnButtonClick: [InstallerApp::python_license_checkbox_click] )]
-    python_license_checkbox: nwg::CheckBox,
+    // #[nwg_control(text: "Sutinku su Python licencija.")]
+    // #[nwg_layout_item(layout: grid_initial, row: 5, col: 0)]
+    // #[nwg_events( OnButtonClick: [InstallerApp::python_license_checkbox_click] )]
+    // python_license_checkbox: nwg::CheckBox,
 
-    #[nwg_control(text: "Rodyti...")]
-    #[nwg_layout_item(layout: grid_initial, row: 5, col: 1)]
-    #[nwg_events( OnButtonClick: [InstallerApp::python_license_button_click] )]
-    python_license_button: nwg::Button,
+    // #[nwg_control(text: "Rodyti...")]
+    // #[nwg_layout_item(layout: grid_initial, row: 5, col: 1)]
+    // #[nwg_events( OnButtonClick: [InstallerApp::python_license_button_click] )]
+    // python_license_button: nwg::Button,
 
-    #[nwg_control(size: (530, 300), position: (300, 300), title: "Python licencija", flags: "WINDOW|POPUP|RESIZABLE")]
-    python_license_window: nwg::Window,
+    // #[nwg_control(size: (530, 300), position: (300, 300), title: "Python licencija", flags: "WINDOW|POPUP|RESIZABLE")]
+    // python_license_window: nwg::Window,
 
-    #[nwg_layout(parent: python_license_window, spacing: 1)]
-    python_license_grid: nwg::GridLayout,
+    // #[nwg_layout(parent: python_license_window, spacing: 1)]
+    // python_license_grid: nwg::GridLayout,
 
-    #[nwg_control(text: "Inicializuojama...", readonly: true)]
-    #[nwg_layout_item(layout: python_license_grid)]
-    python_license_textbox: nwg::TextBox,
+    // #[nwg_control(text: "Inicializuojama...", readonly: true)]
+    // #[nwg_layout_item(layout: python_license_grid)]
+    // python_license_textbox: nwg::TextBox,
 
     #[nwg_control(text: "Sutinku su Microsoft VS Code licencija.")]
     #[nwg_layout_item(layout: grid_initial, row: 6, col: 0)]
@@ -242,11 +251,11 @@ pub(crate) fn run() -> IResult {
         progress_bar_receiver: RefCell::new(None),
         window: Default::default(),
         grid_initial: Default::default(),
-        python_license_checkbox: Default::default(),
-        python_license_button: Default::default(),
-        python_license_window: Default::default(),
-        python_license_grid: Default::default(),
-        python_license_textbox: Default::default(),
+        // python_license_checkbox: Default::default(),
+        // python_license_button: Default::default(),
+        // python_license_window: Default::default(),
+        // python_license_grid: Default::default(),
+        // python_license_textbox: Default::default(),
         vscode_license_checkbox: Default::default(),
         vscode_license_button: Default::default(),
         vscode_license_window: Default::default(),
