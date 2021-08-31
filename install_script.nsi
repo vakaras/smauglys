@@ -94,7 +94,7 @@ Section "Python 3.8" SEC01
   File "requirements.txt"
   File /r "python_packages\"
   ExecWait '"$INSTDIR\PythonInstaller.exe" /passive InstallAllUsers=1 PrependPath=1'
-  ExecWait 'python.exe -m pip install --no-index --find-links "$INSTDIR" -r "$INSTDIR\requirements.txt"'
+  ExecWait '"$programfiles64\Python38\python.exe" -m pip install --no-index --find-links "$INSTDIR" -r "$INSTDIR\requirements.txt"'
 SectionEnd
  
 Section "Visual Studio Code" SEC02
