@@ -102,7 +102,7 @@ Section "Visual Studio Code" SEC02
   EnVar::AddValue "VSCODE_EXTENSIONS" "$PROGRAMFILES64\VS Code Extensions"
   
   File "VSCodeSetup.exe"
-  ExecWait '"$INSTDIR\VSCodeSetup.exe" /LOG="$instdir\l1.txt" /ALLUSERS /SILENT /MERGETASKS=!runcode'
+  ExecWait '"$INSTDIR\VSCodeSetup.exe" /LOG="$instdir\l1.txt" /ALLUSERS /SILENT /MERGETASKS=!runcode,desktopicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles'
 
   File "vscode_extensions\ms-python.python.vsix"
   File "vscode_extensions\hediet.debug-visualizer.vsix"
