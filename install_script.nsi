@@ -92,8 +92,22 @@ SectionEnd
 Section "Python 3.8" SEC01
   File "PythonInstaller.exe"
   File "requirements.txt"
+  File "python_packages/astroid-2.7.2-py3-none-any.whl"
+  File "python_packages/colorama-0.4.4-py2.py3-none-any.whl"
+  File "python_packages/isort-5.9.3-py3-none-any.whl"
+  File "python_packages/lazy_object_proxy-1.6.0-cp38-cp38-win_amd64.whl"
+  File "python_packages/mccabe-0.6.1-py2.py3-none-any.whl"
+  File "python_packages/mypy-0.910-cp38-cp38-win_amd64.whl"
+  File "python_packages/mypy_extensions-0.4.3-py2.py3-none-any.whl"
+  File "python_packages/pylint-2.10.2-py3-none-any.whl"
+  File "python_packages/platformdirs-2.2.0-py3-none-any.whl"
+  File "python_packages/requirements.txt"
+  File "python_packages/setuptools-57.4.0-py3-none-any.whl"
+  File "python_packages/typing_extensions-3.10.0.1-py3-none-any.whl"
+  File "python_packages/toml-0.10.2-py2.py3-none-any.whl"
+  File "python_packages/wrapt-1.12.1.tar.gz"
   ExecWait '"$INSTDIR\PythonInstaller.exe" /passive InstallAllUsers=1 PrependPath=1'
-  ExecWait 'python.exe -m pip install  --no-index  -r "$INSTDIR\requirements.txt"'
+  ExecWait 'python.exe -m pip install --no-index --find-links "$INSTDIR\python_packages" -r "$INSTDIR\requirements.txt"'
 SectionEnd
  
 Section "Visual Studio Code" SEC02
