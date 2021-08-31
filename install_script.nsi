@@ -118,7 +118,7 @@ Section "Visual Studio Code" SEC02
 
   ExecWait "$instdir\install-extensions.bat"
 
-  File "vs_code_monkey.py"
+  File "vscode_monkey.py"
 
   ExecWait '"$programfiles64\Python38\python.exe" vscode_monkey.py "$programfiles64\VS Code Extensions" "$instdir\monkey.log"'
 SectionEnd
