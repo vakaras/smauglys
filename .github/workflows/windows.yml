@@ -70,6 +70,28 @@ jobs:
           asset_name: Smauglys-${{ env.TAG_NAME }}.exe
           asset_content_type: application/octet-stream
 
+      - name: Install NSIS
+        run: |
+            Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+            scoop bucket add extras
+            scoop install nsis
+      - name: Print NSIS version
+        run: makensis -VERSION
+      - name: Print NSIS compile flags
+        run: makensis -HDRINFO
+      - name: Create installer
+        run: makensis install_script.nsi
+
+      - name: Upload NSIS Smauglys installer
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: smauglys_installer.exe
+          asset_name: smauglys_installer-${{ env.TAG_NAME }}.exe
+          asset_content_type: application/octet-stream
+
       #- name: Release
         #uses: softprops/action-gh-release@v1
         #with:
