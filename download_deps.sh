@@ -25,3 +25,5 @@ mkdir python_packages
 cd python_packages
 cp ../python-requirements.txt requirements.txt
 "$PYTHON_EXE" -m pip download -r requirements.txt
+cd ..
+ls -d python_packages/*
