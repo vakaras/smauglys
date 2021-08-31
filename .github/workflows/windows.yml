@@ -79,6 +79,11 @@ jobs:
         run: makensis -VERSION
       - name: Print NSIS compile flags
         run: makensis -HDRINFO
+      - name: Download plugins
+        run: curl 'https://nsis.sourceforge.io/mediawiki/images/7/7f/EnVar_plugin.zip' -Lo EnVar_plugin.zip
+        shell: bash
+      - name: Extract NSIS Plugins
+        run: Expand-Archive -LiteralPath 'EnVar_plugin.zip' -DestinationPath nsis_plugins
       - name: Create installer
         run: makensis install_script.nsi
 
