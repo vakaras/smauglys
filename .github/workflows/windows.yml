@@ -83,7 +83,7 @@ jobs:
         run: curl 'https://nsis.sourceforge.io/mediawiki/images/7/7f/EnVar_plugin.zip' -Lo EnVar_plugin.zip
         shell: bash
       - name: Extract NSIS Plugins
-        run: Expand-Archive -LiteralPath 'EnVar_plugin.zip' -DestinationPath nsis_plugins
+        run: Expand-Archive -LiteralPath 'EnVar_plugin.zip' -DestinationPath 'C:\Program Files (x86)\NSIS'
       - name: Create installer
         run: makensis install_script.nsi
 

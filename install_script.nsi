@@ -1,7 +1,6 @@
 !define PRODUCT_NAME "Smauglys"
 !define PRODUCT_VERSION "1.0"
 !define PRODUCT_PUBLISHER "Vytautas Astrauskas"
-!addplugindir nsis_plugins
 
 SetCompressor lzma
  
