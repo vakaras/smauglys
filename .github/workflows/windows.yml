@@ -14,61 +14,9 @@ jobs:
         run: ./download_deps.sh
         shell: bash
 
-      - name: ZIP dependencies
-        run: |
-          $compress_vscode_extensions = @{
-            Path = "vscode_extensions"
-            CompressionLevel = "Fastest"
-            DestinationPath = "vscode_extensions.zip"
-          }
-          Compress-Archive @compress_vscode_extensions
-          $compress_python_packages = @{
-            Path = "python_packages"
-            CompressionLevel = "Fastest"
-            DestinationPath = "python_packages.zip"
-          }
-          Compress-Archive @compress_python_packages
-        shell: powershell
-
-      - name: Build the Rust installer
-        run: ./build_installer.sh
-        shell: bash
-
-      - name: Create release tag
-        shell: bash
-        run: echo "TAG_NAME=$(date +v-%Y-%m-%d-%H%M)" >> $GITHUB_ENV
-
-      #- name: Move/rename build artifacts
-        #run: |
-          #mv smauglys.exe Smauglys-${TAG_NAME}.exe
-        #shell: bash
-
-      - name: Create nightly release
-        id: create_nightly_release
-        uses: actions/create-release@v1
-        env:
-          # This token is provided by Actions, you do not need to create your own token
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.TAG_NAME }}
-          release_name: Nightly Release ${{ env.TAG_NAME }}
-          body: Naktinis smauglys.
-          draft: false
-          prerelease: true
-
       - name: Store nightly release upload URL
         shell: bash
         run: echo "UPLOAD_URL=${{ steps.create_nightly_release.outputs.upload_url }}" >> $GITHUB_ENV
-
-      - name: Upload Smauglys installer
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: smauglys.exe
-          asset_name: Smauglys-${{ env.TAG_NAME }}.exe
-          asset_content_type: application/octet-stream
 
       - name: Install NSIS
         run: |
@@ -96,6 +44,23 @@ jobs:
           asset_path: smauglys_installer.exe
           asset_name: smauglys_installer-${{ env.TAG_NAME }}.exe
           asset_content_type: application/octet-stream
+
+      - name: Create release tag
+        shell: bash
+        run: echo "TAG_NAME=$(date +v-%Y-%m-%d-%H%M)" >> $GITHUB_ENV
+
+      - name: Create nightly release
+        id: create_nightly_release
+        uses: actions/create-release@v1
+        env:
+          # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.TAG_NAME }}
+          release_name: Nightly Release ${{ env.TAG_NAME }}
+          body: Naktinis smauglys.
+          draft: false
+          prerelease: true
 
       #- name: Release
         #uses: softprops/action-gh-release@v1
