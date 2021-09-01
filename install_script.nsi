@@ -30,7 +30,7 @@ SetCompressor lzma
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
 OutFile "smauglys_installer.exe"
-InstallDir "$PROGRAMFILES64\Smauglys"
+InstallDir "$TEMP\Smauglys"
 ShowInstDetails show
 RequestExecutionLevel admin
 
