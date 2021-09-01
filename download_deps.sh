@@ -23,7 +23,7 @@ PYTHON_EXE="$RUNNER_TOOL_CACHE/Python/3.8.10/x64/python.exe"
 
 mkdir python_packages
 cd python_packages
-cp ../python-requirements.txt requirements.txt
+cp ../requirements.txt requirements.txt
 "$PYTHON_EXE" -m pip download -r requirements.txt
 cd ..
 ls -d python_packages/*
