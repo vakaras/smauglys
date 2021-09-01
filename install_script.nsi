@@ -1,6 +1,6 @@
 !define PRODUCT_NAME "Smauglys"
 !define PRODUCT_VERSION "1.0"
-!define PRODUCT_PUBLISHER "Vytautas Astrauskas"
+!define PRODUCT_PUBLISHER "Vytautas Astrauskas, Martynas Teleiša, Mantas Urbonas"
 
 SetCompressor lzma
  
@@ -42,7 +42,48 @@ RequestExecutionLevel admin
 !else
 !define /IfNDef LVM_GETITEMTEXT ${LVM_GETITEMTEXTA}
 !endif
+
+
+Section -SETTINGS
+  SetOutPath "$INSTDIR"
+  SetOverwrite ifnewer
+SectionEnd
+
+Section "Python 3.8" SEC01
+  File "PythonInstaller.exe"
+  File "requirements.txt"
+  File /r "python_packages\"
+  ExecWait '"$INSTDIR\PythonInstaller.exe" /passive InstallAllUsers=1 PrependPath=1'
+  ExecWait '"$programfiles64\Python38\python.exe" -m pip install --no-index --find-links "$INSTDIR" -r "$INSTDIR\requirements.txt"'
+SectionEnd
  
+Section "Visual Studio Code" SEC02
+  EnVar::SetHKLM
+  EnVar::AddValue "VSCODE_EXTENSIONS" "$PROGRAMFILES64\VS Code Extensions"
+  
+  File "VSCodeSetup.exe"
+  ExecWait '"$INSTDIR\VSCodeSetup.exe" /LOG="$instdir\l1.txt" /ALLUSERS /SILENT /MERGETASKS=!runcode,desktopicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles'
+
+  File "vscode_extensions\ms-python.python.vsix"
+  File "vscode_extensions\hediet.debug-visualizer.vsix"
+  File "vscode_extensions\vakaras.vscode-language-pack-lt.vsix"
+
+  FileOpen $0 "$instdir\install-extensions.bat" w
+  FileWrite $0 '@echo off$\r$\n'
+  FileWrite $0 'set VSCODE_EXTENSIONS=$programfiles64\VS Code Extensions$\r$\n'
+  FileWrite $0 'call "$programfiles64\vscodium\bin\codium.cmd" --install-extension ms-python.python.vsix > e1.log$\r$\n'
+  FileWrite $0 'call "$programfiles64\vscodium\bin\codium.cmd" --install-extension hediet.debug-visualizer.vsix > e2.log$\r$\n'
+  FileWrite $0 'call "$programfiles64\vscodium\bin\codium.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix > e3.log$\r$\n'
+  FileClose $0
+
+  ExecWait "$instdir\install-extensions.bat"
+
+  File "vscode_monkey.py"
+
+  ExecWait '"$programfiles64\Python38\python.exe" vscode_monkey.py "$programfiles64\VS Code Extensions" "$instdir\monkey.log"'
+SectionEnd
+
+; only needed to dump entire log somewhere
 Function DumpLog
   Exch $5
   Push $0
@@ -84,47 +125,11 @@ Function DumpLog
     Pop $5
 FunctionEnd
 
-Section -SETTINGS
-  SetOutPath "$INSTDIR"
-  SetOverwrite ifnewer
-SectionEnd
+Section "Remove temp files" SEC03                  
+  SetOutPath $TEMP
+  RMDir /r /REBOOTOK $TEMP\Smauglys
 
-Section "Python 3.8" SEC01
-  File "PythonInstaller.exe"
-  File "requirements.txt"
-  File /r "python_packages\"
-  ExecWait '"$INSTDIR\PythonInstaller.exe" /passive InstallAllUsers=1 PrependPath=1'
-  ExecWait '"$programfiles64\Python38\python.exe" -m pip install --no-index --find-links "$INSTDIR" -r "$INSTDIR\requirements.txt"'
-SectionEnd
- 
-Section "Visual Studio Code" SEC02
-  EnVar::SetHKLM
-  EnVar::AddValue "VSCODE_EXTENSIONS" "$PROGRAMFILES64\VS Code Extensions"
-  
-  File "VSCodeSetup.exe"
-  ExecWait '"$INSTDIR\VSCodeSetup.exe" /LOG="$instdir\l1.txt" /ALLUSERS /SILENT /MERGETASKS=!runcode,desktopicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles'
-
-  File "vscode_extensions\ms-python.python.vsix"
-  File "vscode_extensions\hediet.debug-visualizer.vsix"
-  File "vscode_extensions\vakaras.vscode-language-pack-lt.vsix"
-
-  FileOpen $0 "$instdir\install-extensions.bat" w
-  FileWrite $0 '@echo off$\r$\n'
-  FileWrite $0 'set VSCODE_EXTENSIONS=$programfiles64\VS Code Extensions$\r$\n'
-  FileWrite $0 'call "$programfiles64\vscodium\bin\codium.cmd" --install-extension ms-python.python.vsix > e1.log$\r$\n'
-  FileWrite $0 'call "$programfiles64\vscodium\bin\codium.cmd" --install-extension hediet.debug-visualizer.vsix > e2.log$\r$\n'
-  FileWrite $0 'call "$programfiles64\vscodium\bin\codium.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix > e3.log$\r$\n'
-  FileClose $0
-
-  ExecWait "$instdir\install-extensions.bat"
-
-  File "vscode_monkey.py"
-
-  ExecWait '"$programfiles64\Python38\python.exe" vscode_monkey.py "$programfiles64\VS Code Extensions" "$instdir\monkey.log"'
-SectionEnd
-
-Section "Log" SEC03                  
-  StrCpy $0 "$instdir\install.log"
+  StrCpy $0 "$exedir\install.log"
   Push $0
   Call DumpLog
 SectionEnd
