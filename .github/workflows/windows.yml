@@ -14,10 +14,6 @@ jobs:
         run: ./download_deps.sh
         shell: bash
 
-      - name: Store nightly release upload URL
-        shell: bash
-        run: echo "UPLOAD_URL=${{ steps.create_nightly_release.outputs.upload_url }}" >> $GITHUB_ENV
-
       - name: Install NSIS
         run: |
             Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
@@ -34,16 +30,6 @@ jobs:
         run: Expand-Archive -LiteralPath 'EnVar_plugin.zip' -DestinationPath 'C:\Program Files (x86)\NSIS'
       - name: Create installer
         run: makensis install_script.nsi
-
-      - name: Upload NSIS Smauglys installer
-        uses: actions/upload-release-asset@v1.0.2
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: smauglys_installer.exe
-          asset_name: smauglys_installer-${{ env.TAG_NAME }}.exe
-          asset_content_type: application/octet-stream
 
       - name: Create release tag
         shell: bash
@@ -62,12 +48,16 @@ jobs:
           draft: false
           prerelease: true
 
-      #- name: Release
-        #uses: softprops/action-gh-release@v1
-        #with:
-          #tag_name: ${{ env.TAG_NAME }}
-          #files: |
-            #./Smauglys-*.exe
-            #./wrapper*.exe
-        #env:
-          #GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Store nightly release upload URL
+        shell: bash
+        run: echo "UPLOAD_URL=${{ steps.create_nightly_release.outputs.upload_url }}" >> $GITHUB_ENV
+
+      - name: Upload NSIS Smauglys installer
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: smauglys_installer.exe
+          asset_name: smauglys_installer-${{ env.TAG_NAME }}.exe
+          asset_content_type: application/octet-stream
