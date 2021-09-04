@@ -71,9 +71,9 @@ Section "Visual Studio Code" SEC02
   FileOpen $0 "$instdir\install-extensions.bat" w
   FileWrite $0 '@echo off$\r$\n'
   FileWrite $0 'set VSCODE_EXTENSIONS=$programfiles64\VS Code Extensions$\r$\n'
-  FileWrite $0 'call "$programfiles64\vscodium\bin\codium.cmd" --install-extension ms-python.python.vsix > e1.log$\r$\n'
-  FileWrite $0 'call "$programfiles64\vscodium\bin\codium.cmd" --install-extension hediet.debug-visualizer.vsix > e2.log$\r$\n'
-  FileWrite $0 'call "$programfiles64\vscodium\bin\codium.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix > e3.log$\r$\n'
+  FileWrite $0 'call "$programfiles64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix > e1.log$\r$\n'
+  FileWrite $0 'call "$programfiles64\Smauglys\bin\smauglys.cmd" --install-extension hediet.debug-visualizer.vsix > e2.log$\r$\n'
+  FileWrite $0 'call "$programfiles64\Smauglys\bin\smauglys.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix > e3.log$\r$\n'
   FileClose $0
 
   ExecWait "$instdir\install-extensions.bat"
