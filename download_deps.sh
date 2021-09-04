@@ -8,7 +8,7 @@ curl 'https://github.com/VSCodium/vscodium/releases/download/1.59.1/VSCodiumSetu
 # Download VS Code extensions
 mkdir vscode_extensions
 
-curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vakaras/vsextensions/vscode-language-pack-lt/1.59.1/vspackage' --compressed -Lo vscode_extensions/vakaras.vscode-language-pack-lt.vsix
+curl 'https://github.com/vakaras/vscode-language-pack-lt/releases/download/v-2021-09-04-1541/vscode-language-pack-lt.vsix' --compressed -Lo vscode_extensions/vakaras.vscode-language-pack-lt.vsix
 #curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-toolsai/vsextensions/jupyter/2021.8.1236758218/vspackage' --compressed -Lo vscode_extensions/ms-toolsai.jupyter.vsix
 # Download our translated version of the Python extension.
 curl 'https://github.com/vakaras/vscode-python/releases/download/v-2021-09-04-1253/ms-python-v-2021-09-04-1253.vsix' --compressed -Lo vscode_extensions/ms-python.python.vsix
