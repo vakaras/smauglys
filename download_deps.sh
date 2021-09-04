@@ -10,7 +10,8 @@ mkdir vscode_extensions
 
 curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/vakaras/vsextensions/vscode-language-pack-lt/1.59.1/vspackage' --compressed -Lo vscode_extensions/vakaras.vscode-language-pack-lt.vsix
 #curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-toolsai/vsextensions/jupyter/2021.8.1236758218/vspackage' --compressed -Lo vscode_extensions/ms-toolsai.jupyter.vsix
-curl 'https://open-vsx.org/api/ms-python/python/2020.10.332292344/file/ms-python.python-2020.10.332292344.vsix' --compressed -Lo vscode_extensions/ms-python.python.vsix
+# Download our translated version of the Python extension.
+curl 'https://github.com/vakaras/vscode-python/releases/download/v-2021-09-04-1207/ms-python-v-2021-09-04-1207.vsix' --compressed -Lo vscode_extensions/ms-python.python.vsix
 curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.2.4/vspackage' --compressed -Lo vscode_extensions/hediet.debug-visualizer.vsix
 
 # Download Python
