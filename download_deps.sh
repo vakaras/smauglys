@@ -3,7 +3,7 @@
 set -e
 
 # Download VS Codium
-curl 'https://github.com/VSCodium/vscodium/releases/download/1.59.1/VSCodiumSetup-x64-1.59.1.exe' -Lo VSCodeSetup.exe
+curl 'https://github.com/vakaras/smauglys-ide/releases/download/1.59.1/SmauglysSetup-x64-1.59.1.exe' -Lo VSCodeSetup.exe
 
 # Download VS Code extensions
 mkdir vscode_extensions
