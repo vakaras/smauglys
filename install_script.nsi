@@ -94,7 +94,7 @@ Section "Visual Studio Code" SEC02
 
   ExecWait "$instdir\install-extensions.bat"
 
-  IfErrors handleError
+  ClearErrors
 
   File "vscode_monkey.py"
 
