@@ -50,11 +50,21 @@ Section -SETTINGS
 SectionEnd
 
 Section "Python 3.8" SEC01
+  ClearErrors
   File "PythonInstaller.exe"
   File "requirements.txt"
   File /r "python_packages\"
   ExecWait '"$INSTDIR\PythonInstaller.exe" /passive InstallAllUsers=1 PrependPath=1'
+  IfErrors handleError
   ExecWait '"$programfiles64\Python38\python.exe" -m pip install --no-index --find-links "$INSTDIR" -r "$INSTDIR\requirements.txt"'
+  IfErrors handleError
+  
+  Return
+  
+  handleError:
+    MessageBox MB_OK "Nepavyko instaliuoti Python 3.8: Patikrinkite, ar veikia internetas, ir bandykite dar kartą"
+    Quit
+	
 SectionEnd
  
 Section "Visual Studio Code" SEC02
@@ -64,9 +74,13 @@ Section "Visual Studio Code" SEC02
   File "VSCodeSetup.exe"
   ExecWait '"$INSTDIR\VSCodeSetup.exe" /LOG="$instdir\l1.txt" /ALLUSERS /SILENT /MERGETASKS=!runcode,desktopicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles'
 
+  IfErrors handleError
+
   File "vscode_extensions\ms-python.python.vsix"
   File "vscode_extensions\hediet.debug-visualizer.vsix"
   File "vscode_extensions\vakaras.vscode-language-pack-lt.vsix"
+
+  IfErrors handleError
 
   FileOpen $0 "$instdir\install-extensions.bat" w
   FileWrite $0 '@echo off$\r$\n'
@@ -76,11 +90,23 @@ Section "Visual Studio Code" SEC02
   FileWrite $0 'call "$programfiles64\Smauglys\bin\smauglys.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix > e3.log$\r$\n'
   FileClose $0
 
+  IfErrors handleError
+
   ExecWait "$instdir\install-extensions.bat"
+
+  IfErrors handleError
 
   File "vscode_monkey.py"
 
   ExecWait '"$programfiles64\Python38\python.exe" vscode_monkey.py "$programfiles64\VS Code Extensions" "$instdir\monkey.log"'
+  IfErrors handleError
+  
+  Return
+  
+  handleError:
+    MessageBox MB_OK "Nepavyko instaliuoti kodo redaktoriaus. Bandykite dar kartą."
+    Quit
+  
 SectionEnd
 
 ; only needed to dump entire log somewhere
