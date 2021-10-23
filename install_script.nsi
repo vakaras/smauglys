@@ -56,7 +56,7 @@ Section "Python 3.8" SEC01
   File /r "python_packages\"
   ExecWait '"$INSTDIR\PythonInstaller.exe" /passive InstallAllUsers=1 PrependPath=1'
   IfErrors handleError
-  ExecWait '"$programfiles64\Python38\python.exe" -m pip install --no-index --find-links "$INSTDIR" -r "$INSTDIR\requirements.txt"'
+  ExecWait '"$PROGRAMFILES64\Python38\python.exe" -m pip install --no-index --find-links "$INSTDIR" -r "$INSTDIR\requirements.txt"'
   IfErrors handleError
   
   Return
@@ -84,10 +84,10 @@ Section "Visual Studio Code" SEC02
 
   FileOpen $0 "$instdir\install-extensions.bat" w
   FileWrite $0 '@echo off$\r$\n'
-  FileWrite $0 'set VSCODE_EXTENSIONS=$programfiles64\VS Code Extensions$\r$\n'
-  FileWrite $0 'call "$programfiles64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix > e1.log$\r$\n'
-  FileWrite $0 'call "$programfiles64\Smauglys\bin\smauglys.cmd" --install-extension hediet.debug-visualizer.vsix > e2.log$\r$\n'
-  FileWrite $0 'call "$programfiles64\Smauglys\bin\smauglys.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix > e3.log$\r$\n'
+  FileWrite $0 'set VSCODE_EXTENSIONS=$PROGRAMFILES64\VS Code Extensions$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix > e1.log$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension hediet.debug-visualizer.vsix > e2.log$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix > e3.log$\r$\n'
   FileClose $0
 
   IfErrors handleError
@@ -98,7 +98,7 @@ Section "Visual Studio Code" SEC02
 
   File "vscode_monkey.py"
 
-  ExecWait '"$programfiles64\Python38\python.exe" vscode_monkey.py "$programfiles64\VS Code Extensions" "$instdir\monkey.log"'
+  ExecWait '"$PROGRAMFILES64\Python38\python.exe" vscode_monkey.py "$PROGRAMFILES64\VS Code Extensions" "$instdir\monkey.log"'
   IfErrors handleError
   
   Return

@@ -3,7 +3,8 @@
 set -e
 
 # Download VS Codium
-curl 'https://github.com/vakaras/smauglys-ide/releases/download/1.59.1/SmauglysSetup-x64-1.59.1.exe' -Lo VSCodeSetup.exe
+curl 'https://github.com/vakaras/smauglys-ide/releases/download/1.59.1/SmauglysSetup-x64-1.59.1.exe' -Lo VSCodeSetup-x64.exe
+curl 'https://github.com/vakaras/smauglys-ide/releases/download/1.59.1/SmauglysSetup-ia32-1.59.1.exe' -Lo VSCodeSetup-ia32.exe
 
 # Download VS Code extensions
 mkdir vscode_extensions
@@ -17,14 +18,25 @@ curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hedie
 # Download Python
 # Note: We have to use 3.8 because it is the latest version that is
 # still supported on Windows 7.
-curl 'https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe' -Lo PythonInstaller.exe
+curl 'https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe' -Lo PythonInstaller-x64.exe
 # For downloading dependencies we have to use exactly the same version
 # of Python.
 PYTHON_EXE="$RUNNER_TOOL_CACHE/Python/3.8.10/x64/python.exe"
 
-mkdir python_packages
-cd python_packages
+mkdir python_packages-x64
+cd python_packages-x64
 cp ../requirements.txt requirements.txt
 "$PYTHON_EXE" -m pip download -r requirements.txt
 cd ..
-ls -d python_packages/*
+
+curl 'https://www.python.org/ftp/python/3.8.10/python-3.8.10.exe' -Lo PythonInstaller-ia32.exe
+# For downloading dependencies we have to use exactly the same version
+# of Python.
+ls -d $RUNNER_TOOL_CACHE/Python/3.8.10/*
+PYTHON_EXE="$RUNNER_TOOL_CACHE/Python/3.8.10/x32/python.exe"
+
+mkdir python_packages-ia32
+cd python_packages-ia32
+cp ../requirements.txt requirements.txt
+"$PYTHON_EXE" -m pip download -r requirements.txt
+cd ..

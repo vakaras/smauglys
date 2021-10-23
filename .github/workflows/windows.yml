@@ -29,8 +29,28 @@ jobs:
         shell: bash
       - name: Extract NSIS Plugins
         run: Expand-Archive -LiteralPath 'EnVar_plugin.zip' -DestinationPath 'C:\Program Files (x86)\NSIS'
-      - name: Create installer
-        run: makensis install_script.nsi
+      - name: Prepare x64 installer script
+        run: |
+            sed \
+                -e 's/PythonInstaller.exe/PythonInstaller-x64.exe/g' \
+                -e 's/python_packages/python_packages-x64/g' \
+                -e 's/VSCodeSetup.exe/VSCodeSetup-x64.exe/g' \
+                -e 's/smauglys_installer.exe/smauglys_installer-x64.exe/g' \
+                install_script.nsi > install_script_x64.nsi
+      - name: Prepare ia32 installer script
+        run: |
+            sed \
+                -e 's/PythonInstaller.exe/PythonInstaller-ia32.exe/g' \
+                -e 's/python_packages/python_packages-ia32/g' \
+                -e 's/VSCodeSetup.exe/VSCodeSetup-ia32.exe/g' \
+                -e 's/smauglys_installer.exe/smauglys_installer-ia32.exe/g' \
+                -e 's/PROGRAMFILES64/PROGRAMFILES/g' \
+                install_script.nsi > install_script_ia32.nsi
+        shell: bash
+      - name: Create x64 installer
+        run: makensis install_script_x64.nsi
+      - name: Create ia32 installer
+        run: makensis install_script_ia32.nsi
 
       - name: Create release tag
         shell: bash
@@ -53,12 +73,22 @@ jobs:
         shell: bash
         run: echo "UPLOAD_URL=${{ steps.create_nightly_release.outputs.upload_url }}" >> $GITHUB_ENV
 
-      - name: Upload NSIS Smauglys installer
+      - name: Upload NSIS x64 Smauglys installer
         uses: actions/upload-release-asset@v1.0.2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ env.UPLOAD_URL }}
-          asset_path: smauglys_installer.exe
-          asset_name: smauglys_installer-${{ env.TAG_NAME }}.exe
+          asset_path: smauglys_installer-x64.exe
+          asset_name: smauglys_installer-x64-${{ env.TAG_NAME }}.exe
+          asset_content_type: application/octet-stream
+
+      - name: Upload NSIS ia32 Smauglys installer
+        uses: actions/upload-release-asset@v1.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ env.UPLOAD_URL }}
+          asset_path: smauglys_installer-ia32.exe
+          asset_name: smauglys_installer-ia32-${{ env.TAG_NAME }}.exe
           asset_content_type: application/octet-stream
