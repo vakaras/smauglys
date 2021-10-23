@@ -43,6 +43,7 @@ jobs:
             sed \
                 -e 's/PythonInstaller.exe/PythonInstaller-ia32.exe/g' \
                 -e 's/python_packages/python_packages-ia32/g' \
+                -e 's/Python38/Python38-32/g' \
                 -e 's/VSCodeSetup.exe/VSCodeSetup-ia32.exe/g' \
                 -e 's/smauglys_installer.exe/smauglys_installer-ia32.exe/g' \
                 -e 's/PROGRAMFILES64/PROGRAMFILES/g' \
