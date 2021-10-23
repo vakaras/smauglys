@@ -67,7 +67,7 @@ paleidę Smauglį, palaukite kol jis pilnai pasileis ir vėl uždarykite.
 1. Paleiskite Smauglį.
 2. Sukurkite naują failą: *Failas* → *New File*.
 3. Išsaugokite failą kaip `bandymas.py`: *Failas* → *Save* → pasirinkite aplanką
-   kuriame norite išsaugoti → įveskite failo pavadinmą `bandymas.py` → *Save*.
+   kuriame norite išsaugoti → įveskite failo pavadinimą `bandymas.py` → *Save*.
 
 * [ ] Apačioje esančios būsenos juostos kairiajame kampe turėtų atsirasti
   užrašas `Python 3.8.10`.
@@ -169,7 +169,7 @@ vykdyti('U2_a.txt', 'U2rez_a.txt')
 ```
 
 1. Paleiskite programą derinimo rėžimu: *Vykdyti* → *Start Debugging* (arba *F5*).
-2. Iššokiusioje lentelėje *Debug Configuration* pasirinkite numatytąją opciją
+2. Iššokusioje lentelėje *Debug Configuration* pasirinkite numatytąją opciją
    *Python file*.
 
    * [ ] Programa turėtų pasileisti ir eilutėje `with open(duomenų_failo_vardas) as
