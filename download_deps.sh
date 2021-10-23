@@ -32,8 +32,7 @@ cd ..
 curl 'https://www.python.org/ftp/python/3.8.10/python-3.8.10.exe' -Lo PythonInstaller-ia32.exe
 # For downloading dependencies we have to use exactly the same version
 # of Python.
-ls "$RUNNER_TOOL_CACHE/Python/3.8.10/"
-PYTHON_EXE="$RUNNER_TOOL_CACHE/Python/3.8.10/x32/python.exe"
+PYTHON_EXE="$RUNNER_TOOL_CACHE/Python/3.8.10/x86/python.exe"
 
 mkdir python_packages-ia32
 cd python_packages-ia32
