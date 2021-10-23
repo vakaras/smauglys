@@ -37,6 +37,7 @@ jobs:
                 -e 's/VSCodeSetup.exe/VSCodeSetup-x64.exe/g' \
                 -e 's/smauglys_installer.exe/smauglys_installer-x64.exe/g' \
                 install_script.nsi > install_script_x64.nsi
+        shell: bash
       - name: Prepare ia32 installer script
         run: |
             sed \
