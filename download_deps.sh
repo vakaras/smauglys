@@ -14,6 +14,7 @@ curl 'https://github.com/vakaras/vscode-language-pack-lt/releases/download/v-202
 # Download our translated version of the Python extension.
 curl 'https://github.com/vakaras/vscode-python/releases/download/v-2021-09-04-1253/ms-python-v-2021-09-04-1253.vsix' --compressed -Lo vscode_extensions/ms-python.python.vsix
 curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.2.4/vspackage' --compressed -Lo vscode_extensions/hediet.debug-visualizer.vsix
+curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/formulahendry/vsextensions/code-runner/0.11.6/vspackage' --compressed -Lo vscode_extensions/formulahendry.code-runner.vsix
 
 # Download Python
 # Note: We have to use 3.8 because it is the latest version that is
