@@ -81,8 +81,8 @@ def main(extensions_dir, log_path):
         global LOG_FILE
         LOG_FILE = log_file
         try:
-            enable_mypy(extensions_dir, log_file)
-            configure_code_runner(extensions_dir, log_file)
+            enable_mypy(extensions_dir)
+            configure_code_runner(extensions_dir)
         except Exception as e:
             log_file.write("An exception occured:\n")
             log_file.write(traceback.format_exc())
