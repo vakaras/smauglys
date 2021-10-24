@@ -72,6 +72,22 @@ def configure_code_runner(extensions_dir):
         ),
         False
     )
+    set_value(
+        package_info,
+        (
+            "contributes", "configuration", "properties",
+            "code-runner.saveAllFilesBeforeRun", "default"
+        ),
+        True
+    )
+    set_value(
+        package_info,
+        (
+            "contributes", "configuration", "properties",
+            "code-runner.saveFileBeforeRun", "default"
+        ),
+        True
+    )
     with open(package_json_path, 'w') as fp:
         json.dump(package_info, fp, indent='\t')
     log("[exit] configure_code_runner")
