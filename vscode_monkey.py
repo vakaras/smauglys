@@ -86,6 +86,7 @@ def main(extensions_dir, log_path):
         except Exception as e:
             log_file.write("An exception occured:\n")
             log_file.write(traceback.format_exc())
+            raise
 
 if __name__ == "__main__":
     main(*sys.argv[1:])
