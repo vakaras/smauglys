@@ -7,7 +7,7 @@ curl 'https://github.com/vakaras/smauglys-ide/releases/download/1.59.1/SmauglysS
 curl 'https://github.com/vakaras/smauglys-ide/releases/download/1.59.1/SmauglysSetup-ia32-1.59.1.exe' -Lo VSCodeSetup-ia32.exe
 
 # Download VS Code extensions
-mkdir vscode_extensions
+mkdir -p vscode_extensions
 
 curl 'https://github.com/vakaras/vscode-language-pack-lt/releases/download/v-2021-09-04-1742/vscode-language-pack-lt.vsix' --compressed -Lo vscode_extensions/vakaras.vscode-language-pack-lt.vsix
 #curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-toolsai/vsextensions/jupyter/2021.8.1236758218/vspackage' --compressed -Lo vscode_extensions/ms-toolsai.jupyter.vsix
@@ -24,7 +24,7 @@ curl 'https://www.python.org/ftp/python/3.8.10/python-3.8.10-amd64.exe' -Lo Pyth
 # of Python.
 PYTHON_EXE="$RUNNER_TOOL_CACHE/Python/3.8.10/x64/python.exe"
 
-mkdir python_packages-x64
+mkdir -p python_packages-x64
 cd python_packages-x64
 cp ../requirements.txt requirements.txt
 "$PYTHON_EXE" -m pip download -r requirements.txt
@@ -35,7 +35,7 @@ curl 'https://www.python.org/ftp/python/3.8.10/python-3.8.10.exe' -Lo PythonInst
 # of Python.
 PYTHON_EXE="$RUNNER_TOOL_CACHE/Python/3.8.10/x86/python.exe"
 
-mkdir python_packages-ia32
+mkdir -p python_packages-ia32
 cd python_packages-ia32
 cp ../requirements.txt requirements.txt
 "$PYTHON_EXE" -m pip download -r requirements.txt

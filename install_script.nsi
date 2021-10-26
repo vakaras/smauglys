@@ -1,4 +1,4 @@
-!define PRODUCT_NAME "Smauglys"
+﻿!define PRODUCT_NAME "Smauglys"
 !define PRODUCT_VERSION "1.0"
 !define PRODUCT_PUBLISHER "Vytautas Astrauskas, Martynas Teleiša, Mantas Urbonas"
 
@@ -52,19 +52,51 @@ SectionEnd
 Section "Python 3.8" SEC01
   ClearErrors
   File "PythonInstaller.exe"
-  File "requirements.txt"
-  File /r "python_packages\"
-  ExecWait '"$INSTDIR\PythonInstaller.exe" /passive InstallAllUsers=1 PrependPath=1'
-  IfErrors handleError
-  ExecWait '"$PROGRAMFILES64\Python38\python.exe" -m pip install --no-index --find-links "$INSTDIR" -r "$INSTDIR\requirements.txt"'
-  IfErrors handleError
   
+  ; Install Python.
+  ExecWait '"$INSTDIR\PythonInstaller.exe" /passive InstallAllUsers=1 PrependPath=1' $0
+  IfErrors handleErrorInstallPython
+  DetailPrint "Success! $INSTDIR\PythonInstaller.exe completed without errors."
+  
+  ; Check if Python is successfully installed at the expected location.
+  ; It might have only updated if user already had Python installed locally.
+  IfFileExists "$programfiles64\Python38\python.exe" 0 pythonInstalledCheckFailed
   Return
-  
-  handleError:
+
+  pythonInstalledCheckFailed:
+    DetailPrint "Failed! Could not find: $programfiles64\Python38\python.exe after installing Python!"
+    Call WriteLogToFile
+    MessageBox MB_OK "Nepavyko instaliuoti Python 3.8: Patikrinkite, ar neturite jau instaliuoto Python, išdiekite ir bandykite dar kartą."
+    Quit
+
+  handleErrorInstallPython:
+    DetailPrint "Install Python returned with error code:$0"
+    Call WriteLogToFile
     MessageBox MB_OK "Nepavyko instaliuoti Python 3.8: Patikrinkite, ar veikia internetas, ir bandykite dar kartą"
     Quit
-	
+SectionEnd
+
+Section "Python 3.8 packages"
+  File "requirements.txt"
+  File /r "python_packages\"
+  
+  ; Install Python packages. Log output.
+  nsExec::ExecToLog '"$PROGRAMFILES64\Python38\python.exe" -m pip install --no-index --find-links "$INSTDIR" -r "$INSTDIR\requirements.txt"'
+  IfErrors handleErrorBeforeInstallPackages
+  Pop $0
+  DetailPrint "Install Python packages returned code:$0"
+  StrCmp $0 "0" 0 handleErrorInstallPackages
+  Return
+
+  handleErrorBeforeInstallPackages:
+    Call WriteLogToFile
+    MessageBox MB_OK "Nepavyko paleisti Python paketų instaliavimo."
+    Quit
+
+  handleErrorInstallPackages:
+    Call WriteLogToFile
+    MessageBox MB_OK "Nepavyko instaliuoti Python paketų."
+    Quit
 SectionEnd
  
 Section "Visual Studio Code" SEC02
@@ -111,7 +143,15 @@ Section "Visual Studio Code" SEC02
   
 SectionEnd
 
-; only needed to dump entire log somewhere
+Function WriteLogToFile
+  DetailPrint "Log written to: $exedir\install.log"
+  StrCpy $0 "$exedir\install.log"
+  Push $0
+  Call DumpLog
+FunctionEnd
+
+; Dumps the log of the installer to a specified file.
+; https://nsis.sourceforge.io/Dump_log_to_file
 Function DumpLog
   Exch $5
   Push $0
@@ -157,7 +197,5 @@ Section "Remove temp files" SEC03
   SetOutPath $TEMP
   RMDir /r /REBOOTOK $TEMP\Smauglys
 
-  StrCpy $0 "$exedir\install.log"
-  Push $0
-  Call DumpLog
+  Call WriteLogToFile
 SectionEnd
