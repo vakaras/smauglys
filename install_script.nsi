@@ -60,11 +60,11 @@ Section "Python 3.8" SEC01
   
   ; Check if Python is successfully installed at the expected location.
   ; It might have only updated if user already had Python installed locally.
-  IfFileExists "$programfiles64\Python38\python.exe" 0 pythonInstalledCheckFailed
+  IfFileExists "$PROGRAMFILES64\Python38\python.exe" 0 pythonInstalledCheckFailed
   Return
 
   pythonInstalledCheckFailed:
-    DetailPrint "Failed! Could not find: $programfiles64\Python38\python.exe after installing Python!"
+    DetailPrint "Failed! Could not find: $PROGRAMFILES64\Python38\python.exe after installing Python!"
     Call WriteLogToFile
     MessageBox MB_OK "Nepavyko instaliuoti Python 3.8: Patikrinkite, ar neturite jau instaliuoto Python, išdiekite ir bandykite dar kartą."
     Quit
