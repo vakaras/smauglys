@@ -1,6 +1,7 @@
 #!/bin/bash
 
 set -e
+set -v
 
 # Download VS Codium
 curl 'https://github.com/vakaras/smauglys-ide/releases/download/1.59.1/SmauglysSetup-x64-1.59.1.exe' -Lo VSCodeSetup-x64.exe
@@ -20,10 +21,22 @@ OLD_PWD=$(pwd)
 
 mkdir -p "$TEMP/extension_test"
 cd "$TEMP/extension_test"
+mkdir vscode-language-pack-lt
+cd vscode-language-pack-lt
 unzip "$OLD_PWD/vscode_extensions/vakaras.vscode-language-pack-lt.vsix"
+cd ..
+mkdir ms-python.python
+cd ms-python.python
 unzip "$OLD_PWD/vscode_extensions/ms-python.python.vsix"
+cd ..
+mkdir hediet.debug-visualizer
+cd hediet.debug-visualizer
 unzip "$OLD_PWD/vscode_extensions/hediet.debug-visualizer.vsix"
+cd ..
+mkdir code-runner
+cd code-runner
 unzip "$OLD_PWD/vscode_extensions/formulahendry.code-runner.vsix"
+cd ..
 
 cd "$OLD_PWD"
 
