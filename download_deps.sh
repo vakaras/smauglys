@@ -5,9 +5,11 @@ try_download_package () {
 	for I in {1..20}
 	do
 		curl $1 --compressed -Lo $2
-		size=$(wc -c ./$2 | awk '{print $1}')
-		if((size<2000)); then
-			echo "File is corrupt, retrying in 5 seconds"
+		hash=$(md5sum $2 | awk '{print $1}')
+		if [ $hash != $3 ]; then
+			echo $hash
+			echo $3
+			echo "File hash does not match, retrying in 5 seconds"
 			sleep 5
 		else
 			break # File size seems ok, break out of retry loop.
@@ -25,12 +27,12 @@ curl 'https://github.com/vakaras/smauglys-ide/releases/download/1.59.1/SmauglysS
 # Download VS Code extensions
 mkdir -p vscode_extensions
 
-try_download_package 'https://github.com/vakaras/vscode-language-pack-lt/releases/download/v-2021-09-04-1742/vscode-language-pack-lt.vsix' 'vscode_extensions/vakaras.vscode-language-pack-lt.vsix'
+try_download_package 'https://github.com/vakaras/vscode-language-pack-lt/releases/download/v-2021-09-04-1742/vscode-language-pack-lt.vsix' 'vscode_extensions/vakaras.vscode-language-pack-lt.vsix' '58a9ee12c5336658a38ccb40f1ec3e9a'
 #curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-toolsai/vsextensions/jupyter/2021.8.1236758218/vspackage' --compressed -Lo vscode_extensions/ms-toolsai.jupyter.vsix
 # Download our translated version of the Python extension.
-try_download_package 'https://github.com/vakaras/vscode-python/releases/download/v-2021-09-04-1253/ms-python-v-2021-09-04-1253.vsix' 'vscode_extensions/ms-python.python.vsix'
-try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.2.4/vspackage' 'vscode_extensions/hediet.debug-visualizer.vsix'
-try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/formulahendry/vsextensions/code-runner/0.11.6/vspackage' 'vscode_extensions/formulahendry.code-runner.vsix'
+try_download_package 'https://github.com/vakaras/vscode-python/releases/download/v-2021-09-04-1253/ms-python-v-2021-09-04-1253.vsix' 'vscode_extensions/ms-python.python.vsix' '1fb74bc6c7b91b7bb46a478befa21411'
+try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.2.4/vspackage' 'vscode_extensions/hediet.debug-visualizer.vsix' 'b0265083182fcb1eb5aa7d1e0a4ac261'
+try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/formulahendry/vsextensions/code-runner/0.11.6/vspackage' 'vscode_extensions/formulahendry.code-runner.vsix' 'e723abf6bf6ef353c89920822e79b6d0'
 
 OLD_PWD=$(pwd)
 
