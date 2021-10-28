@@ -16,6 +16,17 @@ curl 'https://github.com/vakaras/vscode-python/releases/download/v-2021-09-04-12
 curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.2.4/vspackage' --compressed -Lo vscode_extensions/hediet.debug-visualizer.vsix
 curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/formulahendry/vsextensions/code-runner/0.11.6/vspackage' --compressed -Lo vscode_extensions/formulahendry.code-runner.vsix
 
+OLD_PWD=$(pwd)
+
+mkdir -p "$TEMP/extension_test"
+cd "$TEMP/extension_test"
+unzip "$OLD_PWD/vscode_extensions/vakaras.vscode-language-pack-lt.vsix"
+unzip "$OLD_PWD/vscode_extensions/ms-python.python.vsix"
+unzip "$OLD_PWD/vscode_extensions/hediet.debug-visualizer.vsix"
+unzip "$OLD_PWD/vscode_extensions/formulahendry.code-runner.vsix"
+
+cd "$OLD_PWD"
+
 # Download Python
 # Note: We have to use 3.8 because it is the latest version that is
 # still supported on Windows 7.
