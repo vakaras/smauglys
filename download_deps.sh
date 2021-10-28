@@ -1,5 +1,20 @@
 #!/bin/bash
 
+# Tries to download a packages, retries when file seems too small.
+try_download_package () {
+	for I in {1..20}
+	do
+		curl $1 --compressed -Lo $2
+		size=$(wc -c ./$2 | awk '{print $1}')
+		if((size<2000)); then
+			echo "File is corrupt, retrying in 5 seconds"
+			sleep 5
+		else
+			break # File size seems ok, break out of retry loop.
+		fi
+	done
+}
+
 set -e
 set -v
 
@@ -10,32 +25,32 @@ curl 'https://github.com/vakaras/smauglys-ide/releases/download/1.59.1/SmauglysS
 # Download VS Code extensions
 mkdir -p vscode_extensions
 
-curl 'https://github.com/vakaras/vscode-language-pack-lt/releases/download/v-2021-09-04-1742/vscode-language-pack-lt.vsix' --compressed -Lo vscode_extensions/vakaras.vscode-language-pack-lt.vsix
+try_download_package 'https://github.com/vakaras/vscode-language-pack-lt/releases/download/v-2021-09-04-1742/vscode-language-pack-lt.vsix' 'vscode_extensions/vakaras.vscode-language-pack-lt.vsix'
 #curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-toolsai/vsextensions/jupyter/2021.8.1236758218/vspackage' --compressed -Lo vscode_extensions/ms-toolsai.jupyter.vsix
 # Download our translated version of the Python extension.
-curl 'https://github.com/vakaras/vscode-python/releases/download/v-2021-09-04-1253/ms-python-v-2021-09-04-1253.vsix' --compressed -Lo vscode_extensions/ms-python.python.vsix
-curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.2.4/vspackage' --compressed -Lo vscode_extensions/hediet.debug-visualizer.vsix
-curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/formulahendry/vsextensions/code-runner/0.11.6/vspackage' --compressed -Lo vscode_extensions/formulahendry.code-runner.vsix
+try_download_package 'https://github.com/vakaras/vscode-python/releases/download/v-2021-09-04-1253/ms-python-v-2021-09-04-1253.vsix' 'vscode_extensions/ms-python.python.vsix'
+try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.2.4/vspackage' 'vscode_extensions/hediet.debug-visualizer.vsix'
+try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/formulahendry/vsextensions/code-runner/0.11.6/vspackage' 'vscode_extensions/formulahendry.code-runner.vsix'
 
 OLD_PWD=$(pwd)
 
 mkdir -p "$TEMP/extension_test"
 cd "$TEMP/extension_test"
-mkdir vscode-language-pack-lt
+mkdir -p vscode-language-pack-lt	
 cd vscode-language-pack-lt
-unzip "$OLD_PWD/vscode_extensions/vakaras.vscode-language-pack-lt.vsix"
+unzip -o "$OLD_PWD/vscode_extensions/vakaras.vscode-language-pack-lt.vsix"
 cd ..
-mkdir ms-python.python
+mkdir -p ms-python.python
 cd ms-python.python
-unzip "$OLD_PWD/vscode_extensions/ms-python.python.vsix"
+unzip -o "$OLD_PWD/vscode_extensions/ms-python.python.vsix"
 cd ..
-mkdir hediet.debug-visualizer
+mkdir -p hediet.debug-visualizer
 cd hediet.debug-visualizer
-unzip "$OLD_PWD/vscode_extensions/hediet.debug-visualizer.vsix"
+unzip -o "$OLD_PWD/vscode_extensions/hediet.debug-visualizer.vsix"
 cd ..
-mkdir code-runner
+mkdir -p code-runner
 cd code-runner
-unzip "$OLD_PWD/vscode_extensions/formulahendry.code-runner.vsix"
+unzip -o "$OLD_PWD/vscode_extensions/formulahendry.code-runner.vsix"
 cd ..
 
 cd "$OLD_PWD"
