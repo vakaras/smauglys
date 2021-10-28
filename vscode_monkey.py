@@ -34,8 +34,8 @@ def find_package_json(extensions_dir, extension_prefix):
     log("[exit] find_package_json")
     return paths[0]
 
-def enable_mypy(extensions_dir):
-    log("[enter] enable_mypy(extensions_dir={})", extensions_dir)
+def configure_python(extensions_dir):
+    log("[enter] configure_python(extensions_dir={})", extensions_dir)
     package_json_path = find_package_json(extensions_dir, 'ms-python.python-')
     with open(package_json_path, 'r') as fp:
         package_info = json.load(fp)
@@ -47,9 +47,17 @@ def enable_mypy(extensions_dir):
         ),
         True
     )
+    set_value(
+        package_info,
+        (
+            "contributes", "configuration", "properties",
+            "python.defaultInterpreterPath", "default"
+        ),
+        sys.executable
+    )
     with open(package_json_path, 'w') as fp:
         json.dump(package_info, fp, indent='\t')
-    log("[exit] enable_mypy")
+    log("[exit] configure_python")
 
 def configure_code_runner(extensions_dir):
     log("[enter] configure_code_runner(extensions_dir={})", extensions_dir)
@@ -97,7 +105,7 @@ def main(extensions_dir, log_path):
         global LOG_FILE
         LOG_FILE = log_file
         try:
-            enable_mypy(extensions_dir)
+            configure_python(extensions_dir)
             configure_code_runner(extensions_dir)
         except Exception as e:
             log_file.write("An exception occured:\n")
