@@ -12,9 +12,10 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Download dependencies
-        run: ./download_deps.sh
+        run: |
+          curl 'https://github.com/vakaras/smauglys-ide/releases/download/1.59.1/SmauglysSetup-x64-1.59.1.exe' -Lo VSCodeSetup-x64.exe
         shell: bash
 
-      - name: Download dependencies
+      - name: Try installing Smauglys.
         run: ./VSCodeSetup.exe /LOG="$instdir\l1.txt" /ALLUSERS /SILENT
         shell: bash
