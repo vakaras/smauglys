@@ -3,9 +3,9 @@
 !define PRODUCT_PUBLISHER "Vytautas Astrauskas, Martynas Teleiša, Mantas Urbonas"
 
 SetCompressor lzma
- 
+
 ;!include "UserManagement.nsh"
-                           
+
 ; MUI 1.67 compatible ------
 !include "MUI.nsh"
 
@@ -24,7 +24,7 @@ SetCompressor lzma
 
 ; Language files
 !insertmacro MUI_LANGUAGE "English"
- 
+
 ; Reserve files
 !insertmacro MUI_RESERVEFILE_INSTALLOPTIONS
 
@@ -52,12 +52,12 @@ SectionEnd
 Section "Python 3.8" SEC01
   ClearErrors
   File "PythonInstaller.exe"
-  
+
   ; Install Python.
   ExecWait '"$INSTDIR\PythonInstaller.exe" /passive InstallAllUsers=1 PrependPath=1' $0
   IfErrors handleErrorInstallPython
   DetailPrint "Success! $INSTDIR\PythonInstaller.exe completed without errors."
-  
+
   ; Check if Python is successfully installed at the expected location.
   ; It might have only updated if user already had Python installed locally.
   IfFileExists "$PROGRAMFILES64\Python38\python.exe" 0 pythonInstalledCheckFailed
@@ -79,7 +79,7 @@ SectionEnd
 Section "Python 3.8 packages"
   File "requirements.txt"
   File /r "python_packages\"
-  
+
   ; Install Python packages. Log output.
   nsExec::ExecToLog '"$PROGRAMFILES64\Python38\python.exe" -m pip install --no-index --find-links "$INSTDIR" -r "$INSTDIR\requirements.txt"'
   IfErrors handleErrorBeforeInstallPackages
@@ -98,11 +98,11 @@ Section "Python 3.8 packages"
     MessageBox MB_OK "Nepavyko instaliuoti Python paketų."
     Quit
 SectionEnd
- 
+
 Section "Visual Studio Code" SEC02
   EnVar::SetHKLM
   EnVar::AddValue "VSCODE_EXTENSIONS" "$PROGRAMFILES64\VS Code Extensions"
-  
+
   File "VSCodeSetup.exe"
   ExecWait '"$INSTDIR\VSCodeSetup.exe" /LOG="$instdir\l1.txt" /ALLUSERS /SILENT /MERGETASKS=!runcode,desktopicon,addcontextmenufiles,addcontextmenufolders,associatewithfiles'
 
@@ -134,14 +134,23 @@ Section "Visual Studio Code" SEC02
 
   ExecWait '"$PROGRAMFILES64\Python38\python.exe" vscode_monkey.py "$PROGRAMFILES64\VS Code Extensions" "$PROGRAMFILES64\VS Code Extensions\monkey.log"'
   IfErrors handleError
-  
+
   Return
-  
+
   handleError:
     MessageBox MB_OK "Nepavyko instaliuoti kodo redaktoriaus. Bandykite dar kartą."
     Quit
-  
+
 SectionEnd
+
+Section "Python 3.8 documentation"
+  File "python3810.chm"
+
+  CopyFiles "$INSTDIR\python3810.chm" "$PROGRAMFILES64\Smauglys\python3810.chm"
+  SetShellVarContext all
+  CreateShortCut "$DESKTOP\Python Documentation.lnk" "$PROGRAMFILES64\Smauglys\python3810.chm"
+SectionEnd
+
 
 Function WriteLogToFile
   DetailPrint "Log written to: $exedir\install.log"
@@ -193,7 +202,7 @@ Function DumpLog
     Pop $5
 FunctionEnd
 
-Section "Remove temp files" SEC03                  
+Section "Remove temp files" SEC03
   SetOutPath $TEMP
   RMDir /r /REBOOTOK $TEMP\Smauglys
 

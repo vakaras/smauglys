@@ -81,3 +81,6 @@ cd python_packages-ia32
 cp ../requirements.txt requirements.txt
 "$PYTHON_EXE" -m pip download -r requirements.txt
 cd ..
+
+# Download Python documentation.
+curl 'https://www.python.org/ftp/python/3.8.10/python3810.chm' -Lo python3810.chm
