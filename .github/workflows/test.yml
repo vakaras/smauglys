@@ -1,0 +1,20 @@
+name: test
+
+on:
+  workflow_dispatch:
+  push:
+    branches: 'test'
+
+jobs:
+  windows:
+    runs-on: windows-2016
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Download dependencies
+        run: ./download_deps.sh
+        shell: bash
+
+      - name: Download dependencies
+        run: ./VSCodeSetup.exe /LOG="$instdir\l1.txt" /ALLUSERS /SILENT
+        shell: bash
