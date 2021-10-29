@@ -17,5 +17,5 @@ jobs:
         shell: bash
 
       - name: Try installing Smauglys.
-        run: ./VSCodeSetup.exe /LOG="$instdir\l1.txt" /ALLUSERS /SILENT
+        run: ./VSCodeSetup-x64.exe /LOG="$instdir\l1.txt" /ALLUSERS /SILENT
         shell: bash
