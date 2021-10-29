@@ -94,10 +94,3 @@ jobs:
           asset_path: smauglys_installer-ia32.exe
           asset_name: smauglys_installer-ia32-${{ env.TAG_NAME }}.exe
           asset_content_type: application/octet-stream
-
-      - name: Test installer
-        run: |
-          ./smauglys_installer-x64.exe /SD
-          ls "$PROGRAMFILES"
-          exit 1
-        shell: bash
