@@ -55,6 +55,14 @@ def configure_python(extensions_dir):
         ),
         sys.executable
     )
+    set_value(
+        package_info,
+        (
+            "contributes", "configuration", "properties",
+            "python.pythonPath", "default"
+        ),
+        sys.executable
+    )
     with open(package_json_path, 'w') as fp:
         json.dump(package_info, fp, indent='\t')
     log("[exit] configure_python")
