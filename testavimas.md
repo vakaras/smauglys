@@ -164,8 +164,9 @@ def vykdyti(duomenų_failo_vardas: str, rezultatų_failo_vardas: str) -> None:
 vykdyti('U2_a.txt', 'U2rez_a.txt')
 ```
 
-1. Paleiskite programą derinimo rėžimu: *Vykdyti* → *Start Debugging* (arba *F5*).
-2. Iššokusioje lentelėje *Debug Configuration* pasirinkite numatytąją opciją
+1. Išsaugokite failą kaip `egzaminas.py`.
+2. Paleiskite programą derinimo rėžimu: *Vykdyti* → *Start Debugging* (arba *F5*).
+3. Iššokusioje lentelėje *Debug Configuration* pasirinkite numatytąją opciją
    *Python file*.
 
    * [ ] Programa turėtų pasileisti ir eilutėje `with open(duomenų_failo_vardas) as
@@ -176,7 +177,7 @@ vykdyti('U2_a.txt', 'U2rez_a.txt')
      [Errno 2] No such file or directory: 'U2_a.txt'
      ```
 
-3. Sukurkite tekstinį failą `U2_a.txt` tame pačiame aplanke su tokiu turiniu:
+4. Sukurkite tekstinį failą `U2_a.txt` tame pačiame aplanke su tokiu turiniu:
 
    ```plain
    8
@@ -190,7 +191,7 @@ vykdyti('U2_a.txt', 'U2rez_a.txt')
    Laura Fizika 1 8
    ```
 
-4. Vėl paleiskite programą.
+5. Vėl paleiskite programą.
 
    * [ ] Programa turėtų pasileisti ir eilutėje `(vardas, pavadinimas,
      pažymių_skaičius, *pažymiai_simb) = eilutė.split()` turėtų atsirasti
@@ -201,27 +202,27 @@ vykdyti('U2_a.txt', 'U2rez_a.txt')
      not enough values to unpack (expected at least 3, got 1)
      ```
 
-5. Paspauskite ant tos eilutės, kurioje įvyko klaida, kairiau jos numerio.
+6. Paspauskite ant tos eilutės, kurioje įvyko klaida, kairiau jos numerio.
 
    * [ ] Turėtų atsirasti raudonas taškas rodantis, kad pavyko sukurti stabdos
      tašką.
 
-6. Vėl paleiskite programą.
+7. Vėl paleiskite programą.
 
    * [ ] Programa turėtų pasileisti ir vykdymas turėtų sustoti eilutėje su
      stabdos tašku.
 
-7. Kairėje ekrano pusėje esančioje `RUN AND DEBUG` skiltyje, kortelėje `WATCH`
+8. Kairėje ekrano pusėje esančioje `RUN AND DEBUG` skiltyje, kortelėje `WATCH`
    pridėkite `eilutė`.
 
    * [ ] Turėtų atsirasti toks užrašas: `eilutė: '8\n'`.
 
-8. Paspauskite ant raudono tuščio kvadrato esančio lango viršuje tam, kad
+9. Paspauskite ant raudono tuščio kvadrato esančio lango viršuje tam, kad
    nutrauktumėte programos derinimą.
 
-9. Paspauskite ant stabdos taško, kad jį pašalintumėte.
+10. Paspauskite ant stabdos taško, kad jį pašalintumėte.
 
-10. Pakeiskite funkciją `skaityti` į tokią:
+11. Pakeiskite funkciją `skaityti` į tokią:
 
     ```python
     def skaityti(duomenų_failas: TextIO, pamokos: List[Pamoka]) -> None:
@@ -239,7 +240,7 @@ vykdyti('U2_a.txt', 'U2rez_a.txt')
                 pamokos[indeksas].mokiniai.append(vardas)
     ```
 
-11. Vėl paleiskite programą.
+12. Vėl paleiskite programą.
 
     * [ ] Programa turėtų sėkmingai užbaigti darbą.
     * [ ] Po įvykdymo, programos aplanke turėtų būti failas `U2rez_a.txt` su
