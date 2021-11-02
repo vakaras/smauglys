@@ -34,6 +34,13 @@ def find_package_json(extensions_dir, extension_prefix):
     log("[exit] find_package_json")
     return paths[0]
 
+def replace_in_file(path, source, target):
+    with open(path) as fp:
+        text = fp.read()
+    result = text.replace(source, target)
+    with open(path, 'w') as fp:
+        fp.write(result)
+
 def configure_python(extensions_dir):
     log("[enter] configure_python(extensions_dir={})", extensions_dir)
     package_json_path = find_package_json(extensions_dir, 'ms-python.python-')
@@ -106,6 +113,11 @@ def configure_code_runner(extensions_dir):
     )
     with open(package_json_path, 'w') as fp:
         json.dump(package_info, fp, indent='\t')
+    images = os.path.join(os.path.dirname(package_json_path), 'images')
+    dark = os.path.join(images, 'run-dark.svg')
+    replace_in_file(dark, 'fill:none;stroke:#C5C5C5', 'fill:#5f9f00;stroke:#5f9f00')
+    light = os.path.join(images, 'run-light.svg')
+    replace_in_file(light, 'fill:none;stroke:#474748', 'fill:#5f9f00;stroke:#5f9f00')
     log("[exit] configure_code_runner")
 
 def main(extensions_dir, log_path):
