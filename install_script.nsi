@@ -208,3 +208,8 @@ Section "Remove temp files" SEC03
 
   Call WriteLogToFile
 SectionEnd
+
+section "uninstall"
+    delete "$PROGRAMFILES64\Smauglys\python3810.chm"
+    delete "$DESKTOP\Python Documentation.lnk"
+sectionEnd
