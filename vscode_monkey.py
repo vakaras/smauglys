@@ -54,6 +54,7 @@ def replace_in_file(path, source, target):
 def configure_python(extensions_dir):
     log("[enter] configure_python(extensions_dir={})", extensions_dir)
     package_json_path = find_package_json(extensions_dir, 'ms-python.python-')
+    replace_in_file(package_json_path, '"icon": "$(play)"', '"icon": { "dark": "resources/dark/play.svg", "light": "resources/light/play.svg" }')
     with open(package_json_path, 'r') as fp:
         package_info = json.load(fp)
     set_value(
@@ -98,7 +99,7 @@ def configure_python(extensions_dir):
                 "when": "python.hasActiveTensorBoardSession && !virtualWorkspace && shellExecutionSupported"
             },
             {
-                "command": "python.execInTerminal-icon-2",
+                "command": "python.execInTerminal-icon",
                 "group": "navigation@0",
                 "title": "%python.command.python.execInTerminal.title%",
                 "when": "resourceLangId == python && !isInDiffEditor && !virtualWorkspace && shellExecutionSupported"
@@ -110,21 +111,6 @@ def configure_python(extensions_dir):
                 "when": "resourceLangId == python && !isInDiffEditor && !virtualWorkspace && shellExecutionSupported"
             }
         ]
-    )
-    append_value(
-        package_info,
-        (
-            "contributes", "commands"
-        ),
-        {
-            "category": "Python",
-            "command": "python.execInTerminal-icon-2",
-            "icon": {
-                "dark": "resources/dark/play.svg",
-                "light": "resources/light/play.svg"
-            },
-            "title": "%python.command.python.execInTerminal.title%"
-        },
     )
     with open(package_json_path, 'w') as fp:
         json.dump(package_info, fp, indent='\t')
