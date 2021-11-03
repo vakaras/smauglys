@@ -14,6 +14,11 @@ def set_value(obj, path, value):
         obj = obj[part]
     obj[path[-1]] = value
 
+def append_value(obj, path, value):
+    for part in path[:-1]:
+        obj = obj[part]
+    obj[path[-1]].append(value)
+
 def delete_value(obj, path, value):
     for part in path[:-1]:
         obj = obj[part]
@@ -75,8 +80,65 @@ def configure_python(extensions_dir):
         ),
         sys.executable
     )
+    delete_value(
+        package_info,
+        (
+            "contributes", "menus", "editor/title/run",
+        ),
+    )
+    set_value(
+        package_info,
+        (
+            "contributes", "menus", "editor/title",
+        ),
+        [
+            {
+                "command": "python.refreshTensorBoard",
+                "group": "navigation@0",
+                "when": "python.hasActiveTensorBoardSession && !virtualWorkspace && shellExecutionSupported"
+            },
+            {
+                "command": "python.execInTerminal-icon-2",
+                "group": "navigation@0",
+                "title": "%python.command.python.execInTerminal.title%",
+                "when": "resourceLangId == python && !isInDiffEditor && !virtualWorkspace && shellExecutionSupported"
+            },
+            {
+                "command": "python.debugInTerminal",
+                "group": "navigation@1",
+                "title": "%python.command.python.debugInTerminal.title%",
+                "when": "resourceLangId == python && !isInDiffEditor && !virtualWorkspace && shellExecutionSupported"
+            }
+        ]
+    )
+    append_value(
+        package_info,
+        (
+            "contributes", "commands"
+        ),
+        {
+            "category": "Python",
+            "command": "python.execInTerminal-icon-2",
+            "icon": {
+                "dark": "resources/dark/play.svg",
+                "light": "resources/light/play.svg"
+            },
+            "title": "%python.command.python.execInTerminal.title%"
+        },
+    )
     with open(package_json_path, 'w') as fp:
         json.dump(package_info, fp, indent='\t')
+    resources = os.path.join(os.path.dirname(package_json_path), 'resources')
+    dark = os.path.join(resources, 'dark', 'play.svg')
+    with open(dark, 'w') as fp:
+        fp.write(r'''<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M 4,2 V 14.4805 L 12.9146,8.24024 Z" fill="green"/>
+</svg>''')
+    light = os.path.join(resources, 'light', 'play.svg')
+    with open(light, 'w') as fp:
+        fp.write(r'''<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M 4,2 V 14.4805 L 12.9146,8.24024 Z" fill="green"/>
+</svg>''')
     log("[exit] configure_python")
 
 def configure_code_runner(extensions_dir):
