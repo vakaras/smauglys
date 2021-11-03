@@ -14,6 +14,11 @@ def set_value(obj, path, value):
         obj = obj[part]
     obj[path[-1]] = value
 
+def delete_value(obj, path, value):
+    for part in path[:-1]:
+        obj = obj[part]
+    del obj[path[-1]]
+
 def find_package_json(extensions_dir, extension_prefix):
     log(
         "[enter] find_package_json(extensions_dir={}, extension_prefix={})",
@@ -110,6 +115,29 @@ def configure_code_runner(extensions_dir):
             "code-runner.saveFileBeforeRun", "default"
         ),
         True
+    )
+    delete_value(
+        package_info,
+        (
+            "contributes", "menus", "editor/title/run",
+        ),
+    )
+    set_value(
+        package_info,
+        (
+            "contributes", "menus", "editor/title",
+        ),
+        [
+            {
+                "command": "code-runner.run",
+                "group": "navigation"
+            },
+            {
+                "when": "code-runner.codeRunning",
+                "command": "code-runner.stop",
+                "group": "navigation"
+            }
+        ]
     )
     with open(package_json_path, 'w') as fp:
         json.dump(package_info, fp, indent='\t')
