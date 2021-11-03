@@ -118,12 +118,12 @@ def configure_python(extensions_dir):
     dark = os.path.join(resources, 'dark', 'play.svg')
     with open(dark, 'w') as fp:
         fp.write(r'''<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M 4,2 V 14.4805 L 12.9146,8.24024 Z" fill="green"/>
+<path d="M 2.3771594,0.12798595 V 15.872014 L 13.622841,7.9999873 Z" fill="#5f9f00"/>
 </svg>''')
     light = os.path.join(resources, 'light', 'play.svg')
     with open(light, 'w') as fp:
         fp.write(r'''<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-<path d="M 4,2 V 14.4805 L 12.9146,8.24024 Z" fill="green"/>
+<path d="M 2.3771594,0.12798595 V 15.872014 L 13.622841,7.9999873 Z" fill="#5f9f00"/>
 </svg>''')
     log("[exit] configure_python")
 
