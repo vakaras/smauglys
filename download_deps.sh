@@ -10,7 +10,7 @@ try_download_package () {
 			echo $hash
 			echo $3
 			echo "File hash does not match, retrying in 5 seconds"
-			sleep 5
+			sleep 60
 		else
 			break # File size seems ok, break out of retry loop.
 		fi
