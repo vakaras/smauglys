@@ -19,7 +19,7 @@ def append_value(obj, path, value):
         obj = obj[part]
     obj[path[-1]].append(value)
 
-def delete_value(obj, path, value):
+def delete_value(obj, path):
     for part in path[:-1]:
         obj = obj[part]
     del obj[path[-1]]
