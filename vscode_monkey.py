@@ -8,6 +8,7 @@ LOG_FILE=None
 
 def log(template, *args, **kwargs):
     LOG_FILE.write(template.format(*args, **kwargs) + '\n')
+    print(template.format(*args, **kwargs))
 
 def set_value(obj, path, value):
     for part in path[:-1]:

@@ -116,23 +116,22 @@ Section "Visual Studio Code" SEC02
   IfErrors handleError
 
   FileOpen $0 "$instdir\install-extensions.bat" w
-  FileWrite $0 '@echo off$\r$\n'
   FileWrite $0 'set VSCODE_EXTENSIONS=$PROGRAMFILES64\VS Code Extensions$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix > "$PROGRAMFILES64\Smauglys\e1.log"$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension hediet.debug-visualizer.vsix > "$PROGRAMFILES64\Smauglys\e2.log"$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension formulahendry.code-runner.vsix > "$PROGRAMFILES64\Smauglys\e3.log"$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix > "$PROGRAMFILES64\Smauglys\e4.log"$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension hediet.debug-visualizer.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension formulahendry.code-runner.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix$\r$\n'
   FileClose $0
 
   IfErrors handleError
 
-  ExecWait "$instdir\install-extensions.bat"
+  nsExec::ExecToLog "'$instdir\install-extensions.bat'"
 
-  ClearErrors
+  IfErrors handleError
 
   File "vscode_monkey.py"
 
-  ExecWait '"$PROGRAMFILES64\Python38\python.exe" vscode_monkey.py "$PROGRAMFILES64\VS Code Extensions" "$PROGRAMFILES64\VS Code Extensions\monkey.log"'
+  nsExec::ExecToLog '"$PROGRAMFILES64\Python38\python.exe" vscode_monkey.py "$PROGRAMFILES64\VS Code Extensions" "$PROGRAMFILES64\VS Code Extensions\monkey.log"'
   IfErrors handleError
 
   Return
