@@ -227,7 +227,9 @@ Section "Remove temp files" SEC03
   RMDir /r /REBOOTOK $TEMP\Smauglys
 
   DetailPrint "### Baigtas laikinų diegimo failų trynimas. ###"
-  Call WriteLogToFile
+  StrCpy $0 "$PROGRAMFILES64\Smauglys\install.log"
+  Push $0
+  Call DumpLog
   DetailPrint "### Baigtas diegimas. ###"
 SectionEnd
 
@@ -235,8 +237,9 @@ SectionEnd
 ;   SECTION: UNINSTALLER
 ; -----------------------------------------------
 Section "Uninstall"
-    delete "$PROGRAMFILES64\Smauglys\python3810.chm"
-    delete "$DESKTOP\Python Documentation.lnk"
+    delete /REBOOTOK "$PROGRAMFILES64\Smauglys\python3810.chm"
+    delete /REBOOTOK "$PROGRAMFILES64\Smauglys\install.log"
+    delete /REBOOTOK "$DESKTOP\Python Documentation.lnk"
 SectionEnd
 
 ; -----------------------------------------------
