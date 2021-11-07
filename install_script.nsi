@@ -198,11 +198,9 @@ SectionEnd
 ; -----------------------------------------------
 Section "Python 3.8 documentation"
   DetailPrint "### Pradedamas Python 3.8 dokumentacijos diegimas. ###"
-  File "python3810.chm"
 
-  CopyFiles "$INSTDIR\python3810.chm" "$PROGRAMFILES64\Smauglys\python3810.chm"
   SetShellVarContext all
-  CreateShortCut "$DESKTOP\Python Documentation.lnk" "$PROGRAMFILES64\Smauglys\python3810.chm"
+  CreateShortCut "$DESKTOP\Python Documentation.lnk" "$PROGRAMFILES64\Python38\Doc\python3810.chm"
   DetailPrint "### Baigtas Python 3.8 dokumentacijos diegimas. ###"
 SectionEnd
 
@@ -235,11 +233,12 @@ SectionEnd
 ;   SECTION: UNINSTALLER
 ; -----------------------------------------------
 Section "Uninstall"
-  delete /REBOOTOK "$PROGRAMFILES64\Smauglys\python3810.chm"
   delete /REBOOTOK "$PROGRAMFILES64\Smauglys\install.log"
   delete /REBOOTOK "$DESKTOP\Python Documentation.lnk"
   delete /REBOOTOK "$PROGRAMFILES64\Smauglys\smauglys_uninstall.exe"
   ExecWait '"$PROGRAMFILES64\Smauglys\unins000.exe" /SILENT'
+  RMDir /REBOOTOK "$PROGRAMFILES64\Smauglys"
+  EnVar::SetHKLM
   EnVar::Delete "VSCODE_EXTENSIONS"
   RMDir /r /REBOOTOK "$PROGRAMFILES64\VS Code Extensions"
 SectionEnd
