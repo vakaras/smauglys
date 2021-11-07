@@ -126,7 +126,7 @@ Section "Visual Studio Code" SEC02
   Var /GLOBAL extension3_log_path
   StrCpy $extension3_log_path "$PROGRAMFILES64\Smauglys\e3.log"
   Var /GLOBAL extension4_log_path
-  StrCpy $extension4_log_path "$instdir\$PROGRAMFILES64\Smauglys\e4.log"
+  StrCpy $extension4_log_path "$PROGRAMFILES64\Smauglys\e4.log"
   Var /GLOBAL vscode_setup_log_path
   StrCpy $vscode_setup_log_path "$instdir\l1.txt"
 
