@@ -121,14 +121,6 @@ Section "Visual Studio Code" SEC02
   EnVar::SetHKLM
   EnVar::AddValue "VSCODE_EXTENSIONS" "$PROGRAMFILES64\VS Code Extensions"
 
-  Var /GLOBAL extension1_log_path
-  StrCpy $extension1_log_path "$PROGRAMFILES64\Smauglys\e1.log"
-  Var /GLOBAL extension2_log_path
-  StrCpy $extension2_log_path "$PROGRAMFILES64\Smauglys\e2.log"
-  Var /GLOBAL extension3_log_path
-  StrCpy $extension3_log_path "$PROGRAMFILES64\Smauglys\e3.log"
-  Var /GLOBAL extension4_log_path
-  StrCpy $extension4_log_path "$PROGRAMFILES64\Smauglys\e4.log"
   Var /GLOBAL vscode_setup_log_path
   StrCpy $vscode_setup_log_path "$instdir\l1.txt"
 
@@ -147,20 +139,16 @@ Section "Visual Studio Code" SEC02
   FileOpen $0 "$instdir\install-extensions.bat" w
   FileWrite $0 'set VSCODE_EXTENSIONS=$PROGRAMFILES64\VS Code Extensions$\r$\n'
 
-  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix"$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension hediet.debug-visualizer.vsix > "$extension2_log_path"$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension formulahendry.code-runner.vsix > "$extension3_log_path"$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix > "$extension4_log_path"$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension hediet.debug-visualizer.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension formulahendry.code-runner.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix$\r$\n'
   FileClose $0
 
   IfErrors handleErrorBuildInstallExtensionsScript
 
   nsExec::ExecToLog "$instdir\install-extensions.bat"
   Pop $0
-  DetailPrint "Plėtinio 1 žurnalas: $extension1_log_path"
-  DetailPrint "Plėtinio 2 žurnalas: $extension2_log_path"
-  DetailPrint "Plėtinio 3 žurnalas: $extension3_log_path"
-  DetailPrint "Plėtinio 4 žurnalas: $extension4_log_path"
   StrCmp $0 "0" 0 handleErrorInstallExtensions
 
   ; Configure Visual Studio Code and extensions.
