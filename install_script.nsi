@@ -210,6 +210,7 @@ SectionEnd
 Section "Uninstaller creation"
   DetailPrint "### Kuriama išdiegimo programa. ###"
   Rename "$PROGRAMFILES64\Smauglys\unins000.exe" "$PROGRAMFILES64\Smauglys\unins000-orig.exe"
+  Rename "$PROGRAMFILES64\Smauglys\unins000.dat" "$PROGRAMFILES64\Smauglys\unins000-orig.dat"
   WriteUninstaller "$PROGRAMFILES64\Smauglys\unins000.exe"
   DetailPrint "### Išdiegimo programa sukurta. ###"
 SectionEnd
