@@ -207,6 +207,16 @@ Section "Python 3.8 documentation"
 SectionEnd
 
 ; -----------------------------------------------
+;   SECTION: Create uninstaller
+; -----------------------------------------------
+Section "Uninstaller creation"
+  DetailPrint "### Kuriama išdiegimo programa. ###"
+  WriteUninstaller "$PROGRAMFILES64\Smauglys\smauglys_uninstall.exe"
+  CreateShortCut "$SMPROGRAMS\Smauglys\Išdiegti Smauglys.lnk" "$PROGRAMFILES64\Smauglys\smauglys_uninstall.exe"
+  DetailPrint "### Išdiegimo programa sukurta. ###"
+SectionEnd
+
+; -----------------------------------------------
 ;   SECTION: REMOVE TEMPORARY FILES
 ; -----------------------------------------------
 Section "Remove temp files" SEC03
