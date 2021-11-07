@@ -161,8 +161,6 @@ Section "Visual Studio Code" SEC02
   DetailPrint "Plėtinio 4 žurnalas: $extension4_log_path"
   StrCmp $0 "0" 0 handleErrorInstallExtensions
 
-  IfErrors handleError
-
   ; Configure Visual Studio Code and extensions.
   File "vscode_monkey.py"
 
