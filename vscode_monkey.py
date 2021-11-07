@@ -186,6 +186,7 @@ def configure_code_runner(extensions_dir):
         ),
         [
             {
+                "when": "resourceLangId == python",
                 "command": "code-runner.run",
                 "group": "navigation"
             },
