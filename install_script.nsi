@@ -44,9 +44,11 @@ RequestExecutionLevel admin
 !endif
 
 Var main_install_log_path
+Var action_message
 
 Section -SETTINGS
   StrCpy $main_install_log_path "$INSTDIR\install.log"
+  StrCpy $action_message "$\r$\n Detalesnę informaciją apie tai kas įvyko galite rasti detalios informacijos laukelyje ir $main_install_log_path faile. Diegimo programą uždaryti galite paspausdami “Cancel” mygtuką."
   SetOutPath "$INSTDIR"
   SetOverwrite ifnewer
 SectionEnd
@@ -73,13 +75,13 @@ Section "Python 3.8" SEC01
   pythonInstalledCheckFailed:
     DetailPrint "Nepavyko! Nerastas: $PROGRAMFILES64\Python38\python.exe po Python diegimo!"
     Call WriteLogToFile
-    MessageBox MB_OK "Nepavyko įdiegti Python 3.8: Patikrinkite, ar neturite jau įdiegto Python, išdiekite ir bandykite dar kartą."
+    MessageBox MB_OK "Nepavyko įdiegti Python 3.8: Patikrinkite, ar neturite jau įdiegto Python, išdiekite ir bandykite dar kartą. $action_message"
     Abort
 
   handleErrorInstallPython:
     DetailPrint "Python diegimas baigė kodu:$0"
     Call WriteLogToFile
-    MessageBox MB_OK "Nepavyko įdiegti Python 3.8: Patikrinkite, ar veikia internetas, ir bandykite dar kartą"
+    MessageBox MB_OK "Nepavyko įdiegti Python 3.8: Patikrinkite, ar veikia internetas, ir bandykite dar kartą. $action_message"
     Abort
 SectionEnd
 
@@ -102,12 +104,12 @@ Section "Python 3.8 packages"
 
   handleErrorBeforeInstallPackages:
     Call WriteLogToFile
-    MessageBox MB_OK "Nepavyko paleisti Python paketų diegimo."
+    MessageBox MB_OK "Nepavyko paleisti Python paketų diegimo. $action_message"
     Abort
 
   handleErrorInstallPackages:
     Call WriteLogToFile
-    MessageBox MB_OK "Nepavyko įdiegti Python paketų."
+    MessageBox MB_OK "Nepavyko įdiegti Python paketų. $action_message"
     Abort
 SectionEnd
 
@@ -175,31 +177,31 @@ Section "Visual Studio Code" SEC02
   handleErrorVSCodeSetup:
     DetailPrint "Visual Studio Code diegimo žurnalas išsaugotas: $vscode_setup_log_path"
     Call WriteLogToFile
-    MessageBox MB_OK "Nepavyko įdiegti kodo redaktoriaus. Bandykite dar kartą."
+    MessageBox MB_OK "Nepavyko įdiegti kodo redaktoriaus. Bandykite dar kartą. $action_message"
     Abort
 
   handleErrorExtensionFiles:
     DetailPrint "Nepavyko paruošti plėtinių diegimo failų."
     Call WriteLogToFile
-    MessageBox MB_OK "Nepavyko paruošti plėtinių diegimo failų. Bandykite dar kartą."
+    MessageBox MB_OK "Nepavyko paruošti plėtinių diegimo failų. Bandykite dar kartą. $action_message"
     Abort
   
   handleErrorBuildInstallExtensionsScript:
     DetailPrint "Nepavyko paruošti install-extensions.bat."
     Call WriteLogToFile
-    MessageBox MB_OK "Nepavyko paruošti plėtinių diegimo programos. Bandykite dar kartą."
+    MessageBox MB_OK "Nepavyko paruošti plėtinių diegimo programos. Bandykite dar kartą. $action_message"
     Abort
 
   handleErrorInstallExtensions:
     DetailPrint "install-extensions.bat baigė kodu:$0"
     Call WriteLogToFile
-    MessageBox MB_OK "Nepavyko įdiegti plėtinių."
+    MessageBox MB_OK "Nepavyko įdiegti plėtinių. $action_message"
     Abort
 
   handleErrorPostInstallConfigure:
     DetailPrint "vscode_monkey.py baigė kodu:$0"
     Call WriteLogToFile
-    MessageBox MB_OK "Nepavyko sukonfigūruoti plėtinių."
+    MessageBox MB_OK "Nepavyko sukonfigūruoti plėtinių. $action_message"
     Abort
 SectionEnd
 
