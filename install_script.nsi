@@ -209,8 +209,8 @@ SectionEnd
 ; -----------------------------------------------
 Section "Uninstaller creation"
   DetailPrint "### Kuriama išdiegimo programa. ###"
-  WriteUninstaller "$PROGRAMFILES64\Smauglys\smauglys_uninstall.exe"
-  CreateShortCut "$SMPROGRAMS\Smauglys\Išdiegti Smauglys.lnk" "$PROGRAMFILES64\Smauglys\smauglys_uninstall.exe"
+  Rename "$PROGRAMFILES64\Smauglys\unins000.exe" "$PROGRAMFILES64\Smauglys\unins000-orig.exe"
+  WriteUninstaller "$PROGRAMFILES64\Smauglys\unins000.exe"
   DetailPrint "### Išdiegimo programa sukurta. ###"
 SectionEnd
 
@@ -235,8 +235,8 @@ SectionEnd
 Section "Uninstall"
   delete /REBOOTOK "$PROGRAMFILES64\Smauglys\install.log"
   delete /REBOOTOK "$DESKTOP\Python Documentation.lnk"
-  delete /REBOOTOK "$PROGRAMFILES64\Smauglys\smauglys_uninstall.exe"
-  ExecWait '"$PROGRAMFILES64\Smauglys\unins000.exe" /SILENT'
+  delete /REBOOTOK "$PROGRAMFILES64\Smauglys\unins000.exe"
+  ExecWait '"$PROGRAMFILES64\Smauglys\unins000-orig.exe" /SILENT'
   RMDir /REBOOTOK "$PROGRAMFILES64\Smauglys"
   EnVar::SetHKLM
   EnVar::Delete "VSCODE_EXTENSIONS"
