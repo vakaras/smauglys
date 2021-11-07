@@ -145,6 +145,14 @@ def configure_code_runner(extensions_dir):
         package_info,
         (
             "contributes", "configuration", "properties",
+            "code-runner.clearPreviousOutput", "default"
+        ),
+        True
+    )
+    set_value(
+        package_info,
+        (
+            "contributes", "configuration", "properties",
             "code-runner.showExecutionMessage", "default"
         ),
         False
