@@ -147,7 +147,7 @@ Section "Visual Studio Code" SEC02
   FileOpen $0 "$instdir\install-extensions.bat" w
   FileWrite $0 'set VSCODE_EXTENSIONS=$PROGRAMFILES64\VS Code Extensions$\r$\n'
 
-  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix > "$extension1_log_path"$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix"$\r$\n'
   FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension hediet.debug-visualizer.vsix > "$extension2_log_path"$\r$\n'
   FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension formulahendry.code-runner.vsix > "$extension3_log_path"$\r$\n'
   FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix > "$extension4_log_path"$\r$\n'
