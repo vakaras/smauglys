@@ -8,6 +8,7 @@ LOG_FILE=None
 
 def log(template, *args, **kwargs):
     LOG_FILE.write(template.format(*args, **kwargs) + '\n')
+    print(template.format(*args, **kwargs))
 
 def set_value(obj, path, value):
     for part in path[:-1]:
@@ -98,12 +99,12 @@ def configure_python(extensions_dir):
                 "group": "navigation@0",
                 "when": "python.hasActiveTensorBoardSession && !virtualWorkspace && shellExecutionSupported"
             },
-            {
-                "command": "python.execInTerminal-icon",
-                "group": "navigation@0",
-                "title": "%python.command.python.execInTerminal.title%",
-                "when": "resourceLangId == python && !isInDiffEditor && !virtualWorkspace && shellExecutionSupported"
-            },
+        #   {
+        #       "command": "python.execInTerminal-icon",
+        #       "group": "navigation@0",
+        #       "title": "%python.command.python.execInTerminal.title%",
+        #       "when": "resourceLangId == python && !isInDiffEditor && !virtualWorkspace && shellExecutionSupported"
+        #   },
             {
                 "command": "python.debugInTerminal",
                 "group": "navigation@1",
@@ -132,14 +133,14 @@ def configure_code_runner(extensions_dir):
     package_json_path = find_package_json(extensions_dir, 'formulahendry.code-runner-')
     with open(package_json_path, 'r') as fp:
         package_info = json.load(fp)
-    set_value(
-        package_info,
-        (
-            "contributes", "configuration", "properties",
-            "code-runner.runInTerminal", "default"
-        ),
-        True
-    )
+#   set_value(
+#       package_info,
+#       (
+#           "contributes", "configuration", "properties",
+#           "code-runner.runInTerminal", "default"
+#       ),
+#       True
+#   )
     set_value(
         package_info,
         (
@@ -190,10 +191,14 @@ def configure_code_runner(extensions_dir):
     with open(package_json_path, 'w') as fp:
         json.dump(package_info, fp, indent='\t')
     images = os.path.join(os.path.dirname(package_json_path), 'images')
-    dark = os.path.join(images, 'run-dark.svg')
-    replace_in_file(dark, 'fill:none;stroke:#C5C5C5', 'fill:#5f9f00;stroke:#5f9f00')
-    light = os.path.join(images, 'run-light.svg')
-    replace_in_file(light, 'fill:none;stroke:#474748', 'fill:#5f9f00;stroke:#5f9f00')
+    run_dark = os.path.join(images, 'run-dark.svg')
+    replace_in_file(run_dark, 'fill:none;stroke:#C5C5C5', 'fill:#5f9f00;stroke:#5f9f00')
+    run_light = os.path.join(images, 'run-light.svg')
+    replace_in_file(run_light, 'fill:none;stroke:#474748', 'fill:#5f9f00;stroke:#5f9f00')
+    stop_dark = os.path.join(images, 'stop-dark.svg')
+    replace_in_file(stop_dark, 'fill:none;stroke:#C5C5C5', 'fill:red;stroke:red')
+    stop_light = os.path.join(images, 'stop-light.svg')
+    replace_in_file(stop_light, 'fill:none;stroke:#474748', 'fill:red;stroke:red')
     log("[exit] configure_code_runner")
 
 def main(extensions_dir, log_path):
@@ -202,7 +207,7 @@ def main(extensions_dir, log_path):
         LOG_FILE = log_file
         try:
             configure_python(extensions_dir)
-            # configure_code_runner(extensions_dir)
+            configure_code_runner(extensions_dir)
         except Exception as e:
             log_file.write("An exception occured:\n")
             log_file.write(traceback.format_exc())

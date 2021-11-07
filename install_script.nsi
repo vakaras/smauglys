@@ -138,13 +138,13 @@ Section "Visual Studio Code" SEC02
   File "vscode_extensions\ms-python.python.vsix"
   File "vscode_extensions\hediet.debug-visualizer.vsix"
   File "vscode_extensions\vakaras.vscode-language-pack-lt.vsix"
-  ;File "vscode_extensions\formulahendry.code-runner.vsix"
+  File "vscode_extensions\formulahendry.code-runner.vsix"
 
   IfErrors handleErrorExtensionFiles
 
   FileOpen $0 "$instdir\install-extensions.bat" w
-  FileWrite $0 '@echo off$\r$\n'
   FileWrite $0 'set VSCODE_EXTENSIONS=$PROGRAMFILES64\VS Code Extensions$\r$\n'
+
   FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix > "$extension1_log_path"$\r$\n'
   FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension hediet.debug-visualizer.vsix > "$extension2_log_path"$\r$\n'
   ;FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension formulahendry.code-runner.vsix > "$extension3_log_path"$\r$\n'
@@ -161,12 +161,13 @@ Section "Visual Studio Code" SEC02
   DetailPrint "Plėtinio 4 žurnalas: $extension4_log_path"
   StrCmp $0 "0" 0 handleErrorInstallExtensions
 
-  ClearErrors
+  IfErrors handleError
 
   ; Configure Visual Studio Code and extensions.
   File "vscode_monkey.py"
 
   nsExec::ExecToLog '"$PROGRAMFILES64\Python38\python.exe" vscode_monkey.py "$PROGRAMFILES64\VS Code Extensions" "$PROGRAMFILES64\VS Code Extensions\monkey.log"'
+
   Pop $0
   IfErrors handleErrorPostInstallConfigure
 
