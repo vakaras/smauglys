@@ -235,9 +235,13 @@ SectionEnd
 ;   SECTION: UNINSTALLER
 ; -----------------------------------------------
 Section "Uninstall"
-    delete /REBOOTOK "$PROGRAMFILES64\Smauglys\python3810.chm"
-    delete /REBOOTOK "$PROGRAMFILES64\Smauglys\install.log"
-    delete /REBOOTOK "$DESKTOP\Python Documentation.lnk"
+  delete /REBOOTOK "$PROGRAMFILES64\Smauglys\python3810.chm"
+  delete /REBOOTOK "$PROGRAMFILES64\Smauglys\install.log"
+  delete /REBOOTOK "$DESKTOP\Python Documentation.lnk"
+  delete /REBOOTOK "$PROGRAMFILES64\Smauglys\smauglys_uninstall.exe"
+  ExecWait '"$PROGRAMFILES64\Smauglys\unins000.exe" /SILENT'
+  EnVar::Delete "VSCODE_EXTENSIONS"
+  RMDir /r /REBOOTOK "$PROGRAMFILES64\VS Code Extensions"
 SectionEnd
 
 ; -----------------------------------------------
