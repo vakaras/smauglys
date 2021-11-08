@@ -133,14 +133,14 @@ def configure_code_runner(extensions_dir):
     package_json_path = find_package_json(extensions_dir, 'formulahendry.code-runner-')
     with open(package_json_path, 'r') as fp:
         package_info = json.load(fp)
-#   set_value(
-#       package_info,
-#       (
-#           "contributes", "configuration", "properties",
-#           "code-runner.runInTerminal", "default"
-#       ),
-#       True
-#   )
+    set_value(
+        package_info,
+        (
+            "contributes", "configuration", "properties",
+            "code-runner.runInTerminal", "default"
+        ),
+        True
+    )
     set_value(
         package_info,
         (
@@ -194,7 +194,12 @@ def configure_code_runner(extensions_dir):
                 "when": "code-runner.codeRunning",
                 "command": "code-runner.stop",
                 "group": "navigation"
-            }
+            },
+            {
+                "when": "code-runner.codeRunningInTerminal",
+                "command": "code-runner.stopInTerminal",
+                "group": "navigation"
+            },
         ]
     )
     with open(package_json_path, 'w') as fp:
