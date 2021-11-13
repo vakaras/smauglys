@@ -32,7 +32,8 @@ try_download_package 'https://github.com/vakaras/vscode-language-pack-lt/release
 # Download our translated version of the Python extension.
 try_download_package 'https://github.com/vakaras/vscode-python/releases/download/v-2021-09-04-1253/ms-python-v-2021-09-04-1253.vsix' 'vscode_extensions/ms-python.python.vsix' '1fb74bc6c7b91b7bb46a478befa21411'
 try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.2.4/vspackage' 'vscode_extensions/hediet.debug-visualizer.vsix' 'b0265083182fcb1eb5aa7d1e0a4ac261'
-try_download_package 'https://github.com/gedas-luksas/vscode-code-runner/releases/download/0.11.6/code-runner-0.11.6.vsix' 'vscode_extensions/formulahendry.code-runner.vsix' 'f070e588b5fafaaffe0c088161c19b7b'
+try_download_package 'https://github.com/gedas-luksas/quick-run-code/releases/download/0.0.2/quick-run-code-0.0.2.vsix' 'vscode_extensions/quick-run-code.vsix' '35d4ea6b469dbb71a90e4af355fb6e91'
+#try_download_package 'https://github.com/gedas-luksas/vscode-code-runner/releases/download/0.11.6/code-runner-0.11.6.vsix' 'vscode_extensions/formulahendry.code-runner.vsix' 'f070e588b5fafaaffe0c088161c19b7b'
 
 OLD_PWD=$(pwd)
 

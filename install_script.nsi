@@ -132,7 +132,8 @@ Section "Visual Studio Code" SEC02
   File "vscode_extensions\ms-python.python.vsix"
   File "vscode_extensions\hediet.debug-visualizer.vsix"
   File "vscode_extensions\vakaras.vscode-language-pack-lt.vsix"
-  File "vscode_extensions\formulahendry.code-runner.vsix"
+  ;File "vscode_extensions\formulahendry.code-runner.vsix"
+  File "vscode_extensions/quick-run-code.vsix"
 
   IfErrors handleErrorExtensionFiles
 
@@ -141,7 +142,8 @@ Section "Visual Studio Code" SEC02
 
   FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension ms-python.python.vsix$\r$\n'
   FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension hediet.debug-visualizer.vsix$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension formulahendry.code-runner.vsix$\r$\n'
+  ;FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension formulahendry.code-runner.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension quick-run-code.vsix$\r$\n'
   FileWrite $0 'call "$PROGRAMFILES64\Smauglys\bin\smauglys.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix$\r$\n'
   FileClose $0
 

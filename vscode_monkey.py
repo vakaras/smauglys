@@ -221,7 +221,7 @@ def main(extensions_dir, log_path):
         LOG_FILE = log_file
         try:
             configure_python(extensions_dir)
-            configure_code_runner(extensions_dir)
+            # configure_code_runner(extensions_dir)
         except Exception as e:
             log_file.write("An exception occured:\n")
             log_file.write(traceback.format_exc())
