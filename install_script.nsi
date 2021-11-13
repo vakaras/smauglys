@@ -133,7 +133,7 @@ Section "Visual Studio Code" SEC02
   File "vscode_extensions\hediet.debug-visualizer.vsix"
   File "vscode_extensions\vakaras.vscode-language-pack-lt.vsix"
   ;File "vscode_extensions\formulahendry.code-runner.vsix"
-  File "vscode_extensions/quick-run-code.vsix"
+  File "vscode_extensions\quick-run-code.vsix"
 
   IfErrors handleErrorExtensionFiles
 
