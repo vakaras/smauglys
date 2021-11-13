@@ -51,9 +51,13 @@ mkdir -p hediet.debug-visualizer
 cd hediet.debug-visualizer
 unzip -o "$OLD_PWD/vscode_extensions/hediet.debug-visualizer.vsix"
 cd ..
-mkdir -p code-runner
-cd code-runner
-unzip -o "$OLD_PWD/vscode_extensions/formulahendry.code-runner.vsix"
+#mkdir -p code-runner
+#cd code-runner
+#unzip -o "$OLD_PWD/vscode_extensions/formulahendry.code-runner.vsix"
+#cd ..
+mkdir -p quick-run-code
+cd quick-run-code
+unzip -o "$OLD_PWD/vscode_extensions/quick-run-code.vsix"
 cd ..
 
 cd "$OLD_PWD"
