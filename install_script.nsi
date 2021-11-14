@@ -140,11 +140,11 @@ Section "Visual Studio Code" SEC02
   FileOpen $0 "$instdir\install-extensions.bat" w
   FileWrite $0 'set VSCODE_EXTENSIONS=$PROGRAMFILES64\VS Code Extensions$\r$\n'
 
-  FileWrite $0 'call "$PROGRAMFILES64\LR NŠA Python\bin\nsa-python.cmd" --install-extension ms-python.python.vsix$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\LR NŠA Python\bin\nsa-python.cmd" --install-extension hediet.debug-visualizer.vsix$\r$\n'
-  ;FileWrite $0 'call "$PROGRAMFILES64\LR NŠA Python\bin\nsa-python.cmd" --install-extension formulahendry.code-runner.vsix$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\LR NŠA Python\bin\nsa-python.cmd" --install-extension quick-run-code.vsix$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\LR NŠA Python\bin\nsa-python.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsa-python.cmd" --install-extension ms-python.python.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsa-python.cmd" --install-extension hediet.debug-visualizer.vsix$\r$\n'
+  ;FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsa-python.cmd" --install-extension formulahendry.code-runner.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsa-python.cmd" --install-extension quick-run-code.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsa-python.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix$\r$\n'
   FileClose $0
 
   IfErrors handleErrorBuildInstallExtensionsScript
@@ -211,9 +211,9 @@ SectionEnd
 ; -----------------------------------------------
 Section "Uninstaller creation"
   DetailPrint "### Kuriama išdiegimo programa. ###"
-  Rename "$PROGRAMFILES64\LR NŠA Python\unins000.exe" "$PROGRAMFILES64\LR NŠA Python\unins000-orig.exe"
-  Rename "$PROGRAMFILES64\LR NŠA Python\unins000.dat" "$PROGRAMFILES64\LR NŠA Python\unins000-orig.dat"
-  WriteUninstaller "$PROGRAMFILES64\LR NŠA Python\unins000.exe"
+  Rename "$PROGRAMFILES64\LR NSA Python\unins000.exe" "$PROGRAMFILES64\LR NSA Python\unins000-orig.exe"
+  Rename "$PROGRAMFILES64\LR NSA Python\unins000.dat" "$PROGRAMFILES64\LR NSA Python\unins000-orig.dat"
+  WriteUninstaller "$PROGRAMFILES64\LR NSA Python\unins000.exe"
   DetailPrint "### Išdiegimo programa sukurta. ###"
 SectionEnd
 
@@ -226,7 +226,7 @@ Section "Remove temp files" SEC03
   RMDir /r /REBOOTOK $TEMP\Smauglys
 
   DetailPrint "### Baigtas laikinų diegimo failų trynimas. ###"
-  StrCpy $0 "$PROGRAMFILES64\LR NŠA Python\install.log"
+  StrCpy $0 "$PROGRAMFILES64\LR NSA Python\install.log"
   Push $0
   Call DumpLog
   DetailPrint "### Baigtas diegimas. ###"
@@ -236,10 +236,10 @@ SectionEnd
 ;   SECTION: UNINSTALLER
 ; -----------------------------------------------
 Section "Uninstall"
-  delete /REBOOTOK "$PROGRAMFILES64\LR NŠA Python\install.log"
+  delete /REBOOTOK "$PROGRAMFILES64\LR NSA Python\install.log"
   delete /REBOOTOK "$DESKTOP\Python Documentation.lnk"
-  delete /REBOOTOK "$PROGRAMFILES64\LR NŠA Python\unins000.exe"
-  ExecWait '"$PROGRAMFILES64\LR NŠA Python\unins000-orig.exe" /SILENT'
+  delete /REBOOTOK "$PROGRAMFILES64\LR NSA Python\unins000.exe"
+  ExecWait '"$PROGRAMFILES64\LR NSA Python\unins000-orig.exe" /SILENT'
   RMDir /REBOOTOK "$PROGRAMFILES64\LR NŠA Python"
   EnVar::SetHKLM
   EnVar::Delete "VSCODE_EXTENSIONS"
