@@ -82,7 +82,7 @@ jobs:
         with:
           upload_url: ${{ env.UPLOAD_URL }}
           asset_path: smauglys_installer-x64.exe
-          asset_name: smauglys_installer-x64-${{ env.TAG_NAME }}.exe
+          asset_name: LR-NŠA-Python-installer-x64-${{ env.TAG_NAME }}.exe
           asset_content_type: application/octet-stream
 
       - name: Upload NSIS ia32 Smauglys installer
@@ -92,5 +92,5 @@ jobs:
         with:
           upload_url: ${{ env.UPLOAD_URL }}
           asset_path: smauglys_installer-ia32.exe
-          asset_name: smauglys_installer-ia32-${{ env.TAG_NAME }}.exe
+          asset_name: LR-NŠA-Python-installer-ia32-${{ env.TAG_NAME }}.exe
           asset_content_type: application/octet-stream

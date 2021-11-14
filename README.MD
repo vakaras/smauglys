@@ -1,4 +1,4 @@
-# Smauglys – a Python IDE for Lithuanian Schools
+# LR NŠA Python – a Python IDE for Lithuanian Schools
 
 [Download page](https://github.com/vakaras/smauglys/releases/)
 
