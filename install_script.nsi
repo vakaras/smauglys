@@ -236,7 +236,7 @@ SectionEnd
 ;   SECTION: AFTER INSTALL MESSAGE
 ; -----------------------------------------------
 Section "After install message"
-    MessageBox MB_OK 'Pirmą kartą paleidus:$\r$\n$\r$\n1. Palaukite porą minučių kol aktyvuosis plėtiniai.$\r$\n2. Paleiskite paprastą Python programą, pvz.: test.py, kurios kodas: print("Labas") ir suteikite tinklo leidimus.$\r$\n3. Perkraukite kompiuterį.'
+    MessageBox MB_OK 'Pirmą kartą paleidus:$\r$\n$\r$\n1. Palaukite porą minučių kol aktyvuosis plėtiniai.$\r$\n2. Paleiskite paprastą Python programą, pvz.: test.py, kurios kodas: print("Labas") ir suteikite tinklo leidimus.$\r$\n3. Perkraukite kompiuterį.' /SD IDOK
 SectionEnd
 
 ; -----------------------------------------------
