@@ -46,17 +46,17 @@ def find_package_json(extensions_dir, extension_prefix):
     return paths[0]
 
 def replace_in_file(path, source, target):
-    with open(path) as fp:
+    with open(path, encoding='utf-8') as fp:
         text = fp.read()
     result = text.replace(source, target)
-    with open(path, 'w') as fp:
+    with open(path, 'w', encoding='utf-8') as fp:
         fp.write(result)
 
 def configure_python(extensions_dir):
     log("[enter] configure_python(extensions_dir={})", extensions_dir)
     package_json_path = find_package_json(extensions_dir, 'ms-python.python-')
     replace_in_file(package_json_path, '"icon": "$(play)"', '"icon": { "dark": "resources/dark/play.svg", "light": "resources/light/play.svg" }')
-    with open(package_json_path, 'r') as fp:
+    with open(package_json_path, 'r', encoding='utf-8') as fp:
         package_info = json.load(fp)
     set_value(
         package_info,
@@ -113,16 +113,16 @@ def configure_python(extensions_dir):
             }
         ]
     )
-    with open(package_json_path, 'w') as fp:
+    with open(package_json_path, 'w', encoding='utf-8') as fp:
         json.dump(package_info, fp, indent='\t')
     resources = os.path.join(os.path.dirname(package_json_path), 'resources')
     dark = os.path.join(resources, 'dark', 'play.svg')
-    with open(dark, 'w') as fp:
+    with open(dark, 'w', encoding='utf-8') as fp:
         fp.write(r'''<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M 2.3771594,0.12798595 V 15.872014 L 13.622841,7.9999873 Z" fill="#5f9f00"/>
 </svg>''')
     light = os.path.join(resources, 'light', 'play.svg')
-    with open(light, 'w') as fp:
+    with open(light, 'w', encoding='utf-8') as fp:
         fp.write(r'''<svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
 <path d="M 2.3771594,0.12798595 V 15.872014 L 13.622841,7.9999873 Z" fill="#5f9f00"/>
 </svg>''')
@@ -131,7 +131,7 @@ def configure_python(extensions_dir):
 def configure_code_runner(extensions_dir):
     log("[enter] configure_code_runner(extensions_dir={})", extensions_dir)
     package_json_path = find_package_json(extensions_dir, 'formulahendry.code-runner-')
-    with open(package_json_path, 'r') as fp:
+    with open(package_json_path, 'r', encoding='utf-8') as fp:
         package_info = json.load(fp)
     set_value(
         package_info,
@@ -202,7 +202,7 @@ def configure_code_runner(extensions_dir):
             },
         ]
     )
-    with open(package_json_path, 'w') as fp:
+    with open(package_json_path, 'w', encoding='utf-8') as fp:
         json.dump(package_info, fp, indent='\t')
     images = os.path.join(os.path.dirname(package_json_path), 'images')
     run_dark = os.path.join(images, 'run-dark.svg')
@@ -216,7 +216,7 @@ def configure_code_runner(extensions_dir):
     log("[exit] configure_code_runner")
 
 def main(extensions_dir, log_path):
-    with open(log_path, 'w') as log_file:
+    with open(log_path, 'w', encoding='utf-8') as log_file:
         global LOG_FILE
         LOG_FILE = log_file
         try:
