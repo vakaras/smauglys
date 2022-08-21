@@ -31,7 +31,7 @@ try_download_package 'https://github.com/vakaras/vscode-language-pack-lt/release
 #curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-toolsai/vsextensions/jupyter/2021.8.1236758218/vspackage' --compressed -Lo vscode_extensions/ms-toolsai.jupyter.vsix
 # Download our translated version of the Python extension.
 try_download_package 'https://github.com/vakaras/vscode-python/releases/download/v-2022-08-21-0945/ms-python-v-2022-08-21-0945.vsix' 'vscode_extensions/ms-python.python.vsix' 'bcc9d2629ea124b2128b7e558caa9b49'
-try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.3.1/vspackage' 'vscode_extensions/hediet.debug-visualizer.vsix' '05e65a6666ed82521689fd177c0470fe'
+try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.3.1/vspackage' 'vscode_extensions/hediet.debug-visualizer.vsix' 'd08cdc2b35326f04337ffe64a59a4ce4'
 try_download_package 'https://github.com/gedas-luksas/quick-run-code/releases/download/0.0.3/quick-run-code-0.0.3.vsix' 'vscode_extensions/quick-run-code.vsix' '85ed1708da7913022756899e04bab986'
 #try_download_package 'https://github.com/gedas-luksas/vscode-code-runner/releases/download/0.11.6/code-runner-0.11.6.vsix' 'vscode_extensions/formulahendry.code-runner.vsix' 'f070e588b5fafaaffe0c088161c19b7b'
 
@@ -39,7 +39,7 @@ OLD_PWD=$(pwd)
 
 mkdir -p "$TEMP/extension_test"
 cd "$TEMP/extension_test"
-mkdir -p vscode-language-pack-lt	
+mkdir -p vscode-language-pack-lt
 cd vscode-language-pack-lt
 unzip -o "$OLD_PWD/vscode_extensions/vakaras.vscode-language-pack-lt.vsix"
 cd ..
