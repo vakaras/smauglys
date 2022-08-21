@@ -78,7 +78,7 @@ def configure_python(extensions_dir):
         package_info,
         (
             "contributes", "configuration", "properties",
-            "python.pythonPath", "default"
+            "python.defaultInterpreterPath", "default"
         ),
         sys.executable
     )
