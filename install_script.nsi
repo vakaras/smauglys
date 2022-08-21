@@ -1,5 +1,5 @@
 ﻿!define PRODUCT_NAME "LR NŠA Python"
-!define PRODUCT_VERSION "1.0"
+!define PRODUCT_VERSION "1.1"
 !define PRODUCT_PUBLISHER "Vytautas Astrauskas, Martynas Teleiša, Mantas Urbonas"
 
 SetCompressor lzma
@@ -140,11 +140,11 @@ Section "Visual Studio Code" SEC02
   FileOpen $0 "$instdir\install-extensions.bat" w
   FileWrite $0 'set VSCODE_EXTENSIONS=$PROGRAMFILES64\VS Code Extensions$\r$\n'
 
-  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsa-python.cmd" --install-extension ms-python.python.vsix$\r$\n'
-  ;FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsa-python.cmd" --install-extension hediet.debug-visualizer.vsix$\r$\n'
-  ;FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsa-python.cmd" --install-extension formulahendry.code-runner.vsix$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsa-python.cmd" --install-extension quick-run-code.vsix$\r$\n'
-  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsa-python.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension ms-python.python.vsix$\r$\n'
+  ;FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension hediet.debug-visualizer.vsix$\r$\n'
+  ;FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension formulahendry.code-runner.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension quick-run-code.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix$\r$\n'
   FileClose $0
 
   IfErrors handleErrorBuildInstallExtensionsScript
