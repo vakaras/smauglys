@@ -130,7 +130,7 @@ Section "Visual Studio Code" SEC02
   IfErrors handleErrorVSCodeSetup
 
   File "vscode_extensions\ms-python.python.vsix"
-  ;File "vscode_extensions\hediet.debug-visualizer.vsix"
+  File "vscode_extensions\hediet.debug-visualizer.vsix"
   File "vscode_extensions\vakaras.vscode-language-pack-lt.vsix"
   ;File "vscode_extensions\formulahendry.code-runner.vsix"
   File "vscode_extensions\quick-run-code.vsix"
@@ -141,7 +141,7 @@ Section "Visual Studio Code" SEC02
   FileWrite $0 'set VSCODE_EXTENSIONS=$PROGRAMFILES64\VS Code Extensions$\r$\n'
 
   FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension ms-python.python.vsix$\r$\n'
-  ;FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension hediet.debug-visualizer.vsix$\r$\n'
+  FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension hediet.debug-visualizer.vsix$\r$\n'
   ;FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension formulahendry.code-runner.vsix$\r$\n'
   FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension quick-run-code.vsix$\r$\n'
   FileWrite $0 'call "$PROGRAMFILES64\LR NSA Python\bin\nsapython.cmd" --install-extension vakaras.vscode-language-pack-lt.vsix$\r$\n'

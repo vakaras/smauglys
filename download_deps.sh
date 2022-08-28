@@ -2,7 +2,7 @@
 
 # Tries to download a packages, retries when file seems too small.
 try_download_package () {
-	for I in {1..20}
+	for I in {1..3}
 	do
 		curl $1 --compressed -Lo $2
 		hash=$(md5sum $2 | awk '{print $1}')
@@ -31,7 +31,7 @@ try_download_package 'https://github.com/vakaras/vscode-language-pack-lt/release
 #curl 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/ms-toolsai/vsextensions/jupyter/2021.8.1236758218/vspackage' --compressed -Lo vscode_extensions/ms-toolsai.jupyter.vsix
 # Download our translated version of the Python extension.
 try_download_package 'https://github.com/vakaras/vscode-python/releases/download/v-2022-08-21-0945/ms-python-v-2022-08-21-0945.vsix' 'vscode_extensions/ms-python.python.vsix' 'bcc9d2629ea124b2128b7e558caa9b49'
-#try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.3.1/vspackage' 'vscode_extensions/hediet.debug-visualizer.vsix' 'd08cdc2b35326f04337ffe64a59a4ce4'
+try_download_package 'https://marketplace.visualstudio.com/_apis/public/gallery/publishers/hediet/vsextensions/debug-visualizer/2.3.1/vspackage' 'vscode_extensions/hediet.debug-visualizer.vsix' '05fb840a95f55d45866596970416a522'
 try_download_package 'https://github.com/gedas-luksas/quick-run-code/releases/download/0.0.3/quick-run-code-0.0.3.vsix' 'vscode_extensions/quick-run-code.vsix' '85ed1708da7913022756899e04bab986'
 #try_download_package 'https://github.com/gedas-luksas/vscode-code-runner/releases/download/0.11.6/code-runner-0.11.6.vsix' 'vscode_extensions/formulahendry.code-runner.vsix' 'f070e588b5fafaaffe0c088161c19b7b'
 
@@ -47,10 +47,10 @@ mkdir -p ms-python.python
 cd ms-python.python
 unzip -o "$OLD_PWD/vscode_extensions/ms-python.python.vsix"
 cd ..
-#mkdir -p hediet.debug-visualizer
-#cd hediet.debug-visualizer
-#unzip -o "$OLD_PWD/vscode_extensions/hediet.debug-visualizer.vsix"
-#cd ..
+mkdir -p hediet.debug-visualizer
+cd hediet.debug-visualizer
+unzip -o "$OLD_PWD/vscode_extensions/hediet.debug-visualizer.vsix"
+cd ..
 #mkdir -p code-runner
 #cd code-runner
 #unzip -o "$OLD_PWD/vscode_extensions/formulahendry.code-runner.vsix"
